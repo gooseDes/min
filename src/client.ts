@@ -160,6 +160,14 @@ export class ApiClient {
         this.socket.reset();
     }
 
+    subscribeToSocketConnectionSuccess(callback: () => void) {
+        this.socket.subscribeToConnectionSuccess(callback);
+    }
+
+    subscribeToSocketConnectionError(callback: (error: Error) => void) {
+        this.socket.subscribeToConnectionError(callback);
+    }
+
     private socketFetchBase(
         emitEvent: WebSocketEmitEvent,
         event: WebSocketEvent,

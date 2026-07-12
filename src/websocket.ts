@@ -27,6 +27,8 @@ export class WebSocketClient {
     private connectionPromise: Promise<void> | undefined;
     private resolveConnection: (() => void) | undefined;
     private rejectConnection: ((reason?: any) => void) | undefined;
+    private isConnected: boolean = false;
+    private connectError: Error | undefined;
 
     constructor(url: string) {
         this.url = url;
@@ -36,9 +38,7 @@ export class WebSocketClient {
         const isTestEnv = process.env.NODE_ENV === "test";
         this.socket = io(this.url, {
             auth: { token },
-            ...(isTestEnv
-                ? { transports: ["websocket"], reconnection: false, forceNew: true }
-                : {}),
+            ...(isTestEnv ? { transports: ["websocket"], reconnection: false, forceNew: true } : {}),
         });
 
         this.connectionPromise = new Promise((resolve, reject) => {
@@ -47,12 +47,31 @@ export class WebSocketClient {
         });
 
         this.socket.on("connect", () => {
+            this.isConnected = true;
             this.resolveConnection?.();
         });
 
         this.socket.on("connect_error", error => {
+            this.isConnected = false;
+            this.connectError = error;
             this.rejectConnection?.(error);
         });
+    }
+
+    subscribeToConnectionSuccess(callback: () => void): void {
+        if (this.isConnected) {
+            callback();
+        } else {
+            this.socket?.on("connect", () => callback());
+        }
+    }
+
+    subscribeToConnectionError(callback: (error: Error) => void): void {
+        if (this.connectError) {
+            callback(this.connectError);
+        } else {
+            this.socket?.on("connect_error", error => callback(error));
+        }
     }
 
     async waitForSocket(): Promise<void> {
@@ -115,6 +134,8 @@ export class WebSocketClient {
         if (this.socket) {
             this.socket.disconnect();
         }
+        this.isConnected = false;
+        this.connectError = undefined;
         this.connectionPromise = undefined;
         this.resolveConnection = undefined;
         this.rejectConnection = undefined;
@@ -131,6 +152,8 @@ export class WebSocketClient {
             console.error("WebSocketClient: error during disconnect", e);
         }
 
+        this.isConnected = false;
+        this.connectError = undefined;
         this.socket = undefined;
         this.subscriptions.clear();
         this.lastSubscriptionId = 0;
