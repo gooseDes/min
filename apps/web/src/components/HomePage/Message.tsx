@@ -1,11 +1,14 @@
 import apiClient from "@/client";
 import { parseMessageContent } from "@/utils";
 import Icon from "@components/Icon";
-import { faReply } from "@fortawesome/free-solid-svg-icons";
+import { faReply, faTrash } from "@fortawesome/free-solid-svg-icons";
 import useLocalStorage from "@hooks/useLocalStorage";
+import useTranslation from "@hooks/useTranslation";
 import type { MessageData, MessageDataWithSender, UserData } from "@min/api-client";
 import { dateToString } from "@min/api-client/utils";
 import { scrollMessagesContainerToBottom } from "@services/appControlService";
+import { openDropdown } from "@services/dropdownService";
+import { setMessagePrefix } from "@services/inputControlService";
 import { AnimatePresence, motion } from "framer-motion";
 import Markdown from "markdown-to-jsx";
 import { memo, useEffect, useRef, useState } from "react";
@@ -66,7 +69,9 @@ function MyImage({ src, alt, shown }: { src: string; alt: string; shown: boolean
 const Message = memo(function Message(props: MessageProps) {
     const { msg, type = "header", className = "", shown = false } = props;
 
+    const { t } = useTranslation();
     const [user] = useLocalStorage("user");
+
     const [replyingToMessage, setReplyingToMessage] = useState<MessageData | null>(null);
     const [replyingToSender, setReplyingToSender] = useState<UserData | null>(null);
 
@@ -89,12 +94,29 @@ const Message = memo(function Message(props: MessageProps) {
         fetchReply();
     }, [content.isReply, content.replyingToId]);
 
+    const deleteMessage = async () => {
+        const res = await apiClient.deleteMessage({ messageId: msg.id });
+        if (!res.success) alert(res.message);
+    };
+
     return (
         <AnimatePresence>
             <motion.div
                 animate={{ opacity: shown ? 1 : 0 }}
                 exit={{ opacity: 0 }}
                 className={`${styles.container} ${side === "left" ? styles.containerLeft : styles.containerRight} ${className}`}
+                onContextMenu={e => {
+                    e.preventDefault();
+                    openDropdown({
+                        title: t.message_actions,
+                        items: [
+                            { icon: faReply, label: t.reply, onPress: () => setMessagePrefix(`/reply ${msg.id}\n`) },
+                            { icon: faTrash, label: t.delete, onPress: () => deleteMessage() },
+                        ],
+                        x: e.clientX,
+                        y: e.clientY,
+                    });
+                }}
             >
                 <motion.img
                     src={`${import.meta.env.MIN_API_URL}/avatars/${msg.sender.avatar}.webp`}

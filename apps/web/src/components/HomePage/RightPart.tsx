@@ -4,6 +4,7 @@ import IconButton from "@components/IconButton";
 import { faListUl } from "@fortawesome/free-solid-svg-icons";
 import type { ChatData, UserData } from "@min/api-client";
 import { messagesContainerRef } from "@services/appControlService";
+import { messageInputRef } from "@services/inputControlService";
 import { motion } from "framer-motion";
 import { useCallback, useMemo } from "react";
 import MessageInput from "./MessageInput";
@@ -49,7 +50,7 @@ function RightPart(props: RightPartProps) {
             <motion.div layout className={styles.contentPanel}>
                 {openedChat && <MessagesContainer ref={messagesContainerRef} />}
             </motion.div>
-            {openedChat && <MessageInput onSend={sendMessage} />}
+            {openedChat && <MessageInput ref={messageInputRef} onSend={sendMessage} />}
         </div>
     );
 }

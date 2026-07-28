@@ -31,6 +31,7 @@ export interface Language {
     username_placeholder?: string;
 
     // Message dropdown
+    message_actions?: string;
     cancel?: string;
     reply?: string;
     delete?: string;
@@ -104,6 +105,7 @@ class Translation {
         username_placeholder: "Username",
 
         // Message dropdown
+        message_actions: "Actions",
         cancel: "Cancel",
         reply: "Reply",
         delete: "Delete",
@@ -174,6 +176,7 @@ class Translation {
         username_placeholder: "Имя пользователя",
 
         // Message dropdown
+        message_actions: "Действия",
         cancel: "Отменить",
         reply: "Ответить",
         delete: "Удалить",
@@ -244,6 +247,7 @@ class Translation {
         username_placeholder: "Ім'я користувача",
 
         // Message dropdown
+        message_actions: "Дії",
         cancel: "Відмінити",
         reply: "Відповісти",
         delete: "Видалити",

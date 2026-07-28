@@ -1,9 +1,13 @@
+import ClickInterceptor from "@components/ClickInterceptor";
+import Dropdown from "@components/Dropdown";
 import CreateChatPopup from "@components/HomePage/CreateChatPopup";
 import UserPopup from "@components/HomePage/UserPopup/UserPopup";
 import { TranslationProvider } from "@contexts/TranslationProvider";
 import useLocalStorage from "@hooks/useLocalStorage";
 import useTranslation from "@hooks/useTranslation";
 import { rootLayoutRef } from "@services/appControlService";
+import { dropdownRef } from "@services/dropdownService";
+import { clickInterceptorRef } from "@services/interceptService";
 import { swRegistration } from "@services/otherRefs";
 import { createChatPopupRef, userPopupRef } from "@services/popupService";
 import { LayoutGroup } from "framer-motion";
@@ -75,6 +79,8 @@ function RootLayout(props: RootLayoutProps) {
                     <Outlet />
                     <div className={`${styles.blurrable} ${isBlurred ? styles.blurred : ""}`} />
                     <MorphThing ref={morphThingRef} />
+                    <ClickInterceptor ref={clickInterceptorRef} />
+                    <Dropdown ref={dropdownRef} />
                     <CreateChatPopup ref={createChatPopupRef} />
                     <UserPopup ref={userPopupRef} />
                 </LayoutGroup>
