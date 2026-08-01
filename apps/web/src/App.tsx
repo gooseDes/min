@@ -5,6 +5,7 @@ import UserPopup from "@components/HomePage/UserPopup/UserPopup";
 import { TranslationProvider } from "@contexts/TranslationProvider";
 import useLocalStorage from "@hooks/useLocalStorage";
 import useTranslation from "@hooks/useTranslation";
+import SettingsPage from "@pages/SettingsPage";
 import { rootLayoutRef } from "@services/appControlService";
 import { dropdownRef } from "@services/dropdownService";
 import { clickInterceptorRef } from "@services/interceptService";
@@ -98,6 +99,7 @@ const router = createRouter([
         children: [
             { index: true, element: <HomePage /> },
             { path: "auth", element: <AuthPage /> },
+            { path: "settings", element: <SettingsPage /> },
         ],
     },
 ]);

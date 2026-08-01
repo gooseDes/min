@@ -6,10 +6,11 @@ import styles from "./IconButton.module.scss";
 export interface IconButtonProps extends HTMLMotionProps<"button"> {
     icon: IconProp;
     size?: number;
+    color?: string;
 }
 
 function IconButton(props: IconButtonProps) {
-    const { icon, size, className, ...rest } = props;
+    const { icon, size, className, color, ...rest } = props;
 
     return (
         <motion.button
@@ -18,13 +19,13 @@ function IconButton(props: IconButtonProps) {
             className={`${styles.container} ${className}`}
             {...rest}
         >
-            <Icon icon={icon} size={size} />
+            <Icon icon={icon} size={size} color={color} />
         </motion.button>
     );
 }
 
 export function AnimatedIconButton(props: IconButtonProps) {
-    const { icon, size, className, ...rest } = props;
+    const { icon, size, className, color, ...rest } = props;
 
     return (
         <motion.button
@@ -40,7 +41,7 @@ export function AnimatedIconButton(props: IconButtonProps) {
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
                 >
-                    <Icon icon={icon} size={size} />
+                    <Icon icon={icon} size={size} color={color} />
                 </motion.div>
             </AnimatePresence>
         </motion.button>

@@ -1,7 +1,7 @@
 import apiClient from "@/client";
 import { setCurrentAppState } from "@/utils";
-import LeftPart from "@components/HomePage/LeftPart";
-import RightPart from "@components/HomePage/RightPart";
+import HomeLeftPart from "@components/HomePage/HomeLeftPart";
+import HomeRightPart from "@components/HomePage/HomeRightPart";
 import useLocalStorage from "@hooks/useLocalStorage";
 import type { ChatData } from "@min/api-client";
 import { messagesContainerRef, setChatsInContainer } from "@services/appControlService";
@@ -54,8 +54,8 @@ function HomePage() {
 
     return (
         <div className={styles.main}>
-            <LeftPart onChatClick={openChat} leftPartRef={leftPartRef} />
-            <RightPart openedChat={openedChat} user={user} closeChat={closeChat} />
+            <HomeLeftPart onChatClick={openChat} ref={leftPartRef} />
+            <HomeRightPart openedChat={openedChat} user={user} closeChat={closeChat} />
         </div>
     );
 }

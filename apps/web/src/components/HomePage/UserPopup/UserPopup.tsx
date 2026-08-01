@@ -7,8 +7,8 @@ import useTranslation from "@hooks/useTranslation";
 import { closeUserPopup } from "@services/popupService";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState, type Ref } from "react";
-import ChangeLanguageButton from "./buttons/ChangeLanguageButton";
 import EditProfileButton from "./buttons/EditProfileButton";
+import SettingsButton from "./buttons/SettingsButton";
 import SignInButton from "./buttons/SignInButton";
 import EditableAvatar, { type EditableAvatarRef } from "./EditableAvatar";
 import styles from "./UserPopup.module.scss";
@@ -63,7 +63,7 @@ function UserPopup(props: UserPopupProps) {
         >
             <div className={styles.content}>
                 <div className={styles.buttonsContainer}>
-                    <ChangeLanguageButton />
+                    <SettingsButton />
                     <div style={{ flex: 1 }} />
                     <EditProfileButton setState={setIsEditMode} />
                     <SignInButton />

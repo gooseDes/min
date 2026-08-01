@@ -1,5 +1,4 @@
 @use "@/index.module.scss" as *;
-@use "sass:math";
 
 .mobileHidden {
     @include mobile {

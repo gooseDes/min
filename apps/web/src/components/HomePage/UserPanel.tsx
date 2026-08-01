@@ -4,7 +4,7 @@ import { isUserPopupVisible, openUserPopup, subscribeToUserPopup } from "@servic
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import styles from "./UserPanel.module.scss";
-import ChangeLanguageButton from "./UserPopup/buttons/ChangeLanguageButton";
+import SettingsButton from "./UserPopup/buttons/SettingsButton";
 import SignInButton from "./UserPopup/buttons/SignInButton";
 
 function UserPanel() {
@@ -39,7 +39,7 @@ function UserPanel() {
                         />
                         <motion.p layoutId="user-panel-username">{user.username}</motion.p>
                     </motion.button>
-                    <ChangeLanguageButton />
+                    <SettingsButton />
                     <SignInButton />
                 </motion.div>
             )}

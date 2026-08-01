@@ -7,6 +7,12 @@ $breakpoint-mobile: 768px;
     }
 }
 
+@mixin desktop {
+    @media screen and (min-width: #{$breakpoint-mobile}) {
+        @content;
+    }
+}
+
 $bg-color: #131317;
 $panel-bg-color: #1f1f23;
 $border-color: #2d2d32dd;
@@ -143,6 +149,7 @@ button {
     font-size: $font-size-base;
     will-change: transform;
     text-rendering: geometricPrecision;
+    cursor: pointer;
 
     &:focus {
         outline: none;
