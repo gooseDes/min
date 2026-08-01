@@ -1,7 +1,7 @@
 import Divider from "@components/Divider";
 import Icon from "@components/Icon";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faQuestion, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useImperativeHandle, useState, type ReactNode, type Ref } from "react";
 import IconButton from "./IconButton";
@@ -24,6 +24,7 @@ export interface PopupProps {
     height: number;
     icon?: IconProp;
     closeCallback?: () => void;
+    hasX?: boolean;
     children: ReactNode;
 }
 
@@ -41,6 +42,7 @@ function Popup(props: PopupProps) {
         height,
         icon,
         closeCallback = () => setIsOpen(false),
+        hasX = true,
     } = props;
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -77,8 +79,8 @@ function Popup(props: PopupProps) {
                     }}
                 >
                     <div className={styles.header}>
-                        <IconButton icon={faXmark} className={styles.closeButton} size={32} onClick={closeCallback} />
-                        <Icon icon={icon ?? faQuestion} size={32} />
+                        {hasX && <IconButton icon={faXmark} className={styles.closeButton} size={32} onClick={closeCallback} />}
+                        {icon && <Icon icon={icon} size={32} />}
                         <h1>{title}</h1>
                     </div>
                     <Divider />

@@ -2,7 +2,7 @@ import apiClient from "@/client";
 import Icon from "@components/Icon";
 import type { PopupHandle } from "@components/Popup";
 import Popup from "@components/Popup";
-import { faArrowLeft, faCheck, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
 import useTranslation from "@hooks/useTranslation";
 import { addChatToContainer } from "@services/appControlService";
 import { closeCreateChatPopup } from "@services/popupService";
@@ -44,8 +44,7 @@ function CreateChatPopup(props: CreateChatPopupProps) {
             x="center"
             y="center"
             layoutId="add-chat"
-            title={t.create_chat}
-            icon={faPlusCircle}
+            title={t.new_chat}
             closeCallback={closeCreateChatPopup}
             ref={ref}
         >

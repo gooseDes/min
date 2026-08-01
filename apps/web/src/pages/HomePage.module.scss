@@ -1,8 +1,1 @@
 @use "@/index.module.scss" as *;
-
-.mobileHidden {
-    @include mobile {
-        opacity: 0;
-        pointer-events: none;
-    }
-}

@@ -27,6 +27,7 @@ export interface Language {
 
     // Create Chat popup
     create_chat?: string;
+    new_chat?: string;
     enter_username?: string;
     username_placeholder?: string;
 
@@ -101,6 +102,7 @@ class Translation {
 
         // Create Chat popup
         create_chat: "Create Chat",
+        new_chat: "New Chat",
         enter_username: "Enter username of the person you want to chat with:",
         username_placeholder: "Username",
 
@@ -172,6 +174,7 @@ class Translation {
 
         // Create Chat popup
         create_chat: "Создать чат",
+        new_chat: "Новый чат",
         enter_username: "Введите имя пользователя, с которым хотите начать чат:",
         username_placeholder: "Имя пользователя",
 
@@ -243,6 +246,7 @@ class Translation {
 
         // Create Chat popup
         create_chat: "Створити чат",
+        new_chat: "Новий чат",
         enter_username: "Введіть ім'я користувача, з яким ви хочете почати чат:",
         username_placeholder: "Ім'я користувача",
 

@@ -4,6 +4,17 @@
     @extend .panel;
 
     overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.closeButton {
+    @extend .desktopHidden;
+
+    height: 50px;
+    width: 50px;
 }
 
 .changeLanguageButton {

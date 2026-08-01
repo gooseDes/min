@@ -1,13 +1,14 @@
 import Translation from "@/translation";
 import ClickableProfile from "@components/ClickableProfile";
+import IconButton from "@components/IconButton";
 import LeftPart from "@components/LeftPart";
 import RightPart from "@components/RightPart";
-import { faArrowLeft, faCog, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCog, faListUl, faSliders } from "@fortawesome/free-solid-svg-icons";
 import useNavigation from "@hooks/useNavigation";
 import useTranslation from "@hooks/useTranslation";
 import { openDropdown } from "@services/dropdownService";
 import { AnimatePresence, motion, type TargetAndTransition } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./SettingsPage.module.scss";
 
 export type SettingsTab = "none" | "general";
@@ -24,16 +25,21 @@ function SettingsPage() {
 
     const [currentTab, setCurrentTab] = useState<SettingsTab>("none");
 
+    const leftPartRef = useRef<HTMLDivElement>(null);
+
     return (
         <div className={styles.main}>
-            <LeftPart headerIcon={faCog} headerTitle={t.settings}>
+            <LeftPart headerIcon={faCog} headerTitle={t.settings} ref={leftPartRef}>
                 {tabs.map(tab => (
                     <ClickableProfile
                         key={tab}
                         icon={faSliders}
                         text={t[`settings_${tab}` as keyof typeof t]}
                         isInList
-                        onClick={() => setCurrentTab(tab)}
+                        onClick={() => {
+                            setCurrentTab(tab);
+                            leftPartRef.current?.classList.add(styles.mobileHidden);
+                        }}
                     />
                 ))}
                 <div style={{ flex: 1 }} />
@@ -48,11 +54,18 @@ function SettingsPage() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                         >
+                            <IconButton
+                                icon={faListUl}
+                                size={24}
+                                className={styles.closeButton}
+                                onClick={() => leftPartRef.current?.classList.remove(styles.mobileHidden)}
+                            />
                             <AnimatePresence mode="wait">
                                 <motion.h1 initial={motionInitial} animate={motionAnimate} exit={motionExit} key={currentTab}>
                                     {t[`settings_${currentTab}` as keyof typeof t]}
                                 </motion.h1>
                             </AnimatePresence>
+                            <div className={styles.closeButton} />
                         </motion.div>
                     )
                 }

@@ -15,10 +15,12 @@ function EditProfileButton(props: EditProfileButtonProps) {
 
     return (
         <AnimatedIconButton
-            onClick={() => {
-                setState(prev => !prev);
-                setIsActive(prev => !prev);
-            }}
+            onClick={() =>
+                setState(prev => {
+                    setIsActive(!prev);
+                    return !prev;
+                })
+            }
             className={styles.iconButton}
             icon={isActive ? faCheck : faPencil}
             size={24}

@@ -196,3 +196,17 @@ button {
     border: none;
     box-shadow: none;
 }
+
+.mobileHidden {
+    @include mobile {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.desktopHidden {
+    @include desktop {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
