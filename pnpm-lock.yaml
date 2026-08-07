@@ -77,7 +77,7 @@ importers:
         version: 3.3.1(@fortawesome/fontawesome-svg-core@7.3.0)(react@19.2.7)
       '@min/api-client':
         specifier: github:gooseDes/min-node-api-client#build
-        version: https://codeload.github.com/gooseDes/min-node-api-client/tar.gz/7ea66c7c3f7c47f94b9c31c0090791f8723d9da1
+        version: https://codeload.github.com/gooseDes/min-node-api-client/tar.gz/db97d854d4e11af1549a5a73437d31a3e463f6a0
       '@tauri-apps/api':
         specifier: ^2.11.1
         version: 2.11.1
@@ -508,8 +508,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@min/api-client@https://codeload.github.com/gooseDes/min-node-api-client/tar.gz/7ea66c7c3f7c47f94b9c31c0090791f8723d9da1':
-    resolution: {gitHosted: true, integrity: sha512-jlt8mgMOx8W4tpKWkO66D5sX6vphiZC5zleSQAJcw5RjTaZfxDw7lOiPnIHrXWtiLH1UIbNbEu+4tqQ8fquVqg==, tarball: https://codeload.github.com/gooseDes/min-node-api-client/tar.gz/7ea66c7c3f7c47f94b9c31c0090791f8723d9da1}
+  '@min/api-client@https://codeload.github.com/gooseDes/min-node-api-client/tar.gz/db97d854d4e11af1549a5a73437d31a3e463f6a0':
+    resolution: {gitHosted: true, integrity: sha512-Q27zfzMcf7IlJW4gqLnbhV4oDVlccYpmnstNcZCmC+udY81X6rZHqfWcF1bGMixF/NH+FtOXmAE7+UlaBNzKhw==, tarball: https://codeload.github.com/gooseDes/min-node-api-client/tar.gz/db97d854d4e11af1549a5a73437d31a3e463f6a0}
     version: 1.0.0
 
   '@napi-rs/wasm-runtime@1.1.6':
@@ -2323,7 +2323,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@min/api-client@https://codeload.github.com/gooseDes/min-node-api-client/tar.gz/7ea66c7c3f7c47f94b9c31c0090791f8723d9da1':
+  '@min/api-client@https://codeload.github.com/gooseDes/min-node-api-client/tar.gz/db97d854d4e11af1549a5a73437d31a3e463f6a0':
     dependencies:
       socket.io-client: 4.8.3
     transitivePeerDependencies:
