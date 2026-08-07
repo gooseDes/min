@@ -1,57 +1,58 @@
 name: Build TypeScript and Publish to Branch
 on:
-    push:
-        branches:
-            - release
+  push:
+    branches:
+      - release
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-        steps:
-            - name: Checkout Source Code
-              uses: actions/checkout@v4
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-            - name: Setup Node.js Environment
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "20"
-                  cache: "npm"
+      - name: Setup Node.js Environment
+        uses: pnpm/setup@v2
+        with:
+          version: 11
+          runtime: node@22
+          cache: true
 
-            - name: Install Dependencies
-              run: npm ci
+      - name: Install Dependencies
+        run: pnpm ci
 
-            - name: Run Tests
-              run: npm test
+      - name: Run Tests
+        run: pnpm test
 
-            - name: Compile TypeScript
-              run: npm run build
+      - name: Compile TypeScript
+        run: pnpm run build
 
-            - name: Prepare publish directory
-              run: |
-                  mkdir -p publish
+      - name: Prepare publish directory
+        run: |
+          mkdir -p publish
 
-                  cp -r dist/* publish/
+          cp -r dist/* publish/
 
-                  node -e "
-                    const pkg = require('./package.json');
-                    delete pkg.devDependencies;
-                    delete pkg.scripts;
-                    pkg.main = pkg.main?.replace('dist/', '') ?? 'index.js';
-                    pkg.types = pkg.types?.replace('dist/', '') ?? 'index.d.ts';
-                    pkg.files = ['./*'];
-                    if (pkg.exports) {
-                      const raw = JSON.stringify(pkg.exports);
-                      pkg.exports = JSON.parse(raw.replace(/dist\//g, ''));
-                    }
-                    require('fs').writeFileSync('publish/package.json', JSON.stringify(pkg, null, 2));
-                  "
+          node -e "
+            const pkg = require('./package.json');
+            delete pkg.devDependencies;
+            delete pkg.scripts;
+            pkg.main = pkg.main?.replace('dist/', '') ?? 'index.js';
+            pkg.types = pkg.types?.replace('dist/', '') ?? 'index.d.ts';
+            pkg.files = ['./*'];
+            if (pkg.exports) {
+              const raw = JSON.stringify(pkg.exports);
+              pkg.exports = JSON.parse(raw.replace(/dist\//g, ''));
+            }
+            require('fs').writeFileSync('publish/package.json', JSON.stringify(pkg, null, 2));
+          "
 
-                  [ -f LICENSE ]   && cp LICENSE   publish/
+          [ -f LICENSE ]   && cp LICENSE   publish/
 
-            - name: Deploy Build to Target Branch
-              uses: JamesIves/github-pages-deploy-action@v4
-              with:
-                  branch: build
-                  folder: publish
-                  clean: true
+      - name: Deploy Build to Target Branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: build
+          folder: publish
+          clean: true

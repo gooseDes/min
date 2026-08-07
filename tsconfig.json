@@ -1,19 +1,19 @@
 {
-    "compilerOptions": {
-        "target": "ES2019",
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "esModuleInterop": true,
-        "declaration": true,
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "strict": true,
-        "types": ["node"],
-        "paths": {
-            "@/*": ["./src/*"],
-            "@tests/*": ["./src/__tests__/*"],
-            "@mocks/*": ["./src/__mocks__/*"],
-        },
-    },
-    "include": ["src"],
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "types": ["node"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@tests/*": ["./src/__tests__/*"],
+      "@mocks/*": ["./src/__mocks__/*"]
+    }
+  },
+  "include": ["src"]
 }

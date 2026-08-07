@@ -6,10 +6,10 @@ import { RNFile } from "./types";
  * @returns The corresponding Date object.
  */
 export function toDate(time: string | number): Date {
-    if (typeof time === "number") {
-        return new Date(time * 1000);
-    }
-    return new Date(time);
+  if (typeof time === "number") {
+    return new Date(time * 1000);
+  }
+  return new Date(time);
 }
 
 /**
@@ -20,27 +20,27 @@ export function toDate(time: string | number): Date {
  * @returns The localized string representation of the date.
  */
 export function dateToString(date: Date, format: Intl.LocalesArgument, force24Hour: boolean): string {
-    const now = new Date(Date.now());
+  const now = new Date(Date.now());
 
-    const time = date.toLocaleTimeString(format, {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: force24Hour ? false : undefined,
-    });
+  const time = date.toLocaleTimeString(format, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: force24Hour ? false : undefined,
+  });
 
-    // Show only time for today, otherwise show date
-    if (date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
-        return time;
-    } else {
-        if (
-            date.getDate() === now.getDate() - 1 &&
-            date.getMonth() === now.getMonth() &&
-            date.getFullYear() === now.getFullYear()
-        ) {
-            return `Yesterday, ${time}`;
-        }
-        return `${date.toLocaleDateString(format, { month: "short", day: "numeric" })}, ${time}`;
+  // Show only time for today, otherwise show date
+  if (date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
+    return time;
+  } else {
+    if (
+      date.getDate() === now.getDate() - 1 &&
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear()
+    ) {
+      return `Yesterday, ${time}`;
     }
+    return `${date.toLocaleDateString(format, { month: "short", day: "numeric" })}, ${time}`;
+  }
 }
 
 /**
@@ -49,16 +49,16 @@ export function dateToString(date: Date, format: Intl.LocalesArgument, force24Ho
  * @returns converted image.
  */
 export async function RNImageToBlob(image: RNFile): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.onload = () => {
-            resolve(xhr.response);
-        };
-        xhr.onerror = () => {
-            reject(new Error("Error while converting image to blob"));
-        };
-        xhr.responseType = "blob";
-        xhr.open("GET", image.uri, true);
-        xhr.send(null);
-    });
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+      resolve(xhr.response);
+    };
+    xhr.onerror = () => {
+      reject(new Error("Error while converting image to blob"));
+    };
+    xhr.responseType = "blob";
+    xhr.open("GET", image.uri, true);
+    xhr.send(null);
+  });
 }
