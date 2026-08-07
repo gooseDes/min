@@ -2,3 +2,4 @@ node_modules
 npm-debug.log
 .git
 gen_push_keys.js
+api.json
