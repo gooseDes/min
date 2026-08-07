@@ -1,14 +1,15 @@
 {
-    "include": ["**/*.ts"],
-    "exclude": ["**/node_modules"],
-    "compilerOptions": {
-        "module": "ESNext",
-        "target": "ES2024",
-        "moduleResolution": "bundler",
-        "esModuleInterop": true,
-        "paths": {
-            "@/*": ["./src/*"],
-            "@lib/*": ["./lib/*"],
-        },
+  "include": ["**/*.ts"],
+  "exclude": ["**/node_modules"],
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES2024",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@lib/*": ["./src/lib/*"],
+      "types/*": ["./src/types/*"],
     },
+  },
 }

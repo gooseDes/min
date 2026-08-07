@@ -142,6 +142,7 @@ vite.config.ts.timestamp-*
 uploads
 temp
 app
+api.json
 
 # Nextcloud things
 .sync_*
