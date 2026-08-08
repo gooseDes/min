@@ -7,30 +7,30 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-    globalIgnores(["dist"]),
-    {
-        files: ["**/*.{ts,tsx}"],
-        extends: [
-            js.configs.recommended,
-            tseslint.configs.recommended,
-            reactHooks.configs.flat.recommended,
-            reactRefresh.configs.vite,
-            eslintConfigPrettier,
-        ],
-        languageOptions: {
-            globals: globals.browser,
-        },
-        rules: {
-            "@typescript-eslint/no-unused-vars": [
-                "error",
-                {
-                    varsIgnorePattern: "^_",
-                    argsIgnorePattern: "^_",
-                    caughtErrorsIgnorePattern: "^_",
-                    destructuredArrayIgnorePattern: "^_",
-                },
-            ],
-            "@typescript-eslint/no-explicit-any": "off",
-        },
+  globalIgnores(["dist"]),
+  {
+    files: ["**/*.{ts,tsx}"],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+      eslintConfigPrettier,
+    ],
+    languageOptions: {
+      globals: globals.browser,
     },
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
 ]);

@@ -28,12 +28,8 @@
           "name": "chat_users_chat_id_chats_id_fk",
           "tableFrom": "chat_users",
           "tableTo": "chats",
-          "columnsFrom": [
-            "chat_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["chat_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -41,12 +37,8 @@
           "name": "chat_users_user_id_users_id_fk",
           "tableFrom": "chat_users",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -54,10 +46,7 @@
       "compositePrimaryKeys": {
         "chat_users_chat_id_user_id_pk": {
           "name": "chat_users_chat_id_user_id_pk",
-          "columns": [
-            "chat_id",
-            "user_id"
-          ]
+          "columns": ["chat_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -94,9 +83,7 @@
       "compositePrimaryKeys": {
         "chats_id": {
           "name": "chats_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -133,12 +120,8 @@
           "name": "emojis_uploader_id_users_id_fk",
           "tableFrom": "emojis",
           "tableTo": "users",
-          "columnsFrom": [
-            "uploader_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["uploader_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -146,9 +129,7 @@
       "compositePrimaryKeys": {
         "emojis_id": {
           "name": "emojis_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -193,12 +174,8 @@
           "name": "fcm_tokens_user_id_users_id_fk",
           "tableFrom": "fcm_tokens",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -206,9 +183,7 @@
       "compositePrimaryKeys": {
         "fcm_tokens_id": {
           "name": "fcm_tokens_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -275,12 +250,8 @@
           "name": "messages_chat_id_chats_id_fk",
           "tableFrom": "messages",
           "tableTo": "chats",
-          "columnsFrom": [
-            "chat_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["chat_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -288,12 +259,8 @@
           "name": "messages_sender_id_users_id_fk",
           "tableFrom": "messages",
           "tableTo": "users",
-          "columnsFrom": [
-            "sender_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sender_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -301,9 +268,7 @@
       "compositePrimaryKeys": {
         "messages_id": {
           "name": "messages_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -348,12 +313,8 @@
           "name": "subscriptions_user_id_users_id_fk",
           "tableFrom": "subscriptions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -361,9 +322,7 @@
       "compositePrimaryKeys": {
         "subscriptions_id": {
           "name": "subscriptions_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -416,12 +375,8 @@
           "name": "turn_keys_chat_id_chats_id_fk",
           "tableFrom": "turn_keys",
           "tableTo": "chats",
-          "columnsFrom": [
-            "chat_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["chat_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -429,9 +384,7 @@
       "compositePrimaryKeys": {
         "turn_keys_id": {
           "name": "turn_keys_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -482,9 +435,7 @@
       "compositePrimaryKeys": {
         "users_id": {
           "name": "users_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},

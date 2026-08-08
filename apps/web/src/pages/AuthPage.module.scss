@@ -1,18 +1,18 @@
 @use "@/index.module.scss" as *;
 
 .contentPanel {
-    @extend .panel;
+  @extend .panel;
 
-    aspect-ratio: 0.5;
+  aspect-ratio: 0.5;
 }
 
 .form {
-    display: flex;
-    flex-direction: column;
-    gap: $padding;
+  display: flex;
+  flex-direction: column;
+  gap: $padding;
 }
 
 .button {
-    width: fit-content;
-    align-self: flex-end;
+  width: fit-content;
+  align-self: flex-end;
 }

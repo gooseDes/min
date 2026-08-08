@@ -8,21 +8,21 @@ import CreateChatButton from "./CreateChatButton";
 import UserPanel from "./UserPanel";
 
 export interface LeftPartProps {
-    onChatClick: (chat: ChatData) => void;
-    ref?: React.RefObject<HTMLDivElement | null>;
+  onChatClick: (chat: ChatData) => void;
+  ref?: React.RefObject<HTMLDivElement | null>;
 }
 
 function HomeLeftPart(props: LeftPartProps) {
-    const { onChatClick, ref } = props;
+  const { onChatClick, ref } = props;
 
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
-    return (
-        <LeftPart headerIcon={faComments} headerTitle={t.chats} ref={ref} outsidePanelChildren={<UserPanel />}>
-            <ChatsContainer onClick={onChatClick} ref={chatsContainerRef} />
-            <CreateChatButton />
-        </LeftPart>
-    );
+  return (
+    <LeftPart headerIcon={faComments} headerTitle={t.chats} ref={ref} outsidePanelChildren={<UserPanel />}>
+      <ChatsContainer onClick={onChatClick} ref={chatsContainerRef} />
+      <CreateChatButton />
+    </LeftPart>
+  );
 }
 
 export default HomeLeftPart;

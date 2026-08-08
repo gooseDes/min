@@ -1,6 +1,9 @@
 allowBuilds:
+  "@firebase/util": true
   "@parcel/watcher": true
+  bcrypt: true
   esbuild: true
+  protobufjs: true
 
 packages:
   - "apps/*"

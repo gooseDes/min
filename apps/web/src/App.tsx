@@ -25,91 +25,91 @@ const HomePage = lazy(() => import("./pages/HomePage"));
 const AuthPage = lazy(() => import("./pages/AuthPage"));
 
 export interface RootLayoutHandle {
-    setIsBlurred: (isBlurred: boolean) => void;
+  setIsBlurred: (isBlurred: boolean) => void;
 }
 
 export interface RootLayoutProps {
-    ref: Ref<RootLayoutHandle>;
+  ref: Ref<RootLayoutHandle>;
 }
 
 function RootLayout(props: RootLayoutProps) {
-    const { ref } = props;
+  const { ref } = props;
 
-    const { changeLanguage } = useTranslation();
-    const [_appState, setAppState] = useLocalStorage("appState");
+  const { changeLanguage } = useTranslation();
+  const [_appState, setAppState] = useLocalStorage("appState");
 
-    const [isBlurred, setIsBlurred] = useState<boolean>(false);
+  const [isBlurred, setIsBlurred] = useState<boolean>(false);
 
-    useImperativeHandle(ref, () => ({
-        setIsBlurred: (isBlurred: boolean) => setIsBlurred(isBlurred),
-    }));
+  useImperativeHandle(ref, () => ({
+    setIsBlurred: (isBlurred: boolean) => setIsBlurred(isBlurred),
+  }));
 
-    useEffect(() => {
-        initSocket();
-        setAppState("normal");
+  useEffect(() => {
+    initSocket();
+    setAppState("normal");
 
-        if (!isTauri() && "serviceWorker" in navigator) {
-            const registerSW = () => {
-                navigator.serviceWorker
-                    .register(`/sw.js?apiUrl=${import.meta.env.MIN_API_URL}`)
-                    .then(reg => {
-                        swRegistration.current = reg;
-                        console.log("Service Worker registered successfully:", reg.scope);
-                    })
-                    .catch(err => console.error("Service Worker registration failed:", err));
-            };
+    if (!isTauri() && "serviceWorker" in navigator) {
+      const registerSW = () => {
+        navigator.serviceWorker
+          .register(`/sw.js?apiUrl=${import.meta.env.MIN_API_URL}`)
+          .then(reg => {
+            swRegistration.current = reg;
+            console.log("Service Worker registered successfully:", reg.scope);
+          })
+          .catch(err => console.error("Service Worker registration failed:", err));
+      };
 
-            if (document.readyState === "complete") {
-                registerSW();
-            } else {
-                window.addEventListener("load", registerSW);
-                return () => window.removeEventListener("load", registerSW);
-            }
-        }
-    }, [setAppState]);
+      if (document.readyState === "complete") {
+        registerSW();
+      } else {
+        window.addEventListener("load", registerSW);
+        return () => window.removeEventListener("load", registerSW);
+      }
+    }
+  }, [setAppState]);
 
-    useEffect(() => {
-        Translation.init();
-        changeLanguage(Translation.lang);
-    }, [changeLanguage]);
+  useEffect(() => {
+    Translation.init();
+    changeLanguage(Translation.lang);
+  }, [changeLanguage]);
 
-    return (
-        <div className="app-container">
-            <main className={styles.appContent}>
-                <LayoutGroup id="layout_group">
-                    <Outlet />
-                    <div className={`${styles.blurrable} ${isBlurred ? styles.blurred : ""}`} />
-                    <MorphThing ref={morphThingRef} />
-                    <ClickInterceptor ref={clickInterceptorRef} />
-                    <Dropdown ref={dropdownRef} />
-                    <CreateChatPopup ref={createChatPopupRef} />
-                    <UserPopup ref={userPopupRef} />
-                </LayoutGroup>
-            </main>
-        </div>
-    );
+  return (
+    <div className="app-container">
+      <main className={styles.appContent}>
+        <LayoutGroup id="layout_group">
+          <Outlet />
+          <div className={`${styles.blurrable} ${isBlurred ? styles.blurred : ""}`} />
+          <MorphThing ref={morphThingRef} />
+          <ClickInterceptor ref={clickInterceptorRef} />
+          <Dropdown ref={dropdownRef} />
+          <CreateChatPopup ref={createChatPopupRef} />
+          <UserPopup ref={userPopupRef} />
+        </LayoutGroup>
+      </main>
+    </div>
+  );
 }
 
 const createRouter = isTauri() ? createHashRouter : createBrowserRouter;
 
 const router = createRouter([
-    {
-        path: "/",
-        element: <RootLayout ref={rootLayoutRef} />,
-        children: [
-            { index: true, element: <HomePage /> },
-            { path: "auth", element: <AuthPage /> },
-            { path: "settings", element: <SettingsPage /> },
-        ],
-    },
+  {
+    path: "/",
+    element: <RootLayout ref={rootLayoutRef} />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: "auth", element: <AuthPage /> },
+      { path: "settings", element: <SettingsPage /> },
+    ],
+  },
 ]);
 
 function App() {
-    return (
-        <TranslationProvider>
-            <RouterProvider router={router} />
-        </TranslationProvider>
-    );
+  return (
+    <TranslationProvider>
+      <RouterProvider router={router} />
+    </TranslationProvider>
+  );
 }
 
 export default App;

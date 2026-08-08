@@ -5,20 +5,20 @@ import { closeUserPopup } from "@services/popupService";
 import styles from "./UserPanelButton.module.scss";
 
 function SettingsButton() {
-    const navigate = useNavigation();
+  const navigate = useNavigation();
 
-    return (
-        <IconButton
-            onClick={() => {
-                navigate("settings");
-                closeUserPopup();
-            }}
-            className={styles.iconButton}
-            icon={faCog}
-            size={24}
-            layoutId="user-panel-settings-button"
-        />
-    );
+  return (
+    <IconButton
+      onClick={() => {
+        navigate("settings");
+        closeUserPopup();
+      }}
+      className={styles.iconButton}
+      icon={faCog}
+      size={24}
+      layoutId="user-panel-settings-button"
+    />
+  );
 }
 
 export default SettingsButton;

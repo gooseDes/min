@@ -14,65 +14,65 @@ import EditableAvatar, { type EditableAvatarRef } from "./EditableAvatar";
 import styles from "./UserPopup.module.scss";
 
 export interface UserPopupProps {
-    ref?: Ref<PopupHandle>;
+  ref?: Ref<PopupHandle>;
 }
 
 function UserPopup(props: UserPopupProps) {
-    const { ref } = props;
+  const { ref } = props;
 
-    const { t } = useTranslation();
-    const [user, setUser] = useLocalStorage("user");
+  const { t } = useTranslation();
+  const [user, setUser] = useLocalStorage("user");
 
-    const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
-    const avatarRef = useRef<EditableAvatarRef>(null);
-    const wasEditingRef = useRef(false);
+  const avatarRef = useRef<EditableAvatarRef>(null);
+  const wasEditingRef = useRef(false);
 
-    useEffect(() => {
-        if (wasEditingRef.current && !isEditMode) {
-            const image = avatarRef.current?.getSelected();
-            if (!image) return;
+  useEffect(() => {
+    if (wasEditingRef.current && !isEditMode) {
+      const image = avatarRef.current?.getSelected();
+      if (!image) return;
 
-            const uploadAvatar = async () => {
-                const res = await apiClient.uploadAvatar(localStorage.getItem("token") ?? "", image);
-                if (res.success) {
-                    setUser(prev => ({ ...prev, avatar: res.avatar }));
-                    avatarRef.current?.clear();
-                } else {
-                    alert(res.message);
-                }
-            };
-
-            uploadAvatar();
+      const uploadAvatar = async () => {
+        const res = await apiClient.uploadAvatar(localStorage.getItem("token") ?? "", image);
+        if (res.success) {
+          setUser(prev => ({ ...prev, avatar: res.avatar }));
+          avatarRef.current?.clear();
+        } else {
+          alert(res.message);
         }
+      };
 
-        wasEditingRef.current = isEditMode;
-    }, [isEditMode, setUser]);
+      uploadAvatar();
+    }
 
-    return (
-        <Popup
-            width={400}
-            height={600}
-            x="left"
-            y="bottom"
-            layoutId="user-panel-container"
-            title={t.profile}
-            icon={faUserCircle}
-            closeCallback={closeUserPopup}
-            ref={ref}
-        >
-            <div className={styles.content}>
-                <div className={styles.buttonsContainer}>
-                    <SettingsButton />
-                    <div style={{ flex: 1 }} />
-                    <EditProfileButton setState={setIsEditMode} />
-                    <SignInButton />
-                </div>
-                <EditableAvatar editable={isEditMode} ref={avatarRef} />
-                <motion.h2 layoutId="user-panel-username">{user.username}</motion.h2>
-            </div>
-        </Popup>
-    );
+    wasEditingRef.current = isEditMode;
+  }, [isEditMode, setUser]);
+
+  return (
+    <Popup
+      width={400}
+      height={600}
+      x="left"
+      y="bottom"
+      layoutId="user-panel-container"
+      title={t.profile}
+      icon={faUserCircle}
+      closeCallback={closeUserPopup}
+      ref={ref}
+    >
+      <div className={styles.content}>
+        <div className={styles.buttonsContainer}>
+          <SettingsButton />
+          <div style={{ flex: 1 }} />
+          <EditProfileButton setState={setIsEditMode} />
+          <SignInButton />
+        </div>
+        <EditableAvatar editable={isEditMode} ref={avatarRef} />
+        <motion.h2 layoutId="user-panel-username">{user.username}</motion.h2>
+      </div>
+    </Popup>
+  );
 }
 
 export default UserPopup;

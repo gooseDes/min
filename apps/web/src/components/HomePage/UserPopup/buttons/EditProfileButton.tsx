@@ -5,27 +5,27 @@ import { useState } from "react";
 import styles from "./UserPanelButton.module.scss";
 
 export interface EditProfileButtonProps {
-    setState: React.Dispatch<React.SetStateAction<boolean>>;
+  setState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function EditProfileButton(props: EditProfileButtonProps) {
-    const { setState } = props;
+  const { setState } = props;
 
-    const [isActive, setIsActive] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(false);
 
-    return (
-        <AnimatedIconButton
-            onClick={() =>
-                setState(prev => {
-                    setIsActive(!prev);
-                    return !prev;
-                })
-            }
-            className={styles.iconButton}
-            icon={isActive ? faCheck : faPencil}
-            size={24}
-        />
-    );
+  return (
+    <AnimatedIconButton
+      onClick={() =>
+        setState(prev => {
+          setIsActive(!prev);
+          return !prev;
+        })
+      }
+      className={styles.iconButton}
+      icon={isActive ? faCheck : faPencil}
+      size={24}
+    />
+  );
 }
 
 export default EditProfileButton;

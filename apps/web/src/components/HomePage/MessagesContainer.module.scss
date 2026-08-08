@@ -2,21 +2,21 @@
 @use "./Message.module.scss" as msg;
 
 .container {
-    flex: 1;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    scrollbar-width: thin;
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    min-height: 0;
-    padding: $padding 0;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  min-height: 0;
+  padding: $padding 0;
 
-    @include mobile {
-        padding: 70px 0;
-    }
+  @include mobile {
+    padding: 70px 0;
+  }
 }
 
 .container > * {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
