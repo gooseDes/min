@@ -1,0 +1,31 @@
+@use "@/index.module.scss" as *;
+
+.container {
+    @extend .panel;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 999px;
+    padding: $padding * 0.5;
+    align-self: center;
+}
+
+.option {
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+.selectIndicator {
+    position: absolute;
+    background-color: #ffffff66;
+    pointer-events: none;
+    z-index: 5;
+    border-radius: 999px;
+}

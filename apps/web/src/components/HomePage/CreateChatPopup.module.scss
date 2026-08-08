@@ -1,0 +1,24 @@
+@use "@/index.module.scss" as *;
+
+.form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: $padding;
+    height: 50px;
+
+    input {
+        height: 100%;
+        width: 100%;
+    }
+
+    button {
+        height: 50px;
+        width: 50px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

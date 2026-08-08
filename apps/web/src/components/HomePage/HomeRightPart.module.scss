@@ -1,0 +1,36 @@
+@use "@/index.module.scss" as *;
+@use "@pages/HomePage.module.scss" as *;
+
+.chatHeaderPanel {
+    @extend .panel;
+
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 1;
+    padding: 0 $padding;
+
+    @include mobile {
+        position: absolute;
+        top: $padding;
+        left: $padding;
+        width: calc(100dvw - $padding * 4);
+        height: 60px;
+        padding: 2.5px;
+    }
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    box-shadow: none;
+    aspect-ratio: 1;
+    height: 50px;
+    display: none;
+
+    @include mobile {
+        display: flex;
+    }
+}

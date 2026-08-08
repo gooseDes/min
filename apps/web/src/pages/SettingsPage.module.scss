@@ -1,0 +1,36 @@
+@use "@/index.module.scss" as *;
+
+.titleContainer {
+    @extend .panel;
+
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.closeButton {
+    @extend .desktopHidden;
+
+    height: 50px;
+    width: 50px;
+}
+
+.changeLanguageButton {
+    @extend .flat;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: $padding * 0.25;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,29 @@
+{
+  "name": "min",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:desktop": "pnpm --filter min-desktop tauri dev",
+    "build:web": "pnpm --filter web build",
+    "build:desktop": "pnpm --filter min-desktop build",
+    "update_api": "pnpm --filter web update_api",
+    "check": "pnpm --filter web check",
+    "deploy": "pnpm --filter web deploy",
+    "release": "git push origin main:release -f"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.4",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "@eslint/js": "^10.0.1",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.59.2",
+    "globals": "^17.6.0",
+    "@types/node": "^24.12.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

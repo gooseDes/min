@@ -1,0 +1,48 @@
+@use "@/index.module.scss" as *;
+
+.container {
+    @extend .panel;
+
+    position: absolute;
+    align-self: center;
+    max-width: calc(100% - $padding * 2);
+    max-height: calc(100% - $padding * 2);
+    z-index: 100;
+
+    @include mobile {
+        width: 100% !important;
+        height: 100% !important;
+        left: $padding !important;
+        top: $padding !important;
+    }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    height: 60px;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+    gap: $padding;
+
+    p {
+        margin: 0;
+        font-weight: normal;
+    }
+}
+
+.closeButton {
+    position: absolute;
+    top: $padding;
+    left: $padding;
+    height: 60px;
+    width: 60px;
+}

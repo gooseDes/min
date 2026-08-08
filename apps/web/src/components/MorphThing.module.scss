@@ -1,0 +1,10 @@
+@use "@/index.module.scss";
+
+.container {
+    pointer-events: none;
+    position: absolute;
+    z-index: 100;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}

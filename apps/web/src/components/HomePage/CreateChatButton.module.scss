@@ -1,0 +1,15 @@
+@use "@/index.module.scss" as *;
+
+.button {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 30px;
+    color: $primary-color;
+
+    @include mobile {
+        bottom: 80px;
+    }
+}

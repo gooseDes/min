@@ -1,0 +1,8 @@
+@use "@/index.module.scss" as *;
+
+.divider {
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    background-color: $divider-color;
+}

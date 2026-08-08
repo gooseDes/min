@@ -1,0 +1,19 @@
+{
+  "name": "min-desktop",
+  "private": true,
+  "version": "0.21.0",
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri",
+    "build": "NO_STRIP=1 tauri build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.3"
+  }
+}

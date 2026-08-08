@@ -1,0 +1,32 @@
+[package]
+name = "min-desktop"
+version = "0.1.0"
+description = "The best messenger in the world (no)"
+authors = ["you"]
+edition = "2021"
+
+[lib]
+name = "desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["devtools", "tray-icon", "image-png"] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri-plugin-notification = "2.3.3"
+tauri-plugin-http = "2.5.9"
+tauri-plugin-fs = "2.5.1"
+tauri-plugin-process = "2.3.1"
+tauri-plugin-updater = "2.10.1"
+tauri-plugin-single-instance = "2.4.2"
+tauri-plugin-autostart = "2"
+which = "8.0.4"
+reqwest = { version = "0.13.4", features = ["json"] }
+semver = "1.0.28"
+futures-util = "0.3.32"
+tauri-plugin-dialog = "2.7.1"
+tokio = "1.52.3"

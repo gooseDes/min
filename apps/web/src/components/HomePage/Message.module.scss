@@ -1,0 +1,89 @@
+@use "@/index.module.scss" as *;
+
+.container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: $padding * 0.5;
+    opacity: 0;
+    padding: $padding * 0.1;
+    margin: 0;
+}
+
+.message {
+    @extend .panel;
+
+    min-width: 100px;
+    max-width: 90%;
+    overflow: hidden;
+    gap: 0;
+}
+
+.containerLeft {
+    align-items: flex-start;
+}
+
+.containerRight {
+    align-items: flex-end;
+}
+
+.left {
+    border-radius: 0 $border-radius $border-radius $border-radius;
+}
+
+.right {
+    border-radius: $border-radius 0 $border-radius $border-radius;
+}
+
+.senderName {
+    color: $secondary-color;
+    font-size: $font-size-small;
+    margin: 0;
+    padding: 0;
+    margin-bottom: $padding * 0.5;
+}
+
+.text {
+    overflow-wrap: break-word;
+    font-size: $font-size-base;
+}
+
+.sentAt {
+    @extend .senderName;
+
+    margin-top: $padding * 0.5;
+    text-align: right;
+    font-size: $font-size-smallest;
+}
+
+.senderAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.replyContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+    font-size: $font-size-small;
+    color: $secondary-color;
+    padding: 0;
+    margin: 0;
+    margin-bottom: $padding * 0.5;
+
+    * {
+        @extend .secondaryText;
+        color: inherit;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.image {
+    min-width: 100px;
+    max-width: 500px;
+    border-radius: $border-radius;
+}

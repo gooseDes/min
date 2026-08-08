@@ -1,0 +1,53 @@
+@use "@/index.module.scss" as *;
+@use "sass:math";
+
+.container {
+    height: 50px;
+    padding: $padding;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: math.div($padding, 2);
+    border-radius: $border-radius;
+    background: none;
+    border: none;
+    box-shadow: none;
+    will-change: transform;
+    text-rendering: geometricPrecision;
+    transition:
+        background-color 0.25s ease,
+        margin-left 0.25s ease;
+
+    &:hover {
+        background-color: $ripple-color;
+
+        p {
+            color: $primary-color;
+        }
+    }
+
+    p {
+        margin: 0;
+        color: $primary-color;
+        transition: color 0.25s ease;
+    }
+
+    img {
+        margin: 0;
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+}
+
+.listItem {
+    p {
+        color: $secondary-color;
+    }
+
+    &:hover {
+        margin-left: 10px;
+    }
+}
