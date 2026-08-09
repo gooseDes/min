@@ -57,15 +57,32 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install Monorepo Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy Standalone Backend Files
+        run: pnpm --filter=backend deploy dist/backend
+
       - name: Create .env file
         run: |
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-          echo "DB_HOST=localhost" >> .env
-          echo "VAPID_PUBLIC=${{ secrets.VAPID_PUBLIC }}" >> .env
-          echo "VAPID_PRIVATE=${{ secrets.VAPID_PRIVATE }}" >> .env
-          echo "METERED_DOMAIN=${{ secrets.METERED_DOMAIN }}" >> .env
-          echo "METERED_SECRET=${{ secrets.METERED_SECRET }}" >> .env
-          echo "FIREBASE_SERVICE_ACCOUNT=${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> dist/backend/.env
+          echo "DB_HOST=localhost" >> dist/backend/.env
+          echo "VAPID_PUBLIC=${{ secrets.VAPID_PUBLIC }}" >> dist/backend/.env
+          echo "VAPID_PRIVATE=${{ secrets.VAPID_PRIVATE }}" >> dist/backend/.env
+          echo "METERED_DOMAIN=${{ secrets.METERED_DOMAIN }}" >> dist/backend/.env
+          echo "METERED_SECRET=${{ secrets.METERED_SECRET }}" >> dist/backend/.env
+          echo "FIREBASE_SERVICE_ACCOUNT=${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" >> dist/backend/.env
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
