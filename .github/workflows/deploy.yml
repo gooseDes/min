@@ -25,7 +25,6 @@ jobs:
           BEFORE=${{ github.event.before }}
           AFTER=${{ github.sha }}
 
-          # Если ветка создана впервые (before == 0…0), считаем, что все файлы новые.
           if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
             echo "First push to this branch — treating all apps as changed."
             echo "backend_changed=true" >> $GITHUB_OUTPUT
@@ -34,7 +33,6 @@ jobs:
             exit 0
           fi
 
-          # Проверка изменения версии в каждом файле
           if git diff $BEFORE $AFTER -U0 -- apps/backend/package.json | grep -E "^\+\s*\"version\""; then
             echo "backend_changed=true" >> $GITHUB_OUTPUT
           fi
@@ -84,7 +82,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./apps/backend
+          context: .
+          file: apps/backend/Dockerfile
           push: true
           tags: ghcr.io/${{ steps.string.outputs.repo_lc }}:latest
 
@@ -137,8 +136,9 @@ jobs:
 
       - name: Get Version
         id: version
+        shell: bash
         run: |
-          VERSION=$(jq -r '.version' apps/desktop/package.json)
+          VERSION=$(node -p "require('./apps/desktop/package.json').version")
           echo "tag=app-v$VERSION" >> $GITHUB_OUTPUT
 
       - name: create .env
