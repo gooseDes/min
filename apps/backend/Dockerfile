@@ -11,5 +11,8 @@ COPY dist/backend ./
 EXPOSE 5000
 
 ENV NODE_ENV=production
+ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
+ENV PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS=true
+ENV CI=true
 
 CMD [ "pnpm", "exec", "tsx", "--env-file=.env", "src/main.ts" ]
