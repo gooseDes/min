@@ -1,15 +1,20 @@
 FROM node:22-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+
+# Решение проблемы ECONNRESET:
+# Ставим pnpm глобально напрямую. Он будет "зашит" в образ,
+# и Corepack не будет пытаться ничего качать при старте контейнера.
+RUN npm install -g pnpm@11.21.0
+
 WORKDIR /app
 
 FROM base AS deps
-COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/backend/package.json ./apps/backend/package.json
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-RUN pnpm approve-builds --yes
+RUN pnpm config set strict-dep-builds false || true
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 FROM base AS runner
 ENV NODE_ENV=production
@@ -23,4 +28,5 @@ COPY apps/backend ./apps/backend
 WORKDIR /app/apps/backend
 
 EXPOSE 5000
+
 CMD [ "pnpm", "run", "start" ]
