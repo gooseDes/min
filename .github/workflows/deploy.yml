@@ -72,7 +72,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Deploy Standalone Backend Files
-        run: pnpm --filter=backend deploy dist/backend
+        run: pnpm --filter=backend deploy dist/backend --legacy
 
       - name: Create .env file
         run: |
