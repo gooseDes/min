@@ -68,7 +68,7 @@ async fn check_for_updates(app: AppHandle) -> Result<(), Box<dyn std::error::Err
                 .build()?;
 
             let release: Release = client
-                .get("https://api.github.com/repos/gooseDes/min-web/releases/latest")
+                .get("https://api.github.com/repos/gooseDes/min/releases/latest")
                 .send()
                 .await?
                 .json()
