@@ -1,0 +1,228 @@
+name: Conditional Deploy
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  # Check for version changes in package.json and set outputs
+  check-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      backend_changed: ${{ steps.check.outputs.backend_changed }}
+      web_changed: ${{ steps.check.outputs.web_changed }}
+      desktop_changed: ${{ steps.check.outputs.desktop_changed }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Check package.json versions
+        id: check
+        run: |
+          BEFORE=${{ github.event.before }}
+          AFTER=${{ github.sha }}
+
+          # Если ветка создана впервые (before == 0…0), считаем, что все файлы новые.
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "First push to this branch — treating all apps as changed."
+            echo "backend_changed=true" >> $GITHUB_OUTPUT
+            echo "web_changed=true" >> $GITHUB_OUTPUT
+            echo "desktop_changed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Проверка изменения версии в каждом файле
+          if git diff $BEFORE $AFTER -U0 -- apps/backend/package.json | grep -E "^\+\s*\"version\""; then
+            echo "backend_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+          if git diff $BEFORE $AFTER -U0 -- apps/web/package.json | grep -E "^\+\s*\"version\""; then
+            echo "web_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+          if git diff $BEFORE $AFTER -U0 -- apps/desktop/package.json | grep -E "^\+\s*\"version\""; then
+            echo "desktop_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+  # Backend deployment
+  deploy-backend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: check-versions
+    if: needs.check-versions.outputs.backend_changed == 'true'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Create .env file
+        run: |
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "DB_HOST=localhost" >> .env
+          echo "VAPID_PUBLIC=${{ secrets.VAPID_PUBLIC }}" >> .env
+          echo "VAPID_PRIVATE=${{ secrets.VAPID_PRIVATE }}" >> .env
+          echo "METERED_DOMAIN=${{ secrets.METERED_DOMAIN }}" >> .env
+          echo "METERED_SECRET=${{ secrets.METERED_SECRET }}" >> .env
+          echo "FIREBASE_SERVICE_ACCOUNT=${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" >> .env
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lowercase repo path
+        id: string
+        run: |
+          echo "repo_lc=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./apps/backend
+          push: true
+          tags: ghcr.io/${{ steps.string.outputs.repo_lc }}:latest
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Load and run Docker on server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker pull ghcr.io/${{ steps.string.outputs.repo_lc }}:latest
+            docker stop min-container || true
+            docker rm min-container || true
+            mkdir -p ~/min/uploads || true
+            mkdir -p ~/min/logs || true
+            rm -rf ~/min/temp || true
+            mkdir -p ~/min/temp || true
+            docker run -d -p 5000:5000 --name min-container --restart unless-stopped --network host -v ~/min/uploads:/app/uploads -v ~/min/logs:/app/logs ghcr.io/${{ steps.string.outputs.repo_lc }}:latest
+            docker rmi $(docker images -f "dangling=true" -q) || true
+          EOF
+
+  # Desktop deployment
+  deploy-desktop:
+    permissions:
+      contents: write
+    needs: check-versions
+    if: needs.check-versions.outputs.desktop_changed == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "macos-latest"
+            args: "--target aarch64-apple-darwin"
+          - platform: "macos-latest"
+            args: "--target x86_64-apple-darwin"
+          - platform: "ubuntu-22.04"
+            args: ""
+          - platform: "windows-latest"
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Version
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' apps/desktop/package.json)
+          echo "tag=app-v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: create .env
+        shell: bash
+        run: |
+          printf '%s' "$ENV_FILE" > apps/web/.env
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
+
+      - name: install frontend dependencies
+        run: pnpm install
+
+      - uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ steps.version.outputs.tag }}
+          releaseName: "Min Desktop ${{ steps.version.outputs.tag }}"
+          generateReleaseNotes: true
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
+          projectPath: "./apps/desktop"
+          buildScriptName: "build"
+          includeUpdaterJson: true
+
+      - name: Build and Upload Arch Linux Package (.pkg.tar.zst)
+        if: matrix.platform == 'ubuntu-22.04'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          VERSION="${TAG#app-v}"
+
+          mkdir -p arch-build
+          cp PKGBUILD arch-build/
+
+          DEB_PATH=$(ls apps/desktop/src-tauri/target/release/bundle/deb/*.deb | head -n 1)
+          DEB_NAME=$(basename "$DEB_PATH")
+          cp "$DEB_PATH" arch-build/
+
+          sed -i "s/pkgver=.*/pkgver=$VERSION/" arch-build/PKGBUILD
+          sed -i "s|source=.*|source=(\"$DEB_NAME\")|" arch-build/PKGBUILD
+
+          echo "============ PKGBUILD ============="
+          cat arch-build/PKGBUILD
+          echo "==================================="
+
+          chmod -R o+rwx arch-build
+
+          docker run --rm \
+          -v "$(pwd)/arch-build":/workspace \
+          -w /workspace \
+          archlinux:latest bash -c "
+              pacman -Syu --noconfirm base-devel pacman-contrib
+              useradd -m builder
+              echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+              chown -R builder:builder /workspace
+
+              su builder -c 'updpkgsums && makepkg -sc --noconfirm'
+          "
+
+          gh release upload "$TAG" arch-build/*.pkg.tar.zst

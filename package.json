@@ -3,12 +3,15 @@
   "scripts": {
     "dev:web": "pnpm --filter web dev",
     "dev:desktop": "pnpm --filter min-desktop tauri dev",
+    "dev:backend": "pnpm --filter backend dev",
     "build:web": "pnpm --filter web build",
     "build:desktop": "pnpm --filter min-desktop build",
-    "update_api": "pnpm --filter web update_api",
-    "check": "pnpm --filter web check",
-    "deploy": "pnpm --filter web deploy",
-    "release": "git push origin main:release -f"
+    "update_api:web": "pnpm --filter web update_api",
+    "check:web": "pnpm --filter web check",
+    "deploy:web": "pnpm --filter web deploy",
+    "release": "git push origin main:release -f",
+    "db:backend": "pnpm --filter backend db",
+    "gen_json:backend": "pnpm --filter backend gen_json"
   },
   "devDependencies": {
     "prettier": "^3.8.4",
