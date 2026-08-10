@@ -245,3 +245,47 @@ jobs:
           "
 
           gh release upload "$TAG" arch-build/*.pkg.tar.zst
+
+  deploy-web:
+    permissions:
+      contents: write
+    concurrency:
+      group: github-pages-deploy
+      cancel-in-progress: true
+
+    needs: check-versions
+    if: needs.check-versions.outputs.web_changed == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: create .env
+        run: |
+          echo "MIN_API_URL=${{ secrets.API_URL }}" > apps/web/.env
+          echo "MIN_VAPID_PUBLIC=${{ secrets.VAPID_PUBLIC }}" >> apps/web/.env
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: install dependencies
+        run: pnpm install
+
+      - name: build
+        run: pnpm run build:web
+
+      - name: deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: apps/web/dist
