@@ -35,7 +35,7 @@
   "plugins": {
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgxMUQ2NUM5ODBFRTIwNjkKUldScElPNkF5V1VkZ2RTRTZFVmx5SVBhNVZ3cFRxSUZXQkVMSkJITjAvSnBTRW1ZOHU0aHQ2bE8K",
-      "endpoints": ["https://github.com/gooseDes/min-web/releases/latest/download/latest.json"]
+      "endpoints": ["https://github.com/gooseDes/min/releases/latest/download/latest.json"]
     }
   }
 }
