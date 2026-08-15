@@ -1,0 +1,57 @@
+{
+  "name": "@min/api-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && rm dist/apiSchemas.*",
+    "dev": "tsc --watch",
+    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' jest",
+    "release": "git push origin main:release -f",
+    "compile": "node src/jsonCompiler.mts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gooseDes/min-node-api-client.git"
+  },
+  "keywords": [],
+  "author": "gooseDes",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gooseDes/min-node-api-client/issues"
+  },
+  "homepage": "https://github.com/gooseDes/min-node-api-client#readme",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@mswjs/socket.io-binding": "^0.2.0",
+    "@types/node": "^25.9.1",
+    "eslint": "^10.4.1",
+    "jest": "^30.4.2",
+    "json-schema-to-zod": "^2.8.1",
+    "msw": "^2.14.6",
+    "prettier": "^3.8.3",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "ts-jest": "^29.4.11",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.0",
+    "zod": "^4.4.3"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.3"
+  }
+}
