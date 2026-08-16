@@ -1,7 +1,7 @@
 import LeftPart from "@components/LeftPart";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
 import useTranslation from "@hooks/useTranslation";
-import type { ChatData } from "@min/api-client";
+import type { ChatData } from "@min/api";
 import { chatsContainerRef } from "@services/appControlService";
 import ChatsContainer from "./ChatsContainer";
 import CreateChatButton from "./CreateChatButton";

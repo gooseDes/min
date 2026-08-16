@@ -3,7 +3,7 @@ import { setCurrentAppState } from "@/utils";
 import HomeLeftPart from "@components/HomePage/HomeLeftPart";
 import HomeRightPart from "@components/HomePage/HomeRightPart";
 import useLocalStorage from "@hooks/useLocalStorage";
-import type { ChatData } from "@min/api-client";
+import type { ChatData } from "@min/api";
 import { messagesContainerRef, setChatsInContainer } from "@services/appControlService";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./HomePage.module.scss";

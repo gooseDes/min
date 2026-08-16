@@ -68,7 +68,9 @@ app.use(
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-webpush.setVapidDetails(`mailto:${process.env.EMAIL}`, process.env.VAPID_PUBLIC, process.env.VAPID_PRIVATE);
+if (process.env.VAPID_PUBLIC && process.env.VAPID_PRIVATE)
+  webpush.setVapidDetails(`mailto:${process.env.EMAIL}`, process.env.VAPID_PUBLIC, process.env.VAPID_PRIVATE);
+else logger.warn("VAPID_PUBLIC and VAPID_PRIVATE are not set, webpushes will not work.");
 
 // Creating folder for uploads and avatars
 const uploadsDir = "uploads";
@@ -133,7 +135,7 @@ function authMiddleware(req: AuthRequest, res: Response, next: () => void) {
     req.userId = decoded.id;
     req.userName = decoded.name;
     next();
-  } catch (err) {
+  } catch (_err) {
     return res.status(403).json({ error: "Invalid Token" });
   }
 }
@@ -144,6 +146,7 @@ app.post("/upload-avatar", authMiddleware, upload.single("avatar"), async (req: 
     if (!req.file) return res.status(400).json({ success: false, msg: "File is not loaded" });
 
     const userId = req.userId;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
     const suffix = Math.round(Date.now() / 1000);
     const outPath = path.join(avatarsDir, `${userId}_${suffix}.webp`);
 
@@ -162,7 +165,9 @@ app.post("/upload-avatar", authMiddleware, upload.single("avatar"), async (req: 
       const oldAvatar = oldAvatarDb.avatar;
       try {
         fs.unlinkSync(path.join(avatarsDir, oldAvatar + ".webp"));
-      } catch (err) {}
+      } catch {
+        // Failed to delete old avatar, ignoring
+      }
     }
 
     await db
@@ -227,7 +232,7 @@ app.post("/attach", authMiddleware, upload.array("attachments", 5), async (req: 
     const imageExts = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tiff"]);
 
     if (!Array.isArray(req.files)) return res.status(400).json({ success: false, msg: "Files are not loaded" });
-    for (let file of req.files) {
+    for (const file of req.files) {
       const ext = path.extname(file.originalname).toLowerCase();
       const isImage = imageExts.has(ext);
       const newFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${isImage ? ".webp" : ext}`;
@@ -283,8 +288,10 @@ app.post("/upload-emoji", authMiddleware, upload.single("emoji"), async (req: Au
     if (!req.file) return res.status(400).json({ success: false, msg: "File is not loaded" });
     const { name } = req.body;
     if (!validateString(name, "username", 1, 32)) return res.status(400).json({ success: false, msg: "Invalid emoji name" });
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const insertedEmoji = await db.insert(emojisTable).values({ name, uploaderId: req.userId }).$returningId();
+    const insertedEmoji = await db.insert(emojisTable).values({ name, uploaderId: userId }).$returningId();
     const outPath = path.join(emojisDir, `${insertedEmoji[0].id}.webp`);
 
     // Converting and resizing image
@@ -337,7 +344,7 @@ app.post("/register", async (req, res) => {
       logger.info(`${formatUser({ id: inserted[0].id, name: username })} just created an account!`);
       return res.json({ id: inserted[0].id, token: token });
     });
-  } catch (err) {
+  } catch (_err) {
     logger.error(`Unexpected error happend while registering user account with data ${objectToJson(req.body)}`);
     return res.status(400).json({ msg: "Unexpected error while registering" });
   }
@@ -365,7 +372,7 @@ app.post("/login", async (req, res) => {
       }
       return res.json({ token: token, username: user.name, id: user.id });
     });
-  } catch (err) {
+  } catch (_err) {
     logger.error(`Unexpected error happend while logining user with data ${objectToJson(req.body)}`);
     return res.status(400).json({ msg: "Unexpected error while logining" });
   }
@@ -381,10 +388,10 @@ app.post("/verify", (req, res) => {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       return res.json({ valid: true, user: decoded });
-    } catch (err) {
+    } catch (_err) {
       return res.status(400).json({ valid: false, msg: "Invalid token" });
     }
-  } catch (err) {
+  } catch (_err) {
     return res.status(400).json({ msg: "Unexpected error while verifying" });
   }
 });
@@ -408,7 +415,7 @@ app.post("/subscribe", async (req, res) => {
     if (!contin) return res.status(400).json({ ok: false, msg: "This device has already subscribed" });
     await db.insert(subscriptionsTable).values({ userId: decoded.id, subscription: subscription });
     return res.json({ ok: true });
-  } catch (err) {
+  } catch (_err) {
     logger.error(`Unexpected error happend while subscribing user to push messages with data ${objectToJson(req.body)}`);
     return res.status(400).json({ ok: false, msg: "Unexpected error while subscribing" });
   }

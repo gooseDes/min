@@ -49,7 +49,7 @@ export interface MessageData {
   content: string;
   sentAt: Date;
   isSeen: boolean;
-  seenAt: Date;
+  seenAt: Date | null;
 }
 
 export const messageSchema = z.object({
@@ -59,7 +59,7 @@ export const messageSchema = z.object({
   content: z.string(),
   sentAt: z.date(),
   isSeen: z.boolean(),
-  seenAt: z.date(),
+  seenAt: z.date().nullable(),
 });
 
 export interface MessageDataWithSender extends MessageData {

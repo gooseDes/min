@@ -4,6 +4,8 @@ allowBuilds:
   bcrypt: true
   esbuild: true
   protobufjs: true
+  msw: true
+  unrs-resolver: true
 
 packages:
   - "apps/*"

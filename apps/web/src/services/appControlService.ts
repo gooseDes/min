@@ -1,7 +1,7 @@
 import type { RootLayoutHandle } from "@/App";
 import type { ChatsContainerHandle } from "@components/HomePage/ChatsContainer";
 import type { MessagesContainerHandle } from "@components/HomePage/MessagesContainer";
-import type { ChatData } from "@min/api-client";
+import type { ChatData } from "@min/api";
 import React from "react";
 
 // RootLayout

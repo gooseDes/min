@@ -7,7 +7,8 @@
     "db": "node show_tables.js",
     "start": "NODE_ENV=production pnpm exec tsx --env-file .env src/main.ts",
     "gen_json": "CREATE_API_DESCRIPTION=true pnpm exec tsx --env-file .env src/main.ts",
-    "dev": "pnpm exec tsx --env-file .env --watch src/main.ts"
+    "dev": "pnpm exec tsx --env-file .env --watch src/main.ts",
+    "migrate": "pnpm drizzle-kit generate"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 import useLocalStorage from "@hooks/useLocalStorage";
-import type { ChatData } from "@min/api-client";
+import type { ChatData } from "@min/api";
 import { stagger, useAnimate } from "framer-motion";
 import { useImperativeHandle, useState, type MouseEvent, type Ref } from "react";
 import { flushSync } from "react-dom";

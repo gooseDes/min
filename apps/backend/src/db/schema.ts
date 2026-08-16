@@ -2,16 +2,16 @@ import { boolean, int, json, mysqlEnum, mysqlTable, primaryKey, text, timestamp,
 
 export const usersTable = mysqlTable("users", {
   id: int("id").primaryKey().autoincrement(),
-  name: varchar("name", { length: 64 }),
-  email: varchar("email", { length: 64 }),
-  password: varchar("password", { length: 64 }),
-  avatar: varchar("avatar", { length: 64 }).default("replace"),
+  name: varchar("name", { length: 64 }).notNull(),
+  email: varchar("email", { length: 64 }).notNull(),
+  password: varchar("password", { length: 64 }).notNull(),
+  avatar: varchar("avatar", { length: 64 }).notNull().default("replace"),
 });
 
 export const chatsTable = mysqlTable("chats", {
   id: int("id").primaryKey().autoincrement(),
   type: mysqlEnum("type", ["private", "group"]).default("group"),
-  name: varchar("name", { length: 64 }),
+  name: varchar("name", { length: 64 }).notNull(),
 });
 
 export const chatUsersTable = mysqlTable(
@@ -36,8 +36,8 @@ export const messagesTable = mysqlTable("messages", {
     .notNull()
     .references(() => usersTable.id),
   content: text("content").notNull(),
-  sentAt: timestamp("sent_at").defaultNow(),
-  seen: boolean("seen").default(false),
+  sentAt: timestamp("sent_at").notNull().defaultNow(),
+  seen: boolean("seen").notNull().default(false),
   seenAt: timestamp("seen_at"),
 });
 

@@ -1,13 +1,14 @@
 import { db } from "@/db";
 import { chatUsersTable, usersTable } from "@/db/schema";
 import { JWT_SECRET, origins } from "@/shared";
-import { TokenPayload } from "@/types/auth";
+import { SocketUser, TokenPayload } from "@/types/auth";
 import { eq } from "drizzle-orm";
 import { IncomingMessage, Server, ServerResponse } from "http";
 import jwt from "jsonwebtoken";
 import { Logger } from "pino";
 import * as SocketIO from "socket.io";
 import z from "zod";
+import { formatUser } from "./utils";
 
 export type FailedHandler = { success: false; message: string };
 
@@ -20,6 +21,8 @@ interface Endpoint {
   ) => z.infer<z.ZodObject> | FailedHandler | Promise<z.infer<z.ZodObject> | FailedHandler>;
 }
 export type EndpointRegistry = Record<string, Endpoint>;
+
+type SocketWithUser = SocketIO.Socket & { user: SocketUser };
 
 class ApiDescriptor {
   public io: SocketIO.Server;
@@ -62,14 +65,14 @@ class ApiDescriptor {
         });
         socket.join("chat:1");
         next();
-      } catch (err) {
+      } catch (_err) {
         return next(new Error("Invalid token (╯°□°）╯︵ ┻━┻"));
       }
     });
 
     this.io.on("connection", socket => {
       Object.keys(this.registry).forEach(name => {
-        const { inputSchema, outputSchema, handler } = this.registry[name];
+        const { inputSchema, outputSchema: _outputSchema, handler } = this.registry[name];
         socket.on(name, async (data: any) => {
           const requestId = data?.requestId;
           const parsed = inputSchema.safeParse(data);
@@ -82,13 +85,13 @@ class ApiDescriptor {
                 socket.emit(name, { success: true, ...(requestId ? { ...result, requestId } : result) });
               }
             } catch (error) {
-              const msg = `Caught error in ${name}: ${error.message}`;
-              socket.emit(name, { success: false, message: msg });
-              this.logger.error(msg);
+              const errorMsg = error instanceof Error ? error.message : String(error);
+              socket.emit(name, { success: false, message: `Caught error in ${name}: ${errorMsg}` });
+              this.logger.error(`Caught error in ${name} requested by ${formatUser(socket.user)}: ${errorMsg}`);
             }
           } else {
             socket.emit(name, { success: false, message: `Invalid input data: ${parsed.error.message}` });
-            console.log(parsed.error.message);
+            this.logger.error(`Invalid input data in ${name} requested by ${formatUser(socket.user)}: ${parsed.error.message}`);
           }
         });
       });
@@ -100,11 +103,11 @@ class ApiDescriptor {
     inputSchema: InSchema,
     outputSchema: OutSchema,
     handler: (
-      socket: SocketIO.Socket,
+      socket: SocketWithUser,
       data: z.infer<InSchema>,
     ) => z.infer<OutSchema> | FailedHandler | Promise<z.infer<OutSchema> | FailedHandler>,
   ) {
-    this.registry[name] = { inputSchema, outputSchema, handler };
+    this.registry[name] = { inputSchema, outputSchema, handler: handler as Endpoint["handler"] };
   }
 }
 

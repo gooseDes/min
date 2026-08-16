@@ -28,7 +28,7 @@ import {
   userSchema,
 } from "./types/api";
 
-function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof ServerResponse>, logger: Logger, turn: Turn) {
+function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof ServerResponse>, logger: Logger, _turn: Turn) {
   const api = new ApiDescriptor(server, logger);
 
   api.addEndpoint("sendMessage", z.object({ content: z.string(), chatId: z.uint32() }), z.object({}), async (socket, data) => {
@@ -40,13 +40,14 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
     const inserted_data = await db.query.messagesTable.findFirst({
       where: eq(messagesTable.id, inserted[0].id),
     });
+    if (!inserted_data) return fail("Failed to save message");
 
     // Getting avatar
     const avatar = await db.query.usersTable.findFirst({
       where: eq(usersTable.id, socket.user.id),
       columns: { avatar: true },
     });
-    const author_avatar = avatar?.avatar || null;
+    const author_avatar = avatar?.avatar || "null";
 
     // Sending to everyone
     const to_send: MessageDataWithSender = {
@@ -94,20 +95,13 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
             message: data.content,
             recipient: { id: row.userId },
           });
-          let sentCount = 0;
-
           subscriptions.forEach(sub => {
             try {
               const subscription = jsonToObject(sub.subscription);
-              webpush
-                .sendNotification(subscription, payload)
-                .then(() => {
-                  sentCount++;
-                })
-                .catch(err => {
-                  console.error("Push failed for", subscription.endpoint, err);
-                  db.delete(subscriptionsTable).where(eq(subscriptionsTable.id, sub.id)).execute().catch();
-                });
+              webpush.sendNotification(subscription, payload).catch(err => {
+                console.error("Push failed for", subscription.endpoint, err);
+                db.delete(subscriptionsTable).where(eq(subscriptionsTable.id, sub.id)).execute().catch();
+              });
             } catch (error) {
               console.log(error);
             }
@@ -180,7 +174,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
 
       const history = await db.select().from(sub).orderBy(asc(sub.sentAt));
 
-      const maxId = Math.max(...history.map(hist => hist.id));
+      // const maxId = Math.max(...history.map(hist => hist.id));
       const messages: MessageDataWithSender[] = history.map(msg => ({
         id: msg.id,
         chatId: msg.chatId,
@@ -195,7 +189,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
     },
   );
 
-  api.addEndpoint("fetchMyUsername", z.object({}), z.object({ username: z.string() }), async (socket, data) => {
+  api.addEndpoint("fetchMyUsername", z.object({}), z.object({ username: z.string() }), async (socket, _data) => {
     return { username: socket.user.name };
   });
 
@@ -224,7 +218,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
         return fail("Chat already exists");
       }
       const insertedChat = await db.insert(chatsTable).values({ type: "private", name: chatName }).$returningId();
-      for (let id of chatUsers) {
+      for (const id of chatUsers) {
         await db.insert(chatUsersTable).values({ chatId: insertedChat[0].id, userId: id });
       }
       (await api.io.fetchSockets())
@@ -249,7 +243,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
     "fetchChats",
     z.object({}),
     z.object({ chats: z.array(chatSchemaWithParticipants) }),
-    async (socket, data) => {
+    async (socket, _data) => {
       const otherUser = db
         .select({
           chatId: chatUsersTable.chatId,
@@ -299,7 +293,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
       const participantsByChat: Record<string, UserData[]> = {};
       for (const p of participants) {
         if (!participantsByChat[p.chatId]) participantsByChat[p.chatId] = [];
-        participantsByChat[p.chatId].push({ id: p.userId, username: p.username, avatar: p.avatar });
+        participantsByChat[p.chatId].push({ id: p.userId || 0, username: p.username || "Unknown", avatar: p.avatar || "null" });
       }
       const chatsWithParticipants = chats.map(chat => ({
         ...chat,
@@ -318,11 +312,12 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
       })
       .partial(),
     z.object({ user: userSchema }),
-    async (socket, data) => {
+    async (_socket, data) => {
       const user = await db.query.usersTable.findFirst({
         where: or(eq(usersTable.id, data?.userId || 0), eq(usersTable.name, data?.username || "")),
         columns: { id: true, name: true, avatar: true },
       });
+      if (!user) return fail("User not found");
       return { user: { id: user?.id, username: user?.name, avatar: user?.avatar } };
     },
   );
@@ -341,6 +336,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
         where: or(eq(usersTable.id, data.userId || 0), eq(usersTable.name, data.username || "")),
         columns: { id: true },
       });
+      if (!user_id) return fail("User not found");
       data.userId = user_id.id;
       const chatUsers = [socket.user.id, data.userId];
       const chatName = chatUsers.sort().join("-");
@@ -353,7 +349,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
     },
   );
 
-  api.addEndpoint("fetchCustomEmojis", z.object({}), z.object({ emojis: z.array(emojiSchema) }), async (socket, data) => {
+  api.addEndpoint("fetchCustomEmojis", z.object({}), z.object({ emojis: z.array(emojiSchema) }), async (socket, _data) => {
     const emojis = await db.query.emojisTable.findMany({ where: eq(emojisTable.uploaderId, socket.user.id) });
     return { emojis };
   });
@@ -463,7 +459,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
   );
 
   if (process.env.CREATE_API_DESCRIPTION === "true") {
-    const result = {};
+    const result: Record<string, { input: any; output: any }> = {};
     Object.keys(api.registry).forEach(name => {
       result[name] = {
         input: zodObjectToObject(api.registry[name].inputSchema),

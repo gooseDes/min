@@ -9,7 +9,7 @@ export function initAdmin() {
   try {
     const app = getApp();
     fcm = getMessaging(app);
-  } catch (e) {
+  } catch (_err) {
     const app = initializeApp({
       credential: cert(serviceAccount),
     });

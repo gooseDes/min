@@ -1,9 +1,8 @@
 {
-  "name": "@min/api-client",
-  "version": "1.0.0",
+  "name": "@min/api",
+  "version": "0.0.0",
   "description": "",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
   "files": [
     "dist"
   ],
@@ -16,24 +15,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gooseDes/min-node-api-client.git"
+    "url": "git+https://github.com/gooseDes/min.git"
   },
   "keywords": [],
   "author": "gooseDes",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/gooseDes/min-node-api-client/issues"
+    "url": "https://github.com/gooseDes/min/issues"
   },
-  "homepage": "https://github.com/gooseDes/min-node-api-client#readme",
+  "homepage": "https://github.com/gooseDes/min#readme",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./src/index.ts"
     },
     "./utils": {
-      "types": "./dist/utils.d.ts",
-      "import": "./dist/utils.js"
+      "import": "./src/utils.ts"
     }
   },
   "devDependencies": {

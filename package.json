@@ -11,7 +11,9 @@
     "deploy:web": "pnpm --filter web deploy",
     "release": "git push origin main:release -f",
     "db:backend": "pnpm --filter backend db",
-    "gen_json:backend": "pnpm --filter backend gen_json"
+    "gen_json:backend": "pnpm --filter backend gen_json",
+    "migrate:backend": "pnpm --filter backend migrate",
+    "compile_json:api": "pnpm --filter api compile"
   },
   "devDependencies": {
     "prettier": "^3.8.4",

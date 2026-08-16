@@ -1,4 +1,4 @@
-import type { MessageDataWithSender } from "@min/api-client";
+import type { MessageDataWithSender } from "@min/api";
 import { motion } from "framer-motion";
 import { useImperativeHandle, useRef, useState, type Ref } from "react";
 import { flushSync } from "react-dom";

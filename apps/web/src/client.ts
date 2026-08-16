@@ -1,5 +1,5 @@
 import { getItem } from "@hooks/useLocalStorage";
-import { ApiClient } from "@min/api-client";
+import { ApiClient } from "@min/api";
 import { appCacheDir, join } from "@tauri-apps/api/path";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { BaseDirectory, writeFile } from "@tauri-apps/plugin-fs";

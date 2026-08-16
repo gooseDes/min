@@ -13,7 +13,7 @@ export function objectToJson(obj: any): string {
 }
 
 // Function for formating user data to readable format
-export function formatUser(data: object): string {
+export function formatUser(data?: object): string {
   const user = jsonToObject(data);
   return `${user.name || "Unknown"}[ID: ${user.id || "Unknown"}]`;
 }
@@ -25,14 +25,14 @@ export const PASSWORD_ALLOWED_CHARS =
 
 // Function for validating symbols in strings
 export function validateString(str: string, type: string = "username", minLength: number = 3, maxLength: number = 32): boolean {
-  let allowedChars = "";
+  let allowedChars;
   if (type === "username") allowedChars = USERNAME_ALLOWED_CHARS;
   else if (type === "email") allowedChars = EMAIL_ALLOWED_CHARS;
   else if (type === "password") allowedChars = PASSWORD_ALLOWED_CHARS;
   else throw new Error("Invalid type");
 
   if (str.length < minLength || str.length > maxLength) return false;
-  for (let char of str) {
+  for (const char of str) {
     if (!allowedChars.includes(char)) return false;
   }
   return true;

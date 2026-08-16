@@ -13,6 +13,7 @@ jobs:
       backend_changed: ${{ steps.check.outputs.backend_changed }}
       web_changed: ${{ steps.check.outputs.web_changed }}
       desktop_changed: ${{ steps.check.outputs.desktop_changed }}
+      api_changed: ${{ steps.check.outputs.api_changed }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -43,6 +44,10 @@ jobs:
 
           if git diff $BEFORE $AFTER -U0 -- apps/desktop/package.json | grep -E "^\+\s*\"version\""; then
             echo "desktop_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+          if git diff $BEFORE $AFTER -U0 -- packages/api/package.json | grep -E "^\+\s*\"version\""; then
+            echo "api_changed=true" >> $GITHUB_OUTPUT
           fi
 
   # Backend deployment

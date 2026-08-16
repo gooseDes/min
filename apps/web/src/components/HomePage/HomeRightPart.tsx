@@ -3,7 +3,7 @@ import ClickableProfile from "@components/ClickableProfile";
 import IconButton from "@components/IconButton";
 import RightPart from "@components/RightPart";
 import { faListUl } from "@fortawesome/free-solid-svg-icons";
-import type { ChatData, UserData } from "@min/api-client";
+import type { ChatData, UserData } from "@min/api";
 import { messagesContainerRef } from "@services/appControlService";
 import { messageInputRef } from "@services/inputControlService";
 import { motion } from "framer-motion";
