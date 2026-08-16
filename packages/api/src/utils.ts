@@ -1,4 +1,4 @@
-import { RNFile } from "./types";
+import type { RNFile } from "./types";
 
 /**
  * Converts iso or timestamp to a Date object.

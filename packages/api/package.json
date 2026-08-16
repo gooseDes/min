@@ -1,6 +1,6 @@
 {
   "name": "@min/api",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "./src/index.ts",
   "files": [
@@ -34,18 +34,12 @@
     }
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@jest/globals": "^30.4.1",
     "@mswjs/socket.io-binding": "^0.2.0",
-    "@types/node": "^25.9.1",
-    "eslint": "^10.4.1",
     "jest": "^30.4.2",
     "json-schema-to-zod": "^2.8.1",
     "msw": "^2.14.6",
-    "prettier": "^3.8.3",
-    "prettier-plugin-organize-imports": "^4.3.0",
     "ts-jest": "^29.4.11",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.60.0",
     "zod": "^4.4.3"
   },
   "dependencies": {

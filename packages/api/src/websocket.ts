@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { WebSocketEvent, WebSocketOnlyReceiveEvent, WebSocketSubscribeOptions } from "./types";
+import type { WebSocketEvent, WebSocketOnlyReceiveEvent, WebSocketSubscribeOptions } from "./types";
 
 export class Subscription {
   private id: number;
@@ -40,7 +40,7 @@ export class WebSocketClient {
   }
 
   init(token: string): void {
-    const isTestEnv = process.env.NODE_ENV === "test";
+    const isTestEnv = (globalThis as any)?.process?.env?.NODE_ENV === "test";
     this.socket = io(this.url, {
       auth: { token },
       ...(isTestEnv ? { transports: ["websocket"], reconnection: false, forceNew: true } : {}),

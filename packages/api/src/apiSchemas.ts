@@ -1,5 +1,5 @@
-import type { WebSocketEvent } from "@/types";
 import { z } from "zod";
+import type { WebSocketEvent } from "./types";
 
 export const sendMessageInputSchema = z
   .object({ content: z.string(), chatId: z.number().int().gte(0).lte(4294967295) })

@@ -259,7 +259,7 @@ jobs:
       cancel-in-progress: true
 
     needs: check-versions
-    if: needs.check-versions.outputs.web_changed == 'true'
+    if: needs.check-versions.outputs.web_changed == 'true' || needs.check-versions.outputs.api_changed == 'true'
     runs-on: ubuntu-latest
 
     steps:

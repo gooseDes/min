@@ -1,6 +1,6 @@
 import z from "zod";
 import { inputEndpoints, outputEndpoints } from "./apiSchemas";
-import {
+import type {
   ApiClientOptions,
   AttachImageResult,
   CreateChatConfig,
@@ -115,11 +115,10 @@ export class ApiClient {
         formData.append("attachments", blob, image.name);
       } catch (error) {
         console.error("Error while converting image:", error);
-        /* @ts-ignore */
+        /* @ts-expect-error yes */
         formData.append("attachments", image);
       }
     } else {
-      /* @ts-ignore */
       formData.append("attachments", image);
     }
 
@@ -140,7 +139,7 @@ export class ApiClient {
         formData.append("avatar", blob, image.name);
       } catch (error) {
         console.error("Error while converting image:", error);
-        /* @ts-ignore */
+        /* @ts-expect-error yes */
         formData.append("avatar", image);
       }
     }
