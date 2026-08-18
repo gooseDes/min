@@ -1,0 +1,25 @@
+@default:
+    @just --list
+
+# Install dependencies
+install:
+    pnpm install
+
+# Run the development server with hot reloading
+dev:
+    pnpm exec vite --host
+
+# Build the production bundle
+build:
+    tsc -b && pnpm exec vite build
+
+predeploy:
+    just build
+
+# Run the linter
+lint:
+    pnpm exec eslint .
+
+# Deploy the gh-pages branch
+deploy: lint predeploy
+    pnpm run deploy

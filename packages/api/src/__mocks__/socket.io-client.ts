@@ -1,5 +1,5 @@
 import { inputEndpoints, outputEndpoints } from "@/apiSchemas";
-import { MessageDataWithSender, WebSocketEvent, WebSocketOnlyReceiveEvent } from "@/types";
+import type { MessageDataWithSender, WebSocketEvent, WebSocketOnlyReceiveEvent } from "@/types";
 import { toDate } from "@/utils";
 import z from "zod";
 
@@ -52,7 +52,7 @@ class MockSocket {
     if (event in inputEndpoints) {
       queueMicrotask(() => {
         const inputSchema = inputEndpoints[event];
-        const outputSchema = outputEndpoints[event];
+        type OutputSchema = (typeof outputEndpoints)[typeof event];
         if (inputSchema) {
           const parsed = inputSchema.safeParse(data);
           if (!parsed.success) {
@@ -63,7 +63,7 @@ class MockSocket {
               this.emitEvent(event, { success: false, message: `Failed ${event}: ${message}` });
               return this;
             };
-            const success = (data: z.infer<typeof outputSchema>) => {
+            const success = (data: z.infer<OutputSchema>) => {
               this.emitEvent(event, { success: true, ...data });
               return this;
             };

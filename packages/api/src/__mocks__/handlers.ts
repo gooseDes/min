@@ -11,7 +11,7 @@ export const httpHandlers = [
   }),
 
   http.post<never, any>(`${testUrl}/register`, async ({ request }) => {
-    const { username, email, password } = await request.json();
+    const { username, email, password: _password } = await request.json();
     if (email === "user@example.com" || username === "user")
       return HttpResponse.json({ msg: "Username or email already in use" }, { status: 400 });
     return HttpResponse.json({ token: "tok_456", id: 2 });

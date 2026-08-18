@@ -283,11 +283,14 @@ jobs:
           node-version: lts/*
           cache: pnpm
 
+      - name: install just
+        uses: extractions/setup-just@v2
+
       - name: install dependencies
         run: pnpm install
 
       - name: build
-        run: pnpm run build:web
+        run: just web build
 
       - name: deploy
         uses: JamesIves/github-pages-deploy-action@v4

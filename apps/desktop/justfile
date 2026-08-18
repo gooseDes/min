@@ -1,0 +1,17 @@
+set positional-arguments
+
+@default:
+    @just --list
+
+# Install dependencies
+install:
+    pnpm install
+
+# Build the app:
+build:
+    NO_STRIP=1 tauri build
+
+# Shortcut to tauri cli:
+tauri *args:
+    # {{ args }}
+    pnpm exec tauri "$@"

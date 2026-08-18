@@ -1,0 +1,13 @@
+set positional-arguments
+
+@default:
+    @just --list
+
+# Install dependencies
+install:
+    flutter pub get
+
+# Run the app
+run *args:
+    # {{ args }}
+    flutter run "$@"

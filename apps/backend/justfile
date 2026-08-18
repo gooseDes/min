@@ -1,0 +1,22 @@
+@default:
+    @just --list
+
+# Install dependencies
+install:
+    pnpm install
+
+# Preview the entire database
+show_db:
+    node show_tables.js
+
+# Start the server in production mode
+start:
+    NODE_ENV=production pnpm exec tsx --env-file .env src/main.ts
+
+# Start the server in development mode with hot reloading
+dev:
+    pnpm exec tsx --env-file .env --watch src/main.ts
+
+# Run database migrations
+migrate:
+    pnpm drizzle-kit generate
