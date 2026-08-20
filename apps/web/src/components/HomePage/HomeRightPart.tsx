@@ -3,7 +3,7 @@ import ClickableProfile from "@components/ClickableProfile";
 import IconButton from "@components/IconButton";
 import RightPart from "@components/RightPart";
 import { faListUl } from "@fortawesome/free-solid-svg-icons";
-import type { ChatData, UserData } from "@min/api";
+import type { ChatDataWithParticipants, UserData } from "@min/types";
 import { messagesContainerRef } from "@services/appControlService";
 import { messageInputRef } from "@services/inputControlService";
 import { motion } from "framer-motion";
@@ -13,7 +13,7 @@ import MessageInput from "./MessageInput";
 import MessagesContainer from "./MessagesContainer";
 
 export interface RightPartProps {
-  openedChat: ChatData | null;
+  openedChat: ChatDataWithParticipants | null;
   user: UserData;
   closeChat: () => void;
 }

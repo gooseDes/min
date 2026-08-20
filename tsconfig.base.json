@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "${configDir}/dist",
+    "rootDir": "${configDir}/src",
+    "strict": true,
+    "types": ["node"],
+    "paths": {
+      "@/*": ["${configDir}/src/*"],
+    },
+    "skipLibCheck": true,
+    "composite": true,
+  },
+  "exclude": ["**/node_modules", "node_modules"],
+  "include": ["${configDir}/src"],
+}

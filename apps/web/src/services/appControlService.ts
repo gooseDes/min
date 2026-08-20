@@ -1,7 +1,7 @@
 import type { RootLayoutHandle } from "@/App";
 import type { ChatsContainerHandle } from "@components/HomePage/ChatsContainer";
 import type { MessagesContainerHandle } from "@components/HomePage/MessagesContainer";
-import type { ChatData } from "@min/api";
+import type { ChatDataWithParticipants } from "@min/types";
 import React from "react";
 
 // RootLayout
@@ -14,11 +14,11 @@ export function setIsAppBlurred(isBlurred: boolean) {
 // ChatsContainer
 export const chatsContainerRef = React.createRef<ChatsContainerHandle>();
 
-export function setChatsInContainer(chats: ChatData[]) {
+export function setChatsInContainer(chats: ChatDataWithParticipants[]) {
   chatsContainerRef.current?.setChats(chats);
 }
 
-export function addChatToContainer(chat: ChatData) {
+export function addChatToContainer(chat: ChatDataWithParticipants) {
   chatsContainerRef.current?.addChat(chat);
 }
 

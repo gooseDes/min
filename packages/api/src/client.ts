@@ -1,3 +1,4 @@
+import type { MessageDataWithSender } from "@min/types";
 import z from "zod";
 import { inputEndpoints, outputEndpoints } from "./apiSchemas";
 import type {
@@ -21,7 +22,6 @@ import type {
   LinkFcmTokenConfig,
   LinkFcmTokenResult,
   LoginResult,
-  MessageDataWithSender,
   SendMessageConfig,
   SendMessageResult,
   UploadAvatarResult,

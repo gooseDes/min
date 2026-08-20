@@ -1,4 +1,4 @@
-import { io, Socket } from "socket.io-client";
+import { io, type Socket } from "socket.io-client";
 import type { WebSocketEvent, WebSocketOnlyReceiveEvent, WebSocketSubscribeOptions } from "./types";
 
 export class Subscription {

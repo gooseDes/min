@@ -1,5 +1,5 @@
 import useLocalStorage from "@hooks/useLocalStorage";
-import type { ChatData } from "@min/api";
+import type { ChatDataWithParticipants } from "@min/types";
 import { stagger, useAnimate } from "framer-motion";
 import { useImperativeHandle, useState, type MouseEvent, type Ref } from "react";
 import { flushSync } from "react-dom";
@@ -7,23 +7,23 @@ import ClickableProfile from "../ClickableProfile";
 import styles from "./ChatsContainer.module.scss";
 
 export interface ChatsContainerHandle {
-  setChats: (chats: ChatData[]) => Promise<void>;
-  addChat: (chat: ChatData) => Promise<void>;
+  setChats: (chats: ChatDataWithParticipants[]) => Promise<void>;
+  addChat: (chat: ChatDataWithParticipants) => Promise<void>;
 }
 
 export interface ChatsContainerProps {
   ref?: Ref<ChatsContainerHandle>;
-  onClick?: (chat: ChatData, e: MouseEvent<HTMLDivElement>) => void;
+  onClick?: (chat: ChatDataWithParticipants, e: MouseEvent<HTMLDivElement>) => void;
 }
 
 function ChatsContainer(props: ChatsContainerProps) {
   const [scope, animate] = useAnimate();
   const [user] = useLocalStorage("user");
-  const [chats, setChats] = useState<ChatData[]>([]);
+  const [chats, setChats] = useState<ChatDataWithParticipants[]>([]);
   const { ref, onClick } = props;
 
   useImperativeHandle(ref, () => ({
-    setChats: async (chats: ChatData[]) => {
+    setChats: async (chats: ChatDataWithParticipants[]) => {
       flushSync(() => setChats(chats));
       await animate(".chatItem", { opacity: 0, translateX: -200, scale: 0 }, { duration: 0 });
       return Promise.all([
@@ -35,7 +35,7 @@ function ChatsContainer(props: ChatsContainerProps) {
         ),
       ]).then();
     },
-    addChat: async (chat: ChatData) => {
+    addChat: async (chat: ChatDataWithParticipants) => {
       flushSync(() => setChats(prev => [...prev, chat]));
       await animate(".chatItem", { opacity: 1 });
     },

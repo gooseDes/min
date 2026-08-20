@@ -1,0 +1,13 @@
+{
+  "name": "@min/types",
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {},
+  "dependencies": {
+    "@min/schemas": "workspace:*"
+  },
+  "devDependencies": {
+    "zod": "^4.4.3"
+  }
+}

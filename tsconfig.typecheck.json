@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+  },
+  "references": [
+    { "path": "./packages/api" },
+    { "path": "./packages/schemas" },
+    { "path": "./apps/web" },
+    { "path": "./apps/backend" },
+  ],
+}

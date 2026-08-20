@@ -1,5 +1,6 @@
 {
   "name": "min",
+  "type": "module",
   "scripts": {
     "dev:desktop": "pnpm --filter min-desktop tauri dev",
     "dev:backend": "pnpm --filter backend dev",
@@ -10,19 +11,25 @@
     "compile_json:api": "pnpm --filter api compile"
   },
   "devDependencies": {
-    "prettier": "^3.8.4",
-    "prettier-plugin-organize-imports": "^4.3.0",
-    "eslint": "^10.3.0",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.2",
+    "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "@eslint/js": "^10.0.1",
-    "typescript": "~6.0.2",
-    "typescript-eslint": "^8.59.2",
-    "globals": "^17.6.0",
-    "@types/node": "^24.12.3"
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.3",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.62.1"
   },
   "engines": {
     "node": ">=18"
+  },
+  "overrides": {
+    "brace-expansion": "^5.0.9",
+    "socket.io-parser": "^4.2.7",
+    "nanoid": "^3.3.18",
+    "postcss": "^8.5.23"
   }
 }

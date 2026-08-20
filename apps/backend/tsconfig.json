@@ -9,7 +9,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@lib/*": ["./src/lib/*"],
-      "types/*": ["./src/types/*"]
-    }
-  }
+      "types/*": ["./src/types/*"],
+    },
+    "types": ["node"],
+    "composite": true,
+  },
 }

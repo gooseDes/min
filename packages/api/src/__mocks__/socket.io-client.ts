@@ -1,6 +1,7 @@
 import { inputEndpoints, outputEndpoints } from "@/apiSchemas";
-import type { MessageDataWithSender, WebSocketEvent, WebSocketOnlyReceiveEvent } from "@/types";
+import type { WebSocketEvent, WebSocketOnlyReceiveEvent } from "@/types";
 import { toDate } from "@/utils";
+import type { MessageDataWithSender } from "@min/types";
 import z from "zod";
 
 type Listener = (...args: any[]) => void;

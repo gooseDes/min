@@ -1,4 +1,4 @@
-import type { UserData } from "@min/api";
+import type { UserData } from "@min/types";
 import { useState, type Dispatch, type SetStateAction } from "react";
 
 interface LocalStorageMap {

@@ -1,0 +1,14 @@
+{
+  "name": "@min/schemas",
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "type": "module",
+  "scripts": {},
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "quicktype": "^26.0.0"
+  }
+}

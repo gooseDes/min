@@ -1,3 +1,5 @@
+import type { ChatDataWithParticipants, MessageData, MessageDataWithSender, UserData } from "@min/types";
+
 export interface ApiClientOptions {
   url: string;
 }
@@ -6,33 +8,6 @@ export interface AuthUserData {
   id: number;
   username: string;
   email: string;
-}
-
-export interface UserData {
-  id: number;
-  username: string;
-  avatar: string;
-}
-
-export interface MessageData {
-  id: number;
-  content: string;
-  senderId: number;
-  chatId: number;
-  sentAt: Date;
-  isSeen: boolean;
-  seenAt: Date | null;
-}
-
-export interface MessageDataWithSender extends MessageData {
-  sender: UserData;
-}
-
-export interface ChatData {
-  id: number;
-  type: "group" | "private";
-  name: string;
-  participants: UserData[];
 }
 
 export type RNFile = {
@@ -145,7 +120,7 @@ export type FetchChatsResult =
   | Failed
   | {
       success: true;
-      chats: ChatData[];
+      chats: ChatDataWithParticipants[];
     };
 
 export type FetchChatMessagesConfig = {
@@ -167,7 +142,7 @@ export type CreateChatResult =
   | Failed
   | {
       success: true;
-      chat: ChatData;
+      chat: ChatDataWithParticipants;
     };
 
 export type SendMessageConfig = {

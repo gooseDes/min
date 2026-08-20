@@ -1,14 +1,14 @@
 import LeftPart from "@components/LeftPart";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
 import useTranslation from "@hooks/useTranslation";
-import type { ChatData } from "@min/api";
+import type { ChatDataWithParticipants } from "@min/types";
 import { chatsContainerRef } from "@services/appControlService";
 import ChatsContainer from "./ChatsContainer";
 import CreateChatButton from "./CreateChatButton";
 import UserPanel from "./UserPanel";
 
 export interface LeftPartProps {
-  onChatClick: (chat: ChatData) => void;
+  onChatClick: (chat: ChatDataWithParticipants) => void;
   ref?: React.RefObject<HTMLDivElement | null>;
 }
 

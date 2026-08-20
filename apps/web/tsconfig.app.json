@@ -29,8 +29,9 @@
       "@hooks/*": ["./src/hooks/*"],
       "@services/*": ["./src/services/*"],
       "@contexts/*": ["./src/contexts/*"],
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+    },
   },
-  "include": ["src"]
+  "exclude": ["**/node_modules", "node_modules"],
+  "include": ["src"],
 }

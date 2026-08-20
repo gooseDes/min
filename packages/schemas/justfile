@@ -1,0 +1,5 @@
+to-ts:
+    node src/tsCompiler.mts
+
+to-json:
+    node src/jsonCompiler.mts

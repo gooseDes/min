@@ -1,3 +1,4 @@
+import { chatSchemaWithParticipants, emojiSchema, messageSchema, messageSchemaWithSender, userSchema } from "@min/schemas";
 import { and, asc, desc, eq, inArray, ne, or, sql } from "drizzle-orm";
 import { writeFileSync } from "fs";
 import { IncomingMessage, Server, ServerResponse } from "http";
@@ -18,15 +19,7 @@ import ApiDescriptor, { fail } from "./lib/apiDescriptor";
 import { fcm } from "./lib/firebaseAdmin";
 import { Turn } from "./lib/turn";
 import { jsonToObject, toDate, zodObjectToObject } from "./lib/utils";
-import {
-  chatSchemaWithParticipants,
-  emojiSchema,
-  MessageDataWithSender,
-  messageSchema,
-  messageSchemaWithSender,
-  UserData,
-  userSchema,
-} from "./types/api";
+import { MessageDataWithSender, UserData } from "./types/api";
 
 function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof ServerResponse>, logger: Logger, _turn: Turn) {
   const api = new ApiDescriptor(server, logger);
@@ -230,6 +223,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
         chat: {
           id: insertedChat[0].id,
           name: user.name,
+          type: "private" as const,
           participants: [
             { id: socket.user.id, username: socket.user.name, avatar: socket.user.avatar },
             { id: user.id, username: user.name, avatar: user.avatar },
@@ -297,6 +291,7 @@ function createSocketEndpoints(server: Server<typeof IncomingMessage, typeof Ser
       }
       const chatsWithParticipants = chats.map(chat => ({
         ...chat,
+        type: "private" as const,
         participants: participantsByChat[chat.id] || [],
       }));
       return { chats: chatsWithParticipants };

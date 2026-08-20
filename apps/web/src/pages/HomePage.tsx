@@ -3,7 +3,7 @@ import { setCurrentAppState } from "@/utils";
 import HomeLeftPart from "@components/HomePage/HomeLeftPart";
 import HomeRightPart from "@components/HomePage/HomeRightPart";
 import useLocalStorage from "@hooks/useLocalStorage";
-import type { ChatData } from "@min/api";
+import { type ChatDataWithParticipants } from "@min/types";
 import { messagesContainerRef, setChatsInContainer } from "@services/appControlService";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./HomePage.module.scss";
@@ -11,7 +11,7 @@ import styles from "./HomePage.module.scss";
 function HomePage() {
   const [user] = useLocalStorage("user");
   const leftPartRef = useRef<HTMLDivElement>(null);
-  const [openedChat, setOpenedChat] = useState<ChatData | null>(null);
+  const [openedChat, setOpenedChat] = useState<ChatDataWithParticipants | null>(null);
 
   useEffect(() => {
     apiClient.fetchChats().then(res => {
@@ -34,7 +34,7 @@ function HomePage() {
     };
   }, []);
 
-  const openChat = useCallback(async (chat: ChatData) => {
+  const openChat = useCallback(async (chat: ChatDataWithParticipants) => {
     const clearPromise = messagesContainerRef.current?.clearMessages();
     leftPartRef.current?.classList.add(styles.mobileHidden);
     setOpenedChat(chat);
