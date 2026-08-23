@@ -36,22 +36,25 @@ CustomTransitionPage buildPageBuilder(
   );
 }
 
+final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
 final routerProvider = Provider<GoRouter>((ref) {
-  final authNotifier = ValueNotifier<bool>(ref.read(authProvider));
+  final authNotifier = ValueNotifier<AuthState>(ref.read(authProvider));
 
   ref.listen(authProvider, (previous, next) {
     authNotifier.value = next;
   });
 
   return GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/home',
     refreshListenable: authNotifier,
     redirect: (BuildContext context, GoRouterState state) {
-      final isAuth = ref.read(authProvider);
+      final authState = ref.read(authProvider);
       final isLoggingIn = state.matchedLocation == '/login';
 
-      if (!isAuth && !isLoggingIn) return '/login';
-      if (isAuth && isLoggingIn) return '/home';
+      if (!authState.isAuthenticated && !isLoggingIn) return '/login';
+      if (authState.isAuthenticated && isLoggingIn) return '/home';
 
       return null;
     },

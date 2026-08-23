@@ -1,8 +1,8 @@
 name: min_flutter
 description: "A new Flutter project."
 publish_to: "none"
-
 version: 1.0.0+1
+resolution: workspace
 
 environment:
   sdk: ^3.12.2
@@ -14,7 +14,9 @@ dependencies:
   riverpod_annotation:
   go_router: ^17.3.0
   material_symbols_icons: ^4.2960.0
-
+  dart_api:
+    path: ../../packages/dart-api
+  flutter_secure_storage: ^11.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -22,6 +24,8 @@ dev_dependencies:
   riverpod_generator:
   riverpod_lint:
   custom_lint:
+  dart_config:
+    path: ../../packages/dart-config
 
 flutter:
   uses-material-design: true

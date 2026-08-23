@@ -8,7 +8,7 @@ export const userSchema = z.object({
 
 export const chatSchema = z.object({
   id: z.number(),
-  type: z.enum(["group", "private"] as const),
+  type: z.enum(["group", "private"] as const).meta({ title: "Chat Type" }),
   name: z.string(),
 });
 

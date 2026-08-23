@@ -18,6 +18,9 @@ mod schemas "packages/schemas"
 # api package scripts
 mod api "packages/api"
 
+# dart-api package scripts
+mod dart-api "packages/dart-api"
+
 # Interactive runner
 @default:
     @just --choose
@@ -39,12 +42,17 @@ install:
     pnpm install
     just fl::install
 
-# Compile schemas to TypeScript types
-compile-ts:
+# Convert schemas to TypeScript types
+generate-ts:
     just schemas to-ts
-    mv packages/schemas/types.ts packages/types-ts/src/types.ts
+    mv packages/schemas/types.ts packages/ts-types/src/types.ts
 
-# Compile schemas to every supported target
-compile-all:
-    just compile-ts
-    just schemas to-json
+# Convert schemas to every supported target
+generate-all:
+    just generate-ts
+    just schemas to-dart
+    just dart-api generate
+
+# Watch for changes
+watch-all:
+    just dart-api watch

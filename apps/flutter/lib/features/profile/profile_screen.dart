@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
+import 'package:min_flutter/features/auth/secure_storage.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -14,7 +15,9 @@ class ProfileScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Symbols.logout_rounded),
-            onPressed: () {
+            onPressed: () async {
+              final storage = SecureStorageService();
+              await storage.deleteToken();
               ref.read(authProvider.notifier).logout();
             },
           ),

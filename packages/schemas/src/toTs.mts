@@ -5,7 +5,7 @@ import * as schemas from "./index.ts";
 // Settings
 const GENERATED_FILE_PATH = "types.ts";
 
-console.log("Compiling schemas...");
+console.log("Converting zod schemas to TypeScript...");
 
 // Generate code
 let code =

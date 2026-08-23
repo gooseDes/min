@@ -1,0 +1,17 @@
+name: min
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: "^3.13.0"
+
+workspace:
+  - apps/flutter
+  - packages/dart-types
+  - packages/dart-api
+
+dev_dependencies:
+  melos: ^7.8.1
+
+dependencies:
+  build_runner: ^2.15.1

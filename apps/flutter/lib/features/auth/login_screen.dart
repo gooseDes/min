@@ -98,7 +98,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: const Text("Log in"),
                       onPressed: () {
                         TextInput.finishAutofillContext();
-                        ref.read(authProvider.notifier).login();
+                        ref
+                            .read(authProvider.notifier)
+                            .login(
+                              _emailController.text,
+                              _passwordController.text,
+                            );
                       },
                     ),
                   ),

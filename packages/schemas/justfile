@@ -1,5 +1,8 @@
 to-ts:
-    node src/tsCompiler.mts
+    node src/toTs.mts
 
 to-json:
-    node src/jsonCompiler.mts
+    node src/toJson.mts
+
+to-dart: to-json
+    node src/toDart.mts

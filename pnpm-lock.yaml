@@ -165,7 +165,7 @@ importers:
         version: link:../../packages/api
       '@min/types':
         specifier: workspace:*
-        version: link:../../packages/types-ts
+        version: link:../../packages/ts-types
       '@tauri-apps/api':
         specifier: ^2.11.1
         version: 2.11.1
@@ -268,7 +268,7 @@ importers:
     dependencies:
       '@min/types':
         specifier: workspace:*
-        version: link:../types-ts
+        version: link:../ts-types
       socket.io-client:
         specifier: ^4.8.3
         version: 4.8.3
@@ -305,7 +305,7 @@ importers:
         specifier: ^26.0.0
         version: 26.0.0
 
-  packages/types-ts:
+  packages/ts-types:
     dependencies:
       '@min/schemas':
         specifier: workspace:*

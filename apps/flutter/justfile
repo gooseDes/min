@@ -11,3 +11,13 @@ install:
 run *args:
     # {{ args }}
     flutter run "$@"
+
+build-linux:
+    flutter build linux
+
+build-android:
+    flutter build apk
+
+build-all:
+    flutter build linux
+    flutter build apk

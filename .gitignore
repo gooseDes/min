@@ -148,3 +148,9 @@ temp/
 
 # Nextcloud things
 .sync_*
+
+# Dart and Flutter things
+.dart_tool/
+.idea/
+*.iml
+*.freezed.dart
