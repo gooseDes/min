@@ -4,5 +4,8 @@
     "Just": {
       "tab_size": 4,
     },
+    "Kotlin": {
+      "tab_size": 4,
+    },
   },
 }

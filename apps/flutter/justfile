@@ -3,6 +3,10 @@ set positional-arguments
 @default:
     @just --list
 
+# Clear the build cache
+clear:
+    flutter clean
+
 # Install dependencies
 install:
     flutter pub get
@@ -16,7 +20,10 @@ build-linux:
     flutter build linux
 
 build-android:
-    flutter build apk
+    flutter build apk --release
+
+install-android: build-android
+    adb install -r build/app/outputs/flutter-apk/app-release.apk
 
 build-all:
     flutter build linux
