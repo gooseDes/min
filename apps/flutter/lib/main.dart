@@ -25,7 +25,7 @@ class MinApp extends ConsumerWidget {
         splashFactory: DeviceType.isMobile
             ? InkSparkle.splashFactory
             : InkRipple.splashFactory,
-        splashColor: const Color(0xFF6750A4).withValues(alpha: 0.01),
+        splashColor: const Color(0xFF6750A4).withValues(alpha: 0.02),
         highlightColor: Colors.transparent,
       ),
       darkTheme: ThemeData(
@@ -35,7 +35,7 @@ class MinApp extends ConsumerWidget {
         splashFactory: DeviceType.isMobile
             ? InkSparkle.splashFactory
             : InkRipple.splashFactory,
-        splashColor: const Color(0xFF6750A4).withValues(alpha: 0.01),
+        splashColor: const Color(0xFF6750A4).withValues(alpha: 0.02),
         highlightColor: Colors.transparent,
       ),
       themeMode: ThemeMode.system,
