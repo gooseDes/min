@@ -12,7 +12,7 @@ class ScaffoldWithTabs extends StatelessWidget {
     final navigationShell = child as StatefulNavigationShell;
 
     return Scaffold(
-      body: child,
+      body: navigationShell,
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: (int index) => navigationShell.goBranch(index),

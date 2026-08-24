@@ -17,6 +17,7 @@ dependencies:
   dart_api:
     path: ../../packages/dart-api
   flutter_secure_storage: ^11.0.0
+  system_theme: ^3.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

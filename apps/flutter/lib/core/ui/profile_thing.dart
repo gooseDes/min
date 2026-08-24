@@ -42,7 +42,7 @@ class ProfileThing extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap ?? () {},
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         leading: const CircleAvatar(
           radius: 24,
           child: Icon(Symbols.account_circle_rounded, size: 32),
