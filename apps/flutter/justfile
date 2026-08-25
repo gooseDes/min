@@ -16,6 +16,9 @@ run *args:
     # {{ args }}
     flutter run "$@"
 
+build-windows:
+    flutter build windows
+
 build-linux:
     flutter build linux
 

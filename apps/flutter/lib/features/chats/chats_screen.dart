@@ -14,7 +14,10 @@ class ChatsScreen extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 8,
-            children: [Icon(Symbols.chat_rounded), Text("Chats")],
+            children: [
+              Icon(Symbols.chat_rounded),
+              Text("Chats", style: TextStyle(fontWeight: FontWeight.bold)),
+            ],
           ),
         ),
       ),

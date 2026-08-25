@@ -11,5 +11,6 @@ include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
-    - prefer_const_constructors
-    - prefer_const_declarations
+    curly_braces_in_flow_control_structures: false
+    prefer_const_constructors: true
+    prefer_const_declarations: true

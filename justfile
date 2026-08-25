@@ -40,7 +40,7 @@ deploy: typecheck lint
 # Install all dependencies
 install:
     pnpm install
-    just fl::install
+    melos bootstrap
 
 # Convert schemas to TypeScript types
 generate-ts:

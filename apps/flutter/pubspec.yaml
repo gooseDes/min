@@ -18,6 +18,7 @@ dependencies:
     path: ../../packages/dart-api
   flutter_secure_storage: ^11.0.0
   system_theme: ^3.3.0
+  shared_preferences: ^2.5.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -27,6 +28,12 @@ dev_dependencies:
   custom_lint:
   dart_config:
     path: ../../packages/dart-config
-
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/Rubik-Regular.ttf
+        - asset: assets/fonts/Rubik-Medium.ttf
+          weight: 500

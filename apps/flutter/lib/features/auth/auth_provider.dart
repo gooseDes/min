@@ -1,8 +1,9 @@
 import 'package:dart_api/index.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:min_flutter/core/client.dart';
-import 'package:min_flutter/features/auth/secure_storage.dart';
 import 'package:min_flutter/features/dialogs/dialogs.dart';
+import 'package:min_flutter/features/storage/secure_storage.dart';
+import 'package:min_flutter/features/storage/storage.dart';
 
 class AuthState {
   final bool isAuthenticated;
@@ -23,7 +24,19 @@ class AuthState {
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
+    init();
     return AuthState(isAuthenticated: false);
+  }
+
+  Future<void> init() async {
+    final secStorage = SecureStorage();
+    final token = await secStorage.getToken();
+    final storage = Storage();
+    final userId = await storage.get(StorageKey.userId);
+    final username = await storage.get(StorageKey.userUsername);
+    if (userId != null && username != null && token != null) {
+      state = AuthState(isAuthenticated: true, username: username, id: userId);
+    }
   }
 
   Future<void> login(String email, String password) async {
@@ -31,8 +44,11 @@ class AuthNotifier extends Notifier<AuthState> {
     response.when(
       success: (token, username, id) async {
         state = AuthState(isAuthenticated: true, username: username, id: id);
-        final storage = SecureStorageService();
-        await storage.saveToken(token);
+        final secStorage = SecureStorage();
+        await secStorage.saveToken(token);
+        final storage = Storage();
+        await storage.set(StorageKey.userId, id);
+        await storage.set(StorageKey.userUsername, username);
       },
       failure: (message) {
         state = AuthState(isAuthenticated: false);

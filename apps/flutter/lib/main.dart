@@ -22,35 +22,43 @@ class MinApp extends ConsumerWidget {
 
     return SystemThemeBuilder(
       builder: (context, systemAccent) {
+        final splashFactory = DeviceType.isMobile
+            ? InkSparkle.splashFactory
+            : InkRipple.splashFactory;
+        final splashColor = systemAccent.accent.withValues(alpha: 0.05);
+        const highlightColor = Colors.transparent;
+        const fontFamily = 'Rubik';
+
         return MaterialApp.router(
           routerConfig: router,
           title: 'Min',
+
           theme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.light,
+            fontFamily: fontFamily,
+            splashFactory: splashFactory,
+            splashColor: splashColor,
+            highlightColor: highlightColor,
             colorScheme: ColorScheme.fromSeed(
               seedColor: systemAccent.accent,
               brightness: Brightness.light,
             ),
-            splashFactory: DeviceType.isMobile
-                ? InkSparkle.splashFactory
-                : InkRipple.splashFactory,
-            splashColor: systemAccent.accent.withValues(alpha: 0.05),
-            highlightColor: Colors.transparent,
           ),
+
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
+            fontFamily: fontFamily,
+            splashFactory: splashFactory,
+            splashColor: splashColor,
+            highlightColor: highlightColor,
             colorScheme: ColorScheme.fromSeed(
               seedColor: systemAccent.accent,
               brightness: Brightness.dark,
             ),
-            splashFactory: DeviceType.isMobile
-                ? InkSparkle.splashFactory
-                : InkRipple.splashFactory,
-            splashColor: systemAccent.accent.withValues(alpha: 0.05),
-            highlightColor: Colors.transparent,
           ),
+
           themeMode: ThemeMode.system,
           scrollBehavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {
