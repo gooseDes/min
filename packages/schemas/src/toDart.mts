@@ -32,14 +32,14 @@ content.split("\n").forEach(line => {
   } else {
     if (line.startsWith("enum")) {
       if (!startEnums.includes(line)) {
-        startEnums.push(line);
+        startEnums.push(line.replace("Schema", "Data"));
         doAddWhenSearching = true;
       } else {
         doAddWhenSearching = false;
       }
       isSearching = true;
     } else {
-      newContent.push(line);
+      newContent.push(line.replace("Schema", "Data"));
     }
   }
 });

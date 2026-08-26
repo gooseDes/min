@@ -14,11 +14,12 @@ dependencies:
   riverpod_annotation:
   go_router: ^17.3.0
   material_symbols_icons: ^4.2960.0
-  dart_api:
+  min_api:
     path: ../../packages/dart-api
   flutter_secure_storage: ^11.0.0
   system_theme: ^3.3.0
   shared_preferences: ^2.5.5
+  drift: ^2.34.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

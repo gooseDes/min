@@ -1,20 +1,20 @@
 enum ChatType { group, private }
 
-class ChatSchema {
+class ChatData {
   final double id;
   final String name;
   final ChatType type;
 
-  ChatSchema({required this.id, required this.name, required this.type});
+  ChatData({required this.id, required this.name, required this.type});
 }
 
-class ChatSchemaWithParticipants {
+class ChatDataWithParticipants {
   final double id;
   final String name;
   final List<Participant> participants;
   final ChatType type;
 
-  ChatSchemaWithParticipants({
+  ChatDataWithParticipants({
     required this.id,
     required this.name,
     required this.participants,
@@ -30,15 +30,15 @@ class Participant {
   Participant({required this.avatar, required this.id, required this.username});
 }
 
-class EmojiSchema {
+class EmojiData {
   final double id;
   final String name;
   final double uploaderId;
 
-  EmojiSchema({required this.id, required this.name, required this.uploaderId});
+  EmojiData({required this.id, required this.name, required this.uploaderId});
 }
 
-class MessageSchema {
+class MessageData {
   final double chatId;
   final String content;
   final double id;
@@ -47,7 +47,7 @@ class MessageSchema {
   final double senderId;
   final DateTime sentAt;
 
-  MessageSchema({
+  MessageData({
     required this.chatId,
     required this.content,
     required this.id,
@@ -58,7 +58,7 @@ class MessageSchema {
   });
 }
 
-class MessageSchemaWithSender {
+class MessageDataWithSender {
   final double chatId;
   final String content;
   final double id;
@@ -68,7 +68,7 @@ class MessageSchemaWithSender {
   final double senderId;
   final DateTime sentAt;
 
-  MessageSchemaWithSender({
+  MessageDataWithSender({
     required this.chatId,
     required this.content,
     required this.id,
@@ -88,10 +88,10 @@ class Sender {
   Sender({required this.avatar, required this.id, required this.username});
 }
 
-class UserSchema {
+class UserData {
   final String avatar;
   final double id;
   final String username;
 
-  UserSchema({required this.avatar, required this.id, required this.username});
+  UserData({required this.avatar, required this.id, required this.username});
 }

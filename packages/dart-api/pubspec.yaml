@@ -1,5 +1,6 @@
-name: dart_api
+name: min_api
 description: Dart api client
+publish_to: "none"
 version: 1.0.0
 resolution: workspace
 
@@ -9,6 +10,10 @@ environment:
 dependencies:
   freezed_annotation: ^3.1.0
   http: ^1.6.0
+  socket_io_client: ^3.1.6
+  min_types:
+    path: ../../packages/dart-types
+  logger: ^2.7.0
 
 dev_dependencies:
   lints: ^6.0.0

@@ -1,5 +1,5 @@
-import 'package:dart_api/index.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:min_api/index.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/features/dialogs/dialogs.dart';
 import 'package:min_flutter/features/storage/secure_storage.dart';
@@ -36,6 +36,7 @@ class AuthNotifier extends Notifier<AuthState> {
     final username = await storage.get(StorageKey.userUsername);
     if (userId != null && username != null && token != null) {
       state = AuthState(isAuthenticated: true, username: username, id: userId);
+      apiClient.initSocket(token);
     }
   }
 
@@ -49,6 +50,7 @@ class AuthNotifier extends Notifier<AuthState> {
         final storage = Storage();
         await storage.set(StorageKey.userId, id);
         await storage.set(StorageKey.userUsername, username);
+        apiClient.initSocket(token);
       },
       failure: (message) {
         state = AuthState(isAuthenticated: false);

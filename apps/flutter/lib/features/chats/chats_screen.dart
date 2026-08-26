@@ -9,6 +9,7 @@ class ChatsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print("test");
     return Scaffold(
       appBar: AppBar(
         title: Center(
