@@ -27,7 +27,30 @@ class MinApp extends ConsumerWidget {
             : InkRipple.splashFactory;
         final splashColor = systemAccent.accent.withValues(alpha: 0.05);
         const highlightColor = Colors.transparent;
-        const fontFamily = 'Rubik';
+        const fontFamily = 'GoogleSansFlex';
+        const textTheme = TextTheme(
+          headlineLarge: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontVariations: [
+              FontVariation('ROND', 100),
+              FontVariation('GRAD', 50),
+            ],
+          ),
+          headlineMedium: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontVariations: [
+              FontVariation('ROND', 100),
+              FontVariation('GRAD', 50),
+            ],
+          ),
+          headlineSmall: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontVariations: [
+              FontVariation('ROND', 100),
+              FontVariation('GRAD', 50),
+            ],
+          ),
+        );
 
         return MaterialApp.router(
           routerConfig: router,
@@ -44,6 +67,7 @@ class MinApp extends ConsumerWidget {
               seedColor: systemAccent.accent,
               brightness: Brightness.light,
             ),
+            textTheme: textTheme,
           ),
 
           darkTheme: ThemeData(
@@ -57,6 +81,7 @@ class MinApp extends ConsumerWidget {
               seedColor: systemAccent.accent,
               brightness: Brightness.dark,
             ),
+            textTheme: textTheme,
           ),
 
           themeMode: ThemeMode.system,

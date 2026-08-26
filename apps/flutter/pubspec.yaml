@@ -32,8 +32,6 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: Rubik
+    - family: GoogleSansFlex
       fonts:
-        - asset: assets/fonts/Rubik-Regular.ttf
-        - asset: assets/fonts/Rubik-Medium.ttf
-          weight: 500
+        - asset: assets/fonts/GoogleSansFlex-Variable.ttf

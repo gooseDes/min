@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/profile_thing.dart';
 
 class ChatsScreen extends ConsumerWidget {
@@ -10,13 +11,14 @@ class ChatsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
+        title: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
             children: [
-              Icon(Symbols.chat_rounded),
-              Text("Chats", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Icon(Symbols.chat_rounded),
+              Text("Chats", style: context.textTheme.headlineSmall),
             ],
           ),
         ),

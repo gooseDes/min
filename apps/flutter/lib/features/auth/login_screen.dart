@@ -45,14 +45,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 16,
                 children: [
-                  Text(
-                    "Sign in",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.onSurface,
-                    ),
-                  ),
+                  Text("Sign in", style: context.textTheme.headlineMedium),
                   const Divider(),
                   AutofillGroup(
                     child: Column(
