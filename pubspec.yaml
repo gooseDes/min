@@ -11,7 +11,7 @@ workspace:
   - packages/dart-api
 
 dev_dependencies:
-  melos: ^7.8.1
+  melos: 7.8.1
 
 dependencies:
   build_runner: ^2.15.1

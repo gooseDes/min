@@ -154,3 +154,4 @@ temp/
 .idea/
 *.iml
 *.freezed.dart
+*.g.dart

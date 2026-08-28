@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:min_flutter/core/fetch_and_save.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/profile_thing.dart';
+import 'package:min_flutter/features/chats/chats_list_item.dart';
+import 'package:min_flutter/features/storage/database_provider.dart';
 
 class ChatsScreen extends ConsumerWidget {
   const ChatsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print("test");
+    final chatIds = ref.watch(chatIdsProvider);
+
+    requestChatsListUpdate(ref);
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -28,16 +34,16 @@ class ChatsScreen extends ConsumerWidget {
         alignment: Alignment.topCenter,
         child: ListView.separated(
           shrinkWrap: true,
-          itemCount: 11,
+          itemCount: chatIds.length,
           itemBuilder: (context, index) {
-            return ProfileThing(
+            final chatId = chatIds[index];
+            return ChatsListItem(
               type: index == 0
                   ? ProfileThingType.top
-                  : index == 10
+                  : index == chatIds.length - 1
                   ? ProfileThingType.bottom
                   : ProfileThingType.normal,
-              name: "User $index",
-              undername: "@user_$index",
+              chatId: chatId,
             );
           },
           separatorBuilder: (context, index) {

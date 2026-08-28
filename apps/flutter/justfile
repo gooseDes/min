@@ -11,6 +11,9 @@ clear:
 install:
     flutter pub get
 
+generate:
+    flutter pub run build_runner build
+
 # Run the app
 run *args:
     # {{ args }}

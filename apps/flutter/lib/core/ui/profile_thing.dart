@@ -8,6 +8,7 @@ class ProfileThing extends StatelessWidget {
   final ProfileThingType? type;
   final String? name;
   final String? undername;
+  final String? avatarUrl;
   final VoidCallback? onTap;
 
   const ProfileThing({
@@ -15,6 +16,7 @@ class ProfileThing extends StatelessWidget {
     this.type,
     this.name,
     this.undername,
+    this.avatarUrl,
     this.onTap,
   });
 
@@ -43,9 +45,12 @@ class ProfileThing extends StatelessWidget {
       child: ListTile(
         onTap: onTap ?? () {},
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        leading: const CircleAvatar(
+        leading: CircleAvatar(
           radius: 24,
-          child: Icon(Symbols.account_circle_rounded, size: 32),
+          backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+          child: avatarUrl == null
+              ? const Icon(Symbols.account_circle_rounded, size: 32)
+              : null,
         ),
         title: Text(
           name ?? "Test User",

@@ -1,3 +1,3 @@
 library;
 
-export 'src/types.dart';
+export 'src/types.g.dart';

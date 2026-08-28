@@ -82,10 +82,23 @@ class ApiClient {
     final completer = Completer<List<ChatDataWithParticipants>>();
 
     void handler(data) {
-      if (data.success) {
-        completer.complete(data);
+      if (data['success']) {
+        completer.complete(
+          data['chats'].map<ChatDataWithParticipants>((c) {
+            try {
+              return ChatDataWithParticipants.fromJson(c);
+            } catch (e) {
+              return ChatDataWithParticipants(
+                id: 0,
+                name: 'Error',
+                participants: [],
+                type: ChatType.private,
+              );
+            }
+          }).toList(),
+        );
       } else {
-        completer.completeError(data);
+        completer.completeError(data['msg']);
       }
       socket!.off('fetchChats', handler);
     }

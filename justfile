@@ -52,7 +52,11 @@ generate-all:
     just generate-ts
     just schemas to-dart
     just dart-api generate
+    just fl generate
 
 # Watch for changes
 watch-all:
     just dart-api watch
+
+clean-dart:
+    melos exec -- dart run build_runner clean
