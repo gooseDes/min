@@ -1,3 +1,4 @@
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:min_flutter/core/theme_ext.dart';
@@ -47,7 +48,9 @@ class ProfileThing extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+          backgroundImage: avatarUrl != null
+              ? CachedNetworkImageProvider(avatarUrl!)
+              : null,
           child: avatarUrl == null
               ? const Icon(Symbols.account_circle_rounded, size: 32)
               : null,
