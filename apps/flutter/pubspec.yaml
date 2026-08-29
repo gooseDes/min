@@ -26,6 +26,7 @@ dependencies:
   collection: ^1.19.1
   path_provider: ^2.1.6
   cached_network_image_ce: ^4.10.1
+  flutter_animate: ^4.5.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

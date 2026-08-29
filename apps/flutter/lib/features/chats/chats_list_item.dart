@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/ui/profile_thing.dart';
+import 'package:min_flutter/features/chats/selected_chat_provider.dart';
 import 'package:min_flutter/features/storage/database_provider.dart';
 
 class ChatsListItem extends ConsumerWidget {
@@ -19,7 +20,10 @@ class ChatsListItem extends ConsumerWidget {
       type: type,
       name: chat.name,
       undername: "WIP",
-      avatarUrl: '${apiClient.url}/avatars/${chat.avatar}.webp',
+      avatarUrl: apiClient.avatarToUrl(chat.avatar),
+      onTap: () {
+        ref.read(selectedChatIdProvider.notifier).openChat(chatId);
+      },
     );
   }
 }

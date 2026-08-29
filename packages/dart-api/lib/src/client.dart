@@ -108,4 +108,9 @@ class ApiClient {
 
     return completer.future;
   }
+
+  // Utility methods
+  String avatarToUrl(String? avatar) {
+    return '$url/avatars/$avatar.webp';
+  }
 }
