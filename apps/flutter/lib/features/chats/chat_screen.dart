@@ -51,14 +51,17 @@ class ChatScreen extends ConsumerWidget {
         ),
         color: context.colorScheme.surface,
         child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: ListView.builder(
-            reverse: true,
-            itemCount: messageIds.length,
-            itemBuilder: (ctx, ind) {
-              final messageId = messageIds[messageIds.length - 1 - ind];
-              return Message(chatId: chat?.id ?? 0, messageId: messageId);
-            },
+          padding: const EdgeInsets.all(12),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: ListView.builder(
+              reverse: true,
+              itemCount: messageIds.length,
+              itemBuilder: (ctx, ind) {
+                final messageId = messageIds[messageIds.length - 1 - ind];
+                return Message(chatId: chat?.id ?? 0, messageId: messageId);
+              },
+            ),
           ),
         ),
       ),

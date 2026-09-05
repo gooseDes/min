@@ -37,12 +37,7 @@ class ProfileThing extends StatelessWidget {
       shadowColor: context.colorScheme.shadow,
       shape: RoundedRectangleBorder(borderRadius: borderRadius),
       clipBehavior: Clip.antiAlias,
-      margin: EdgeInsets.only(
-        top: isTop ? 8 : 2,
-        bottom: isBottom ? 8 : 2,
-        left: 4,
-        right: 4,
-      ),
+      margin: EdgeInsets.only(top: isTop ? 0 : 2, bottom: isBottom ? 0 : 2),
       child: ListTile(
         onTap: onTap ?? () {},
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

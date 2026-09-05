@@ -73,25 +73,28 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                   ),
                 ),
               ),
-              body: Align(
-                alignment: Alignment.topCenter,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: chatIds.length,
-                  itemBuilder: (context, index) {
-                    final chatId = chatIds[index];
-                    return ChatsListItem(
-                      type: index == 0
-                          ? ProfileThingType.top
-                          : index == chatIds.length - 1
-                          ? ProfileThingType.bottom
-                          : ProfileThingType.normal,
-                      chatId: chatId,
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(height: 0);
-                  },
+              body: Padding(
+                padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: chatIds.length,
+                    itemBuilder: (context, index) {
+                      final chatId = chatIds[index];
+                      return ChatsListItem(
+                        type: index == 0
+                            ? ProfileThingType.top
+                            : index == chatIds.length - 1
+                            ? ProfileThingType.bottom
+                            : ProfileThingType.normal,
+                        chatId: chatId,
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(height: 0);
+                    },
+                  ),
                 ),
               ),
               floatingActionButton: FloatingActionButton(
