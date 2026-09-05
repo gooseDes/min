@@ -28,3 +28,25 @@ final singleChatProvider = Provider.family<ChatWithAvatar?, int>((
   final chats = ref.watch(allChatsProvider).value ?? [];
   return chats.firstWhereOrNull((chat) => chat.id == chatId);
 });
+
+// Messages
+final allMessagesProvider = StreamProvider.family<List<DbMessage>, int>((
+  ref,
+  int chatId,
+) {
+  final db = ref.watch(databaseProvider);
+  return db.watchMessages(chatId);
+});
+
+final messageIdsProvider = Provider.family<List<int>, int>((ref, int chatId) {
+  final messages = ref.watch(allMessagesProvider(chatId)).value ?? [];
+  return messages.map((message) => message.id).toList();
+});
+
+final singleMessageProvider =
+    Provider.family<DbMessage?, ({int chatId, int messageId})>((ref, args) {
+      final messages = ref.watch(allMessagesProvider(args.chatId)).value ?? [];
+      return messages.firstWhereOrNull(
+        (message) => message.id == args.messageId,
+      );
+    });

@@ -99,6 +99,45 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  Future<int> addMessageWithSender(
+    MessageDataWithSender message, [
+    bool shouldUpdateUser = true,
+  ]) async {
+    return transaction(() async {
+      if (shouldUpdateUser)
+        await into(usersTable).insertOnConflictUpdate(
+          UsersTableCompanion.insert(
+            id: Value(message.senderId),
+            username: message.sender.username,
+            avatar: message.sender.avatar,
+          ),
+        );
+
+      return await into(messagesTable).insertOnConflictUpdate(
+        MessagesTableCompanion.insert(
+          id: Value(message.id),
+          content: message.content,
+          senderId: message.senderId,
+          chatId: message.chatId,
+          sentAt: Value(message.sentAt),
+        ),
+      );
+    });
+  }
+
+  Future<void> addMessagesWithSenders(
+    List<MessageDataWithSender> messages,
+  ) async {
+    final updatedUsers = <int>[];
+    for (final message in messages.reversed) {
+      await addMessageWithSender(
+        message,
+        !updatedUsers.contains(message.senderId),
+      );
+      updatedUsers.add(message.senderId);
+    }
+  }
+
   Stream<List<ChatWithAvatar>> watchChats(int currentUserId) {
     final query = select(chatsTable).join([
       leftOuterJoin(
@@ -124,5 +163,11 @@ class AppDatabase extends _$AppDatabase {
         return ChatWithAvatar((chat: chat, avatar: resolvedAvatar));
       }).toList();
     });
+  }
+
+  Stream<List<DbMessage>> watchMessages(int chatId) {
+    return (select(
+      messagesTable,
+    )..where((t) => t.chatId.equals(chatId))).watch();
   }
 }

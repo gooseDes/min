@@ -9,3 +9,9 @@ Future<void> requestChatListUpdate(WidgetRef ref) async {
     await db.addChatWithParticipants(chat);
   }
 }
+
+Future<void> requestChatUpdate(WidgetRef ref, int chatId) async {
+  final db = ref.read(databaseProvider);
+  final msgs = await apiClient.fetchChatMessages(chatId);
+  await db.addMessagesWithSenders(msgs);
+}

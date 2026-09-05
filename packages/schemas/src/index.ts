@@ -24,8 +24,8 @@ export const emojiSchema = z.object({
 
 export const messageSchema = z.object({
   id: z.uint32(),
-  chatId: z.number(),
-  senderId: z.number(),
+  chatId: z.uint32(),
+  senderId: z.uint32(),
   content: z.string(),
   sentAt: z.date(),
   isSeen: z.boolean(),

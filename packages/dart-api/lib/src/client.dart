@@ -33,6 +33,8 @@ sealed class AuthResult with _$AuthResult {
 class ApiClient {
   final String url;
   io.Socket? socket;
+  Completer<io.Socket>? _socketCompleter;
+  int _lastRequestId = 0;
 
   ApiClient({required this.url});
 
@@ -64,6 +66,10 @@ class ApiClient {
           .setAuth({'token': token})
           .build(),
     );
+    if (_socketCompleter != null) {
+      _socketCompleter!.complete(socket!);
+      _socketCompleter = null;
+    }
     socket!.onConnect((_) {
       logger.i('Socket successfully connected!');
     });
@@ -78,35 +84,77 @@ class ApiClient {
     });
   }
 
-  Future<List<ChatDataWithParticipants>> fetchChats() async {
-    final completer = Completer<List<ChatDataWithParticipants>>();
+  /// Returns the socket. If it's not initialized, waits for it to connect and then returns.
+  Future<io.Socket> getSocket() async {
+    if (socket != null) {
+      _socketCompleter = null;
+      return socket!;
+    }
+    _socketCompleter = Completer<io.Socket>();
+    return _socketCompleter!.future;
+  }
 
+  Future<T> baseSocketRequest<T>(
+    String event,
+    T Function(dynamic) resultHandler, [
+    Map<String, dynamic>? data,
+  ]) async {
+    final completer = Completer<T>();
+    final requestId = ++_lastRequestId;
     void handler(data) {
+      if (data['requestId'] != requestId) return;
+
       if (data['success']) {
-        completer.complete(
-          data['chats'].map<ChatDataWithParticipants>((c) {
-            try {
-              return ChatDataWithParticipants.fromJson(c);
-            } catch (e) {
-              return ChatDataWithParticipants(
-                id: 0,
-                name: 'Error',
-                participants: [],
-                type: ChatType.private,
-              );
-            }
-          }).toList(),
-        );
+        completer.complete(resultHandler(data));
       } else {
         completer.completeError(data['msg']);
       }
-      socket!.off('fetchChats', handler);
     }
 
-    socket!.on('fetchChats', handler);
-    socket!.emit('fetchChats', {});
-
+    (await getSocket()).on(event, handler);
+    (await getSocket()).emit(event, {...(data ?? {}), 'requestId': requestId});
     return completer.future;
+  }
+
+  Future<List<ChatDataWithParticipants>> fetchChats() async {
+    return baseSocketRequest(
+      'fetchChats',
+      (data) => data['chats'].map<ChatDataWithParticipants>((c) {
+        try {
+          return ChatDataWithParticipants.fromJson(c);
+        } catch (e) {
+          return ChatDataWithParticipants(
+            id: 0,
+            name: 'Error',
+            participants: [],
+            type: ChatType.private,
+          );
+        }
+      }).toList(),
+    );
+  }
+
+  Future<List<MessageDataWithSender>> fetchChatMessages(int chatId) async {
+    return baseSocketRequest(
+      'fetchChatMessages',
+      (data) => data['messages'].map<MessageDataWithSender>((m) {
+        try {
+          return MessageDataWithSender.fromJson(m);
+        } catch (e) {
+          return MessageDataWithSender(
+            id: 0,
+            chatId: chatId,
+            content: 'Error',
+            isSeen: false,
+            seenAt: DateTime.now(),
+            sender: Sender(id: 0, username: 'Error', avatar: 'image'),
+            senderId: 0,
+            sentAt: DateTime.now(),
+          );
+        }
+      }).toList(),
+      {'chatId': chatId},
+    );
   }
 
   // Utility methods

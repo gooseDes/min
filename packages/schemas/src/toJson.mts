@@ -8,6 +8,7 @@ mkdirSync("temp", { recursive: true });
 Object.entries(schemas).forEach(([name, schema]) => {
   const json = schema.toJSONSchema({
     unrepresentable: "any",
+    reused: "ref",
     override: ctx => {
       if (ctx.zodSchema._zod?.def?.type === "date") {
         ctx.jsonSchema.type = "string";
