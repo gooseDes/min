@@ -16,7 +16,7 @@ class ChatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messageIds = ref.watch(messageIdsProvider(chat?.id ?? 0));
+    final messagesAsync = ref.watch(allMessagesProvider(chat?.id ?? 0));
 
     return Scaffold(
       backgroundColor: context.colorScheme.surfaceContainer,
@@ -54,13 +54,26 @@ class ChatScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(12),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: ListView.builder(
-              reverse: true,
-              itemCount: messageIds.length,
-              itemBuilder: (ctx, ind) {
-                final messageId = messageIds[messageIds.length - 1 - ind];
-                return Message(chatId: chat?.id ?? 0, messageId: messageId);
-              },
+            child: messagesAsync.when(
+              data: (messages) => ListView.builder(
+                reverse: true,
+                itemCount: messages.length,
+                itemBuilder: (ctx, ind) {
+                  final index = messages.length - 1 - ind;
+                  final message = messages[index];
+                  final isFirstInGroup =
+                      index == 0 ||
+                      message.senderId != messages[index - 1].senderId;
+
+                  return Message(
+                    key: ValueKey(message.id),
+                    message: message,
+                    isFirstInGroup: isFirstInGroup,
+                  );
+                },
+              ),
+              loading: () => const CircularProgressIndicator(),
+              error: (error, stack) => Text(error.toString()),
             ),
           ),
         ),

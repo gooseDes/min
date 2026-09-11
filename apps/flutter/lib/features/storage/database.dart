@@ -39,6 +39,8 @@ class MessagesTable extends Table {
   IntColumn get chatId =>
       integer().references(ChatsTable, #id, onDelete: KeyAction.cascade)();
   DateTimeColumn get sentAt => dateTime().withDefault(currentDateAndTime)();
+  BoolColumn get isSeen => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get seenAt => dateTime().withDefault(currentDateAndTime)();
 }
 
 extension type ChatWithAvatar(({DbChat chat, String? avatar}) record) {
@@ -165,9 +167,36 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Stream<List<DbMessage>> watchMessages(int chatId) {
-    return (select(
-      messagesTable,
-    )..where((t) => t.chatId.equals(chatId))).watch();
+  Stream<List<MessageDataWithSender>> watchMessages(int chatId) {
+    final query = select(messagesTable).join([
+      leftOuterJoin(
+        usersTable,
+        usersTable.id.equalsExp(messagesTable.senderId),
+      ),
+    ])..where(messagesTable.chatId.equals(chatId));
+
+    query.groupBy([messagesTable.id]);
+
+    return query.watch().map((List<TypedResult> rows) {
+      return rows.map((row) {
+        final message = row.readTable(messagesTable);
+        final sender = row.readTableOrNull(usersTable);
+
+        return MessageDataWithSender(
+          id: message.id,
+          chatId: message.chatId,
+          content: message.content,
+          isSeen: message.isSeen,
+          seenAt: message.seenAt,
+          sender: Sender(
+            id: sender?.id ?? 0,
+            avatar: sender?.avatar ?? '',
+            username: sender?.username ?? '',
+          ),
+          senderId: message.senderId,
+          sentAt: message.sentAt,
+        );
+      }).toList();
+    });
   }
 }

@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
+import 'package:min_types/index.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -30,23 +31,8 @@ final singleChatProvider = Provider.family<ChatWithAvatar?, int>((
 });
 
 // Messages
-final allMessagesProvider = StreamProvider.family<List<DbMessage>, int>((
-  ref,
-  int chatId,
-) {
-  final db = ref.watch(databaseProvider);
-  return db.watchMessages(chatId);
-});
-
-final messageIdsProvider = Provider.family<List<int>, int>((ref, int chatId) {
-  final messages = ref.watch(allMessagesProvider(chatId)).value ?? [];
-  return messages.map((message) => message.id).toList();
-});
-
-final singleMessageProvider =
-    Provider.family<DbMessage?, ({int chatId, int messageId})>((ref, args) {
-      final messages = ref.watch(allMessagesProvider(args.chatId)).value ?? [];
-      return messages.firstWhereOrNull(
-        (message) => message.id == args.messageId,
-      );
+final allMessagesProvider =
+    StreamProvider.family<List<MessageDataWithSender>, int>((ref, int chatId) {
+      final db = ref.watch(databaseProvider);
+      return db.watchMessages(chatId);
     });
