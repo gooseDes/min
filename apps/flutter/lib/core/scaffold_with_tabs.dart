@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:min_flutter/core/safe_area_insets_provider.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/animated_fill_icon.dart';
 import 'package:min_flutter/features/chats/selected_chat_provider.dart';
@@ -16,6 +17,12 @@ class ScaffoldWithTabs extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedChatId = ref.watch(selectedChatIdProvider);
     final navigationShell = child as StatefulNavigationShell;
+
+    final padding = MediaQuery.paddingOf(context);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(safeAreaInsetsProvider.notifier).update(padding);
+    });
 
     return Scaffold(
       body: navigationShell,

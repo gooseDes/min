@@ -4,6 +4,7 @@ import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
+import 'package:min_flutter/core/safe_area_insets_provider.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/features/chats/message.dart';
 import 'package:min_flutter/features/chats/selected_chat_provider.dart';
@@ -18,7 +19,7 @@ class ChatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final messagesAsync = ref.watch(allMessagesProvider(chat?.id ?? 0));
-    final safeAreaPadding = MediaQuery.viewPaddingOf(context);
+    final safeAreaPadding = ref.watch(safeAreaInsetsProvider);
 
     return Scaffold(
       backgroundColor: context.colorScheme.surfaceContainer,
