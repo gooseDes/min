@@ -27,6 +27,9 @@ dependencies:
   path_provider: ^2.1.6
   cached_network_image_ce: ^4.10.1
   flutter_animate: ^4.5.2
+  material_3_expressive: ^1.1.2
+  material_ui: ^1.2.0
+  motor: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

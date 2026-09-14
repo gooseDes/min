@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
@@ -33,7 +34,7 @@ class Message extends ConsumerWidget {
           children: [
             if (isFirstInGroup)
               CircleAvatar(
-                backgroundImage: NetworkImage(
+                backgroundImage: CachedNetworkImageProvider(
                   apiClient.avatarToUrl(message.sender.avatar),
                 ),
               ),

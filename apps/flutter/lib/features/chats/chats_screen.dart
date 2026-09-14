@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/fetch_and_save.dart';
-import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/profile_thing.dart';
 import 'package:min_flutter/features/chats/chat_screen.dart';
 import 'package:min_flutter/features/chats/chats_list_item.dart';
 import 'package:min_flutter/features/chats/selected_chat_provider.dart';
 import 'package:min_flutter/features/storage/database_provider.dart';
+import 'package:motor/motor.dart';
 
 class ChatsScreen extends ConsumerStatefulWidget {
   const ChatsScreen({super.key});
@@ -28,33 +29,36 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     final chatIds = ref.watch(chatIdsProvider);
     final selectedChatId = ref.watch(selectedChatIdProvider);
     final selectedChat = ref.watch(singleChatProvider(selectedChatId ?? 0));
+    final safeAreaPadding = MediaQuery.paddingOf(context);
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       transitionBuilder: (Widget child, Animation<double> animation) {
-        final slideTween = Tween<double>(begin: 30.0, end: 0.0);
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, childNode) {
+            final isEntering =
+                animation.status == AnimationStatus.forward ||
+                animation.status == AnimationStatus.completed;
 
-        return FadeTransition(
-          opacity: animation,
-          child: AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(
-                  0,
-                  slideTween.evaluate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeOut,
-                      reverseCurve: Curves.easeIn,
-                    ),
+            return SingleMotionBuilder(
+              motion: const MaterialSpringMotion.standardSpatialDefault(),
+              value: isEntering ? 1.0 : 0.0,
+              builder: (context, springValue, child) {
+                final yOffset = 30.0 * (1.0 - springValue);
+
+                return FadeTransition(
+                  opacity: animation,
+                  child: Transform.translate(
+                    offset: Offset(0, yOffset),
+                    child: child,
                   ),
-                ),
-                child: child,
-              );
-            },
-            child: child,
-          ),
+                );
+              },
+              child: childNode,
+            );
+          },
+          child: child,
         );
       },
 
@@ -68,7 +72,20 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                     spacing: 8,
                     children: [
                       const Icon(Symbols.chat_rounded),
-                      Text("Chats", style: context.textTheme.headlineSmall),
+                      Text(
+                        "Chats",
+                        style: M3ETheme.of(context)
+                            .typography
+                            .baseline
+                            .headlineSmall
+                            .copyWith(
+                              fontVariations: const [
+                                FontVariation("GRAD", 100),
+                                FontVariation("wght", 500),
+                                FontVariation("ROND", 100),
+                              ],
+                            ),
+                      ),
                     ],
                   ),
                 ),
@@ -97,9 +114,12 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                   ),
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
-                child: const Icon(Symbols.chat_add_on_rounded),
-                onPressed: () {},
+              floatingActionButton: Padding(
+                padding: EdgeInsets.only(bottom: safeAreaPadding.bottom),
+                child: M3EFab(
+                  icon: const Icon(Symbols.chat_add_on_rounded),
+                  onPressed: () {},
+                ),
               ),
             )
           : ChatScreen(chat: selectedChat),

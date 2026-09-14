@@ -288,6 +288,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.0"
+  dynamic_color:
+    dependency: transitive
+    description:
+      name: dynamic_color
+      sha256: "869b3bce0100eb519768ecd71c0111f0b5ea679f5f62e1f59c49d80067e730c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: "3bce007a596ff8b3119c45d68aaef631272537c03d30e5d4534dd24bf4c5eaa2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -628,6 +644,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.12.20"
+  material_3_expressive:
+    dependency: transitive
+    description:
+      name: material_3_expressive
+      sha256: "6bbe64da7692cfbe6b922415c4fae40a15e210036df7ab26baf05d63f8b667d7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   material_color_utilities:
     dependency: transitive
     description:
@@ -636,6 +660,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.0"
+  material_new_shapes:
+    dependency: transitive
+    description:
+      name: material_new_shapes
+      sha256: e4bc375205e187e8fb232573387112dd8c0dd45b03af8aa2b3c79eb4b9e3e0dc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   material_symbols_icons:
     dependency: transitive
     description:
@@ -648,10 +680,10 @@ packages:
     dependency: transitive
     description:
       name: material_ui
-      sha256: "7ba1ca315d50a004791dbab290417c52a61466d56db2822fe3c5c2994903110c"
+      sha256: fbfb53cab6c4629438feeade5f3d305f72944bc9d9f25786b19106d32b80ec45
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   melos:
     dependency: "direct dev"
     description:
@@ -684,6 +716,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.6.4"
+  motor:
+    dependency: transitive
+    description:
+      name: motor
+      sha256: cbd49f21b00e568c2b1a55f134ed803614a107782f4fea7769693bca32940c58
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   mustache_template:
     dependency: transitive
     description:

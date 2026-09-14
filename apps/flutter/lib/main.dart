@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:min_flutter/core/device_type.dart';
+import 'package:material_3_expressive/material_3_expressive.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/router.dart';
 import 'package:min_flutter/features/theming/linux_fallback.dart';
 import 'package:system_theme/system_theme.dart';
@@ -22,69 +22,47 @@ class MinApp extends ConsumerWidget {
 
     return SystemThemeBuilder(
       builder: (context, systemAccent) {
-        final splashFactory = DeviceType.isMobile
-            ? InkSparkle.splashFactory
-            : InkRipple.splashFactory;
-        final splashColor = systemAccent.accent.withValues(alpha: 0.05);
-        const highlightColor = Colors.transparent;
         const fontFamily = 'GoogleSansFlex';
-        const textTheme = TextTheme(
-          headlineLarge: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontVariations: [
-              FontVariation('ROND', 100),
-              FontVariation('GRAD', 50),
-            ],
-          ),
-          headlineMedium: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontVariations: [
-              FontVariation('ROND', 100),
-              FontVariation('GRAD', 50),
-            ],
-          ),
-          headlineSmall: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontVariations: [
-              FontVariation('ROND', 100),
-              FontVariation('GRAD', 50),
-            ],
-          ),
-        );
 
         return MaterialApp.router(
           routerConfig: router,
           title: 'Min',
-
+          themeMode: ThemeMode.system,
           theme: ThemeData(
             useMaterial3: true,
-            brightness: Brightness.light,
             fontFamily: fontFamily,
-            splashFactory: splashFactory,
-            splashColor: splashColor,
-            highlightColor: highlightColor,
             colorScheme: ColorScheme.fromSeed(
               seedColor: systemAccent.accent,
               brightness: Brightness.light,
             ),
-            textTheme: textTheme,
           ),
-
           darkTheme: ThemeData(
             useMaterial3: true,
-            brightness: Brightness.dark,
             fontFamily: fontFamily,
-            splashFactory: splashFactory,
-            splashColor: splashColor,
-            highlightColor: highlightColor,
             colorScheme: ColorScheme.fromSeed(
               seedColor: systemAccent.accent,
               brightness: Brightness.dark,
             ),
-            textTheme: textTheme,
           ),
 
-          themeMode: ThemeMode.system,
+          builder: (context, child) {
+            final brightness = Theme.of(context).brightness;
+
+            return M3ETheme(
+              data:
+                  (brightness == Brightness.light
+                          ? M3EThemeData.light(seedColor: systemAccent.accent)
+                          : M3EThemeData.dark(seedColor: systemAccent.accent))
+                      .copyWith(
+                        fontFamily: fontFamily,
+                        variableFont: const M3EVariableFontConfig(
+                          global: M3EVariableFontAxes(rond: 100),
+                        ),
+                      ),
+              child: child ?? const SizedBox(),
+            );
+          },
+
           scrollBehavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {
               PointerDeviceKind.mouse,

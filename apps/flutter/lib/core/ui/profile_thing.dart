@@ -1,6 +1,6 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 
 enum ProfileThingType { top, normal, bottom }
