@@ -30,6 +30,7 @@ dependencies:
   material_3_expressive: ^1.1.2
   material_ui: ^1.2.0
   motor: ^1.1.0
+  inspire_blur: ^0.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

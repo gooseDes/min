@@ -532,6 +532,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  inspire_blur:
+    dependency: transitive
+    description:
+      name: inspire_blur
+      sha256: b585981ba722ef7e1d4bba6b761dd516a3318189d422186c6a1f756e131a09e5
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.1"
   intl:
     dependency: transitive
     description:

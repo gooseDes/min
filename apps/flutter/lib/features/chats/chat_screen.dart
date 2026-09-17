@@ -1,5 +1,6 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inspire_blur/inspire_blur.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
@@ -63,29 +64,109 @@ class ChatScreen extends ConsumerWidget {
           ),
           color: context.colorScheme.surface,
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: messagesAsync.when(
-                data: (messages) => ListView.builder(
-                  reverse: true,
-                  itemCount: messages.length,
-                  itemBuilder: (ctx, ind) {
-                    final index = messages.length - 1 - ind;
-                    final message = messages[index];
-                    final isFirstInGroup =
-                        index == 0 ||
-                        message.senderId != messages[index - 1].senderId;
+              borderRadius: BorderRadius.circular(8),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned.fill(
+                    child: messagesAsync.when(
+                      data: (messages) => ListView.builder(
+                        reverse: true,
+                        itemCount: messages.length + 1,
+                        itemBuilder: (ctx, ind) {
+                          final index = messages.length - 1 - ind;
+                          if (index < 0)
+                            return SizedBox(
+                              key: ValueKey('space-$index'),
+                              height: 64,
+                            );
+                          final message = messages[index];
+                          final isFirstInGroup =
+                              index < 1 ||
+                              message.senderId != messages[index - 1].senderId;
 
-                    return Message(
-                      key: ValueKey(message.id),
-                      message: message,
-                      isFirstInGroup: isFirstInGroup,
-                    );
-                  },
-                ),
-                loading: () => const CircularProgressIndicator(),
-                error: (error, stack) => Text(error.toString()),
+                          return Message(
+                            key: ValueKey(message.id),
+                            message: message,
+                            isFirstInGroup: isFirstInGroup,
+                          );
+                        },
+                      ),
+                      loading: () => const CircularProgressIndicator(),
+                      error: (error, stack) => Text(error.toString()),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: 150,
+                    child: Inspire.backdropBlur(
+                      config: InspireBlurConfig.bottomToTop(sigma: 5),
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 64,
+                    child: Inspire.backdropBlur(
+                      config: InspireBlurConfig.topToBottom(sigma: 5),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 12,
+                    left: 0,
+                    right: 0,
+                    height: 72,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: 12,
+                      children: [
+                        Expanded(
+                          child: Card.filled(
+                            margin: EdgeInsets.zero,
+                            color: context.colorScheme.surfaceContainerLow,
+                            elevation: 3,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      keyboardType: TextInputType.multiline,
+                                      minLines: 1,
+                                      maxLines: 2,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                        hintText: 'Your message goes here...',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        M3EIconButton(
+                          icon: const Icon(Symbols.send_rounded, size: 32),
+                          variant: M3EIconButtonVariant.filled,
+                          size: M3EIconButtonSize.md,
+                          shape: M3EIconButtonShapeVariant.round,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

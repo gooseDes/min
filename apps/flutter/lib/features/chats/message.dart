@@ -33,9 +33,12 @@ class Message extends ConsumerWidget {
               : CrossAxisAlignment.start,
           children: [
             if (isFirstInGroup)
-              CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(
-                  apiClient.avatarToUrl(message.sender.avatar),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(
+                    apiClient.avatarToUrl(message.sender.avatar),
+                  ),
                 ),
               ),
             Card.filled(
