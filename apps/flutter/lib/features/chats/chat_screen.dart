@@ -1,4 +1,5 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inspire_blur/inspire_blur.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
@@ -74,23 +75,22 @@ class ChatScreen extends ConsumerWidget {
                     child: messagesAsync.when(
                       data: (messages) => ListView.builder(
                         reverse: true,
-                        itemCount: messages.length + 1,
+                        itemCount: messages.length,
+                        padding: const EdgeInsets.only(bottom: 90, top: 64),
+                        scrollCacheExtent: const ScrollCacheExtent.viewport(1),
                         itemBuilder: (ctx, ind) {
                           final index = messages.length - 1 - ind;
-                          if (index < 0)
-                            return SizedBox(
-                              key: ValueKey('space-$index'),
-                              height: 64,
-                            );
                           final message = messages[index];
                           final isFirstInGroup =
-                              index < 1 ||
+                              index <= 0 ||
                               message.senderId != messages[index - 1].senderId;
 
                           return Message(
                             key: ValueKey(message.id),
                             message: message,
                             isFirstInGroup: isFirstInGroup,
+                            entranceIndex: ind,
+                            shouldAnimate: true,
                           );
                         },
                       ),
