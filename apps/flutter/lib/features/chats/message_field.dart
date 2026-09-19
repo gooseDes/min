@@ -22,9 +22,9 @@ class MessageField extends HookWidget {
       final text = fieldController.text.trim();
       if (chat?.id != null && text.isNotEmpty) {
         fieldController.clear();
+        fieldFocusNode.requestFocus();
         await apiClient.sendMessage(chat!.id, text);
       }
-      fieldFocusNode.requestFocus();
     }
 
     return Row(

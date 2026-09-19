@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:min_api/src/subscription.dart';
 import 'package:min_types/index.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -162,6 +163,15 @@ class ApiClient {
       'chatId': chatId,
       'content': content,
     });
+  }
+
+  Future<ApiSubscription> subscribeToNewMessages(
+    Function(MessageDataWithSender) onNewMessage,
+  ) async {
+    final socket = await getSocket();
+    return ApiSubscription(socket, 'newMessage', (data) {
+      onNewMessage(MessageDataWithSender.fromJson(data));
+    })..subscribe();
   }
 
   // Utility methods

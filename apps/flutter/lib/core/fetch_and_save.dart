@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/features/storage/database_provider.dart';
+import 'package:min_types/index.dart';
 
 Future<void> requestChatListUpdate(WidgetRef ref) async {
   final db = ref.read(databaseProvider);
@@ -14,4 +15,12 @@ Future<void> requestChatUpdate(WidgetRef ref, int chatId) async {
   final db = ref.read(databaseProvider);
   final msgs = await apiClient.fetchChatMessages(chatId);
   await db.addMessagesWithSenders(msgs);
+}
+
+Future<void> requestAddingMessage(
+  Ref ref,
+  MessageDataWithSender message,
+) async {
+  final db = ref.read(databaseProvider);
+  await db.addMessageWithSender(message);
 }

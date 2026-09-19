@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:min_api/index.dart';
 import 'package:min_flutter/core/client.dart';
+import 'package:min_flutter/core/fetch_and_save.dart';
 import 'package:min_flutter/features/dialogs/dialogs.dart';
 import 'package:min_flutter/features/storage/secure_storage.dart';
 import 'package:min_flutter/features/storage/storage.dart';
@@ -22,13 +23,15 @@ class AuthState {
 }
 
 class AuthNotifier extends Notifier<AuthState> {
+  ApiSubscription? _messagesSubscription;
+
   @override
   AuthState build() {
-    init();
+    init(ref);
     return AuthState(isAuthenticated: false);
   }
 
-  Future<void> init() async {
+  Future<void> init(Ref ref) async {
     final secStorage = SecureStorage();
     final token = await secStorage.getToken();
     final storage = Storage();
@@ -37,6 +40,9 @@ class AuthNotifier extends Notifier<AuthState> {
     if (userId != null && username != null && token != null) {
       state = AuthState(isAuthenticated: true, username: username, id: userId);
       apiClient.initSocket(token);
+      _messagesSubscription = await apiClient.subscribeToNewMessages((message) {
+        requestAddingMessage(ref, message);
+      });
     }
   }
 
@@ -51,6 +57,11 @@ class AuthNotifier extends Notifier<AuthState> {
         await storage.set(StorageKey.userId, id);
         await storage.set(StorageKey.userUsername, username);
         apiClient.initSocket(token);
+        _messagesSubscription = await apiClient.subscribeToNewMessages((
+          message,
+        ) {
+          requestAddingMessage(ref, message);
+        });
       },
       failure: (message) {
         state = AuthState(isAuthenticated: false);
@@ -61,6 +72,8 @@ class AuthNotifier extends Notifier<AuthState> {
 
   void logout() {
     state = AuthState(isAuthenticated: false);
+    _messagesSubscription?.unsubscribe();
+    _messagesSubscription = null;
   }
 }
 

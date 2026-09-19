@@ -60,7 +60,6 @@ class _MessageEntranceState extends ConsumerState<MessageEntrance> {
     return MotionBuilder(
       motion: const MaterialSpringMotion.expressiveSpatialDefault(),
       value: _shown ? Offset.zero : offset,
-      from: offset,
       builder: (context, offset, child) =>
           Transform.translate(offset: offset, child: child),
       converter: const OffsetMotionConverter(),

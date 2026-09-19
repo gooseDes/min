@@ -12,9 +12,7 @@ if (existsSync(TEMP_FILE)) unlinkSync(TEMP_FILE);
 
 let content = "";
 
-const dartContent = execSync(
-  `pnpm exec quicktype --src-lang schema --src ${join(FOLDER, "*.json")} --lang dart --required-props`,
-);
+const dartContent = execSync(`pnpm exec quicktype --src-lang schema --src ${join(FOLDER, "*.json")} --lang dart`);
 content += dartContent + "\n";
 
 console.log("Fixing...");
