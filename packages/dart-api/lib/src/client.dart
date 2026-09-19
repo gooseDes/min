@@ -157,6 +157,13 @@ class ApiClient {
     );
   }
 
+  Future<void> sendMessage(int chatId, String content) {
+    return baseSocketRequest('sendMessage', (data) => {}, {
+      'chatId': chatId,
+      'content': content,
+    });
+  }
+
   // Utility methods
   String avatarToUrl(String? avatar) {
     return '$url/avatars/$avatar.webp';

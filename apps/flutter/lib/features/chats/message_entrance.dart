@@ -37,7 +37,6 @@ class _MessageEntranceState extends ConsumerState<MessageEntrance> {
 
     ref.listenManual(_animatedMessageIdsProvider, (_, _) {});
     final animatedMessageIds = ref.read(_animatedMessageIdsProvider);
-    print(animatedMessageIds);
 
     if (!widget.animate || animatedMessageIds.contains(widget.id)) {
       _shown = true;

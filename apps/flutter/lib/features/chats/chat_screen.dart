@@ -9,6 +9,7 @@ import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/safe_area_insets_provider.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/features/chats/message.dart';
+import 'package:min_flutter/features/chats/message_field.dart';
 import 'package:min_flutter/features/chats/selected_chat_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
 import 'package:min_flutter/features/storage/database_provider.dart';
@@ -121,50 +122,7 @@ class ChatScreen extends ConsumerWidget {
                     left: 0,
                     right: 0,
                     height: 72,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      spacing: 12,
-                      children: [
-                        Expanded(
-                          child: Card.filled(
-                            margin: EdgeInsets.zero,
-                            color: context.colorScheme.surfaceContainerLow,
-                            elevation: 3,
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      keyboardType: TextInputType.multiline,
-                                      minLines: 1,
-                                      maxLines: 2,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                        enabledBorder: InputBorder.none,
-                                        errorBorder: InputBorder.none,
-                                        disabledBorder: InputBorder.none,
-                                        hintText: 'Your message goes here...',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        M3EIconButton(
-                          icon: const Icon(Symbols.send_rounded, size: 32),
-                          variant: M3EIconButtonVariant.filled,
-                          size: M3EIconButtonSize.md,
-                          shape: M3EIconButtonShapeVariant.round,
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
+                    child: MessageField(chat: chat),
                   ),
                 ],
               ),
