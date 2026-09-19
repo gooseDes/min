@@ -7,8 +7,6 @@ import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/chats/message_entrance.dart';
 import 'package:min_types/index.dart';
 
-const _entranceMsgAmount = 15;
-
 class Message extends ConsumerWidget {
   const Message({
     super.key,
@@ -27,6 +25,7 @@ class Message extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(authProvider).id;
     final isMy = userId == message.senderId;
+    final entranceMsgAmount = (MediaQuery.sizeOf(context).height / 50).ceil();
 
     return Align(
       alignment: isMy ? Alignment.centerRight : Alignment.centerLeft,
@@ -39,8 +38,8 @@ class Message extends ConsumerWidget {
           direction: isMy
               ? MessageEntranceDirection.right
               : MessageEntranceDirection.left,
-          animate: shouldAnimate && entranceIndex < _entranceMsgAmount,
-          delay: entranceIndex < _entranceMsgAmount
+          animate: shouldAnimate && entranceIndex < entranceMsgAmount,
+          delay: entranceIndex < entranceMsgAmount
               ? Duration(milliseconds: entranceIndex * 50)
               : Duration.zero,
           child: Column(
