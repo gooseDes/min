@@ -27,11 +27,11 @@ class AuthNotifier extends Notifier<AuthState> {
 
   @override
   AuthState build() {
-    init(ref);
+    _init(ref);
     return AuthState(isAuthenticated: false);
   }
 
-  Future<void> init(Ref ref) async {
+  Future<void> _init(Ref ref) async {
     final secStorage = SecureStorage();
     final token = await secStorage.getToken();
     final storage = Storage();

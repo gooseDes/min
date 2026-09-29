@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/router.dart';
+import 'package:min_flutter/features/settings/settings_provider.dart';
 import 'package:min_flutter/features/theming/linux_fallback.dart';
 import 'package:system_theme/system_theme.dart';
 
@@ -19,6 +20,7 @@ class MinApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final settings = ref.watch(settingsProvider);
 
     return SystemThemeBuilder(
       builder: (context, systemAccent) {
@@ -28,6 +30,7 @@ class MinApp extends ConsumerWidget {
           routerConfig: router,
           title: 'Min',
           themeMode: ThemeMode.system,
+          showPerformanceOverlay: settings.showDebugInfo.value,
           theme: ThemeData(
             useMaterial3: true,
             fontFamily: fontFamily,

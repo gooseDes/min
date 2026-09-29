@@ -11,6 +11,7 @@ import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/features/chats/message.dart';
 import 'package:min_flutter/features/chats/message_field.dart';
 import 'package:min_flutter/features/chats/selected_chat_provider.dart';
+import 'package:min_flutter/features/settings/settings_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
 import 'package:min_flutter/features/storage/database_provider.dart';
 
@@ -23,6 +24,7 @@ class ChatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final messagesAsync = ref.watch(allMessagesProvider(chat?.id ?? 0));
     final safeAreaPadding = ref.watch(safeAreaInsetsProvider);
+    final settings = ref.watch(settingsProvider);
 
     return Scaffold(
       backgroundColor: context.colorScheme.surfaceContainer,
@@ -104,18 +106,22 @@ class ChatScreen extends ConsumerWidget {
                     left: 0,
                     right: 0,
                     height: 150,
-                    child: Inspire.backdropBlur(
-                      config: InspireBlurConfig.bottomToTop(sigma: 5),
-                    ),
+                    child: settings.enableProgressiveBlur.value
+                        ? Inspire.backdropBlur(
+                            config: InspireBlurConfig.bottomToTop(sigma: 5),
+                          )
+                        : Container(),
                   ),
                   Positioned(
                     top: 0,
                     left: 0,
                     right: 0,
                     height: 64,
-                    child: Inspire.backdropBlur(
-                      config: InspireBlurConfig.topToBottom(sigma: 5),
-                    ),
+                    child: settings.enableProgressiveBlur.value
+                        ? Inspire.backdropBlur(
+                            config: InspireBlurConfig.topToBottom(sigma: 5),
+                          )
+                        : Container(),
                   ),
                   Positioned(
                     bottom: 12,

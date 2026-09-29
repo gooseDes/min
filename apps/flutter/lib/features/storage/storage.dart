@@ -19,6 +19,16 @@ class Storage {
     throw ArgumentError('Unsupported type: $T');
   }
 
+  Future<T?> rawGet<T>(String key) async {
+    if (T == int) return await prefs.getInt(key) as T?;
+    if (T == String) return await prefs.getString(key) as T?;
+    if (T == bool) return await prefs.getBool(key) as T?;
+    if (T == double) return await prefs.getDouble(key) as T?;
+    if (T == List<String>) return await prefs.getStringList(key) as T?;
+
+    throw ArgumentError('Unsupported type: $T');
+  }
+
   Future<void> set<T>(StorageKey<T> key, T value) async {
     if (T == int) return await prefs.setInt(key.name, value as int);
     if (T == String) return await prefs.setString(key.name, value as String);
