@@ -48,3 +48,8 @@ app.*.map.json
 .sync_*.db
 .sync_*.db-wal
 .sync_*.db-shm
+
+# Another things
+**/android/*.p12
+**/android/app/build/
+**/android/build/
