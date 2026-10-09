@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
-import { existsSync, renameSync, unlinkSync, writeFileSync } from "fs";
-import { join } from "path";
+import { existsSync, mkdirSync, renameSync, unlinkSync, writeFileSync } from "fs";
+import { dirname, join } from "path";
 
 const FOLDER = "temp";
 const OUTPUT_FILE = "../dart-types/lib/src/types.g.dart";
@@ -78,6 +78,7 @@ const finalContent = almostFinalContent;
 writeFileSync(TEMP_FILE, finalContent);
 
 console.log("Moving output file to dart package...");
+mkdirSync(dirname(OUTPUT_FILE), { recursive: true });
 renameSync(TEMP_FILE, OUTPUT_FILE);
 
 console.log("Running formatter...");
