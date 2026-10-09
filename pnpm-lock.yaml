@@ -146,6 +146,8 @@ importers:
         specifier: ^6.4.3
         version: 6.4.3(@types/node@26.2.0)(lightningcss@1.33.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
 
+  apps/flutter: {}
+
   apps/web:
     dependencies:
       '@fortawesome/fontawesome-svg-core':
