@@ -343,6 +343,14 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: install dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: install melos
+        run: |
+          dart pub global activate melos
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
       - name: set up flutter
         uses: subosito/flutter-action@v2
         with:
