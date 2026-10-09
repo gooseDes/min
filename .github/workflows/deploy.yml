@@ -14,6 +14,7 @@ jobs:
       web_changed: ${{ steps.check.outputs.web_changed }}
       desktop_changed: ${{ steps.check.outputs.desktop_changed }}
       api_changed: ${{ steps.check.outputs.api_changed }}
+      fl_changed: ${{ steps.check.outputs.fl_changed }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -31,6 +32,8 @@ jobs:
             echo "backend_changed=true" >> $GITHUB_OUTPUT
             echo "web_changed=true" >> $GITHUB_OUTPUT
             echo "desktop_changed=true" >> $GITHUB_OUTPUT
+            echo "api_changed=true" >> $GITHUB_OUTPUT
+            echo "fl_changed=true" >> $GITHUB_OUTPUT
             exit 0
           fi
 
@@ -48,6 +51,10 @@ jobs:
 
           if git diff $BEFORE $AFTER -U0 -- packages/api/package.json | grep -E "^\+\s*\"version\""; then
             echo "api_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+          if git diff $BEFORE $AFTER -U0 -- apps/flutter/package.json | grep -E "^\+\s*\"version\""; then
+            echo "fl_changed=true" >> $GITHUB_OUTPUT
           fi
 
   # Backend deployment
@@ -251,6 +258,7 @@ jobs:
 
           gh release upload "$TAG" arch-build/*.pkg.tar.zst
 
+  # Web deployment
   deploy-web:
     permissions:
       contents: write
@@ -297,3 +305,107 @@ jobs:
         with:
           branch: gh-pages
           folder: apps/web/dist
+
+  # Flutter deployment
+  deploy-flutter:
+    permissions:
+      contents: write
+    concurrency:
+      group: github-pages-deploy
+      cancel-in-progress: true
+
+    needs: check-versions
+    if: needs.check-versions.outputs.fl_changed == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: install just
+        uses: extractions/setup-just@v2
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: set up java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: set up flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: install dependencies
+        run: just install
+
+      - name: run code generation
+        run: just fl generate-all
+
+      - name: create keystore.p12
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run:
+          echo "$KEYSTORE_BASE64" | base64 --decode > ./apps/flutter/android/keystore.p12
+
+      - name: create key.properties
+        env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          cat <<EOF > ./apps/flutter/android/key.properties
+          storePassword=$STORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=keystore.p12
+          EOF
+
+      - name: build android apk
+        run: just fl build-android
+
+      - name: get Version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./apps/flutter/package.json').version")
+          echo "tag=flutter-v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: publish new release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release create "$TAG" --title "Min Flutter for Android $TAG" --notes "Automated release"
+
+          # Download latest.json from the previous release and publish it to new release
+          PREVIOUS_TAG=$(gh release list --limit 2 --json tagName --jq '.[1].tagName')
+
+          if [ -n "$PREVIOUS_TAG" ] && [ "$PREVIOUS_TAG" != "null" ]; then
+            echo "Previous release tag found: $PREVIOUS_TAG. Downloading latest.json..."
+            mkdir -p ./temp
+            gh release download "$PREVIOUS_TAG" --pattern latest.json --dir ./temp || true
+
+            if [ -f ./temp/latest.json ]; then
+              echo "Uploading to new release..."
+              gh release upload "$TAG" ./temp/latest.json --clobber
+            fi
+          else
+            echo "No valid previous release found. Skipping latest.json sync."
+          fi
+
+          echo "Uploading actual release"
+          gh release upload "$TAG" ./apps/flutter/build/app/outputs/flutter-apk/* --clobber
