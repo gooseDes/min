@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.ApplicationExtension
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -13,7 +12,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
-configure<ApplicationExtension> {
+android {
     namespace = "com.goose.min_flutter"
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
@@ -50,6 +49,7 @@ configure<ApplicationExtension> {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         debug {
+            signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
         }
     }

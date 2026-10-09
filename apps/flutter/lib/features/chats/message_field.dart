@@ -35,7 +35,6 @@ class MessageField extends HookWidget {
           child: Card.filled(
             margin: EdgeInsets.zero,
             color: context.colorScheme.surfaceContainerLow,
-            elevation: 3,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(

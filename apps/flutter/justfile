@@ -26,10 +26,10 @@ build-linux:
     flutter build linux
 
 build-android:
-    flutter build apk --release
+    flutter build apk --release --split-per-abi
 
 install-android: build-android
-    adb install -r build/app/outputs/flutter-apk/app-release.apk
+    adb install -r build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 
 build-all:
     flutter build linux

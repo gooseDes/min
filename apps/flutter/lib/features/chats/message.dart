@@ -2,6 +2,7 @@ import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
+import 'package:min_flutter/core/datetime_ext.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/chats/message_entrance.dart';
@@ -85,6 +86,15 @@ class Message extends ConsumerWidget {
                           message.content,
                           textWidthBasis: TextWidthBasis.longestLine,
                         ),
+                      ),
+                      Text(
+                        message.sentAt.toPrettyString(),
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.secondary,
+                          fontSize: 10,
+                        ),
+                        textWidthBasis: TextWidthBasis.parent,
+                        textAlign: TextAlign.right,
                       ),
                     ],
                   ),
