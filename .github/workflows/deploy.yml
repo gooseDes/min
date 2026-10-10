@@ -16,7 +16,7 @@ jobs:
       api_changed: ${{ steps.check.outputs.api_changed }}
       fl_changed: ${{ steps.check.outputs.fl_changed }}
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -80,10 +80,10 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Install Monorepo Dependencies
+      - name: Install monorepo dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Deploy Standalone Backend Files
+      - name: Deploy standalone backend files
         env:
           CI: "true"
         run: pnpm --filter=backend deploy dist/backend --legacy
@@ -165,43 +165,43 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Version
+      - name: Get version
         id: version
         shell: bash
         run: |
           VERSION=$(node -p "require('./apps/desktop/package.json').version")
           echo "tag=app-v$VERSION" >> $GITHUB_OUTPUT
 
-      - name: create .env
+      - name: Create .env
         shell: bash
         run: |
           printf '%s' "$ENV_FILE" > apps/web/.env
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
 
-      - name: install pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: setup node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: pnpm
 
-      - name: install Rust stable
+      - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: install dependencies (ubuntu only)
+      - name: Install dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
 
-      - name: install frontend dependencies
+      - name: Install frontend dependencies
         run: pnpm install
 
       - uses: tauri-apps/tauri-action@v1
@@ -220,7 +220,28 @@ jobs:
           buildScriptName: "build"
           includeUpdaterJson: true
 
-      - name: Build and Upload Arch Linux Package (.pkg.tar.zst)
+      - name: Sync flutter-latest.json
+        if: matrix.platform == 'ubuntu-22.04'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Download flutter-latest.json from the previous release and publish it to new release
+          PREVIOUS_TAG=$(gh release list --limit 2 --json tagName --jq '.[1].tagName')
+
+          if [ -n "$PREVIOUS_TAG" ] && [ "$PREVIOUS_TAG" != "null" ]; then
+            echo "Previous release tag found: $PREVIOUS_TAG. Downloading flutter-latest.json..."
+            mkdir -p ./temp
+            gh release download "$PREVIOUS_TAG" --pattern flutter-latest.json --dir ./temp || true
+
+            if [ -f ./temp/flutter-latest.json ]; then
+              echo "Uploading to new release..."
+              gh release upload "$TAG" ./temp/flutter-latest.json --clobber
+            fi
+          else
+            echo "No valid previous release found. Skipping flutter-latest.json sync."
+          fi
+
+      - name: Build and upload Arch Linux package (.pkg.tar.zst)
         if: matrix.platform == 'ubuntu-22.04'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -275,32 +296,32 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: create .env
+      - name: Create .env
         run: |
           echo "MIN_API_URL=${{ secrets.API_URL }}" > apps/web/.env
           echo "MIN_VAPID_PUBLIC=${{ secrets.VAPID_PUBLIC }}" >> apps/web/.env
 
-      - name: install pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: setup node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: pnpm
 
-      - name: install just
+      - name: Install just
         uses: extractions/setup-just@v2
 
-      - name: install dependencies
+      - name: Install dependencies
         run: pnpm install
 
-      - name: build
+      - name: Build
         run: just web build
 
-      - name: deploy
+      - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
@@ -323,53 +344,52 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: install just
+      - name: Install Just
         uses: extractions/setup-just@v2
 
-      - name: install pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 11
 
-      - name: setup node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: pnpm
 
-      - name: set up java
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: "temurin"
+          java-version: "21"
 
-      - name: install dart
+      - name: Install Dart
         uses: dart-lang/setup-dart@v1
 
-      - name: install melos
+      - name: Install Melos
         run: |
           dart pub global activate melos
           echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
-      - name: set up flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
           cache: true
 
-      - name: install dependencies
+      - name: Install dependencies
         run: just install
 
-      - name: run code generation
+      - name: Run code generation
         run: just generate-all
 
-      - name: create keystore.p12
+      - name: Create keystore.p12
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-        run:
-          echo "$KEYSTORE_BASE64" | base64 --decode > ./apps/flutter/android/keystore.p12
+        run: echo "$KEYSTORE_BASE64" | base64 --decode > ./apps/flutter/android/keystore.p12
 
-      - name: create key.properties
+      - name: Create key.properties
         env:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
@@ -382,17 +402,17 @@ jobs:
           storeFile=keystore.p12
           EOF
 
-      - name: build android apk
+      - name: Build Android APK
         run: just fl build-android
 
-      - name: get Version
+      - name: Get version
         id: version
         shell: bash
         run: |
           VERSION=$(node -p "require('./apps/flutter/package.json').version")
           echo "tag=flutter-v$VERSION" >> $GITHUB_OUTPUT
 
-      - name: publish new release
+      - name: Publish new release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.version.outputs.tag }}
@@ -415,5 +435,9 @@ jobs:
             echo "No valid previous release found. Skipping latest.json sync."
           fi
 
-          echo "Uploading actual release"
+          echo "Generating flutter-latest.json and uploading it..."
+          node ./apps/flutter/genVersionJson.mjs -t "$TAG"
+          gh release upload "$TAG" ./flutter-latest.json
+
+          echo "Uploading actual release..."
           gh release upload "$TAG" ./apps/flutter/build/app/outputs/flutter-apk/* --clobber
