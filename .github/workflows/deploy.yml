@@ -402,15 +402,16 @@ jobs:
           storeFile=keystore.p12
           EOF
 
-      - name: Build Android APK
-        run: just fl build-android
-
       - name: Get version
         id: version
         shell: bash
         run: |
           VERSION=$(node -p "require('./apps/flutter/package.json').version")
           echo "tag=flutter-v$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build Android APK
+        run: just fl build-android --build-name=${{steps.version.outputs.version}}
 
       - name: Publish new release
         env:
