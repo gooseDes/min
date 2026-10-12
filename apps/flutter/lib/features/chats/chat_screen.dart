@@ -54,6 +54,7 @@ class ChatScreen extends ConsumerWidget {
           ],
         ),
         leading: M3EIconButton(
+          variant: M3EIconButtonVariant.standard,
           icon: const Icon(Symbols.arrow_back),
           onPressed: () {
             ref.read(selectedChatIdProvider.notifier).closeChat();

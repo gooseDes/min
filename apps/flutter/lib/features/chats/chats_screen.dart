@@ -117,6 +117,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
               floatingActionButton: Padding(
                 padding: EdgeInsets.only(bottom: safeAreaPadding.bottom),
                 child: M3EFab(
+                  size: M3EFabSize.regular,
                   icon: const Icon(Symbols.chat_add_on_rounded),
                   onPressed: () {},
                 ),
