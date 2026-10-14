@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
@@ -23,8 +24,21 @@ class MinApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     final settings = ref.watch(settingsProvider);
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => UpdaterService.checkForUpdates(rootNavigatorKey),
+    if (!kDebugMode)
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => UpdaterService.checkForUpdates(rootNavigatorKey),
+      );
+
+    const headingsTextTheme = TextTheme(
+      displayLarge: TextStyle(fontWeight: FontWeight.w700),
+      displayMedium: TextStyle(fontWeight: FontWeight.w700),
+      displaySmall: TextStyle(fontWeight: FontWeight.w700),
+      headlineLarge: TextStyle(fontWeight: FontWeight.w700),
+      headlineMedium: TextStyle(fontWeight: FontWeight.w700),
+      headlineSmall: TextStyle(fontWeight: FontWeight.w700),
+      titleLarge: TextStyle(fontWeight: FontWeight.w600),
+      titleMedium: TextStyle(fontWeight: FontWeight.w600),
+      titleSmall: TextStyle(fontWeight: FontWeight.w600),
     );
 
     return SystemThemeBuilder(
@@ -39,6 +53,7 @@ class MinApp extends ConsumerWidget {
           theme: ThemeData(
             useMaterial3: true,
             fontFamily: fontFamily,
+            textTheme: headingsTextTheme,
             colorScheme: ColorScheme.fromSeed(
               seedColor: systemAccent.accent,
               brightness: Brightness.light,
@@ -47,6 +62,7 @@ class MinApp extends ConsumerWidget {
           darkTheme: ThemeData(
             useMaterial3: true,
             fontFamily: fontFamily,
+            textTheme: headingsTextTheme,
             colorScheme: ColorScheme.fromSeed(
               seedColor: systemAccent.accent,
               brightness: Brightness.dark,
@@ -65,6 +81,7 @@ class MinApp extends ConsumerWidget {
                         fontFamily: fontFamily,
                         variableFont: const M3EVariableFontConfig(
                           global: M3EVariableFontAxes(rond: 100),
+                          brand: M3EVariableFontAxes(wght: 600),
                         ),
                       ),
               child: child ?? const SizedBox(),

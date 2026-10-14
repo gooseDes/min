@@ -52,7 +52,7 @@ class ProfileThing extends StatelessWidget {
         ),
         title: Text(
           name ?? "Test User",
-          style: context.textTheme.bodyLarge,
+          style: context.typography.baseline.titleMedium,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

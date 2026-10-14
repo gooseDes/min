@@ -411,7 +411,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build Android APK
-        run: just fl build-android --build-name=${{steps.version.outputs.version}}
+        run: just fl build-android ${{steps.version.outputs.version}}
 
       - name: Publish new release
         env:

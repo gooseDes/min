@@ -76,9 +76,8 @@ class Message extends ConsumerWidget {
                       if (isFirstInGroup)
                         Text(
                           isMy ? 'You' : message.sender.username,
-                          style: context.textTheme.bodyMedium?.copyWith(
-                            color: context.colorScheme.secondary,
-                          ),
+                          style: context.typography.baseline.titleSmall
+                              .copyWith(color: context.colorScheme.secondary),
                           textAlign: TextAlign.left,
                         ),
                       Flexible(
@@ -89,9 +88,8 @@ class Message extends ConsumerWidget {
                       ),
                       Text(
                         message.sentAt.toPrettyString(),
-                        style: context.textTheme.bodyMedium?.copyWith(
+                        style: context.typography.baseline.labelSmall.copyWith(
                           color: context.colorScheme.secondary,
-                          fontSize: 10,
                         ),
                         textWidthBasis: TextWidthBasis.parent,
                         textAlign: TextAlign.right,

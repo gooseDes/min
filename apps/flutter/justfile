@@ -25,10 +25,10 @@ build-windows:
 build-linux:
     flutter build linux
 
-build-android *args:
-    flutter build apk --release --split-per-abi {{ args }}
+build-android build_name:
+    flutter build apk --release --split-per-abi --build-name {{ build_name }}
 
-install-android: build-android
+install-android: (build-android "test")
     adb install -r build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 
 build-all:

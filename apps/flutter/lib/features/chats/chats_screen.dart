@@ -65,28 +65,12 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
       child: selectedChatId == null
           ? Scaffold(
               appBar: AppBar(
-                title: Center(
+                title: const Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     spacing: 8,
-                    children: [
-                      const Icon(Symbols.chat_rounded),
-                      Text(
-                        "Chats",
-                        style: M3ETheme.of(context)
-                            .typography
-                            .baseline
-                            .headlineSmall
-                            .copyWith(
-                              fontVariations: const [
-                                FontVariation("GRAD", 100),
-                                FontVariation("wght", 500),
-                                FontVariation("ROND", 100),
-                              ],
-                            ),
-                      ),
-                    ],
+                    children: [Icon(Symbols.chat_rounded), Text("Chats")],
                   ),
                 ),
               ),

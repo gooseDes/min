@@ -76,37 +76,42 @@ class ChatScreen extends ConsumerWidget {
                 alignment: Alignment.center,
                 children: [
                   Positioned.fill(
-                    child: messagesAsync.when(
-                      data: (messages) => ListView.builder(
-                        reverse: true,
-                        itemCount: messages.length,
-                        padding: const EdgeInsets.only(bottom: 90, top: 64),
-                        scrollCacheExtent: const ScrollCacheExtent.viewport(1),
-                        itemBuilder: (ctx, ind) {
-                          final index = messages.length - 1 - ind;
-                          final message = messages[index];
-                          final isFirstInGroup =
-                              index <= 0 ||
-                              message.senderId != messages[index - 1].senderId;
+                    child: RepaintBoundary(
+                      child: messagesAsync.when(
+                        data: (messages) => ListView.builder(
+                          reverse: true,
+                          itemCount: messages.length,
+                          padding: const EdgeInsets.only(bottom: 90, top: 64),
+                          scrollCacheExtent: const ScrollCacheExtent.viewport(
+                            1,
+                          ),
+                          itemBuilder: (ctx, ind) {
+                            final index = messages.length - 1 - ind;
+                            final message = messages[index];
+                            final isFirstInGroup =
+                                index <= 0 ||
+                                message.senderId !=
+                                    messages[index - 1].senderId;
 
-                          return Message(
-                            key: ValueKey(message.id),
-                            message: message,
-                            isFirstInGroup: isFirstInGroup,
-                            entranceIndex: ind,
-                            shouldAnimate: true,
-                          );
-                        },
+                            return Message(
+                              key: ValueKey(message.id),
+                              message: message,
+                              isFirstInGroup: isFirstInGroup,
+                              entranceIndex: ind,
+                              shouldAnimate: true,
+                            );
+                          },
+                        ),
+                        loading: () => const CircularProgressIndicator(),
+                        error: (error, stack) => Text(error.toString()),
                       ),
-                      loading: () => const CircularProgressIndicator(),
-                      error: (error, stack) => Text(error.toString()),
                     ),
                   ),
                   Positioned(
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    height: 150,
+                    height: 96,
                     child: settings.enableProgressiveBlur.value
                         ? Inspire.backdropBlur(
                             config: InspireBlurConfig.bottomToTop(sigma: 5),
