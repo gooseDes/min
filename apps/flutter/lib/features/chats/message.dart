@@ -69,32 +69,33 @@ class Message extends ConsumerWidget {
                 color: context.colorScheme.surfaceContainer,
                 child: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isFirstInGroup)
+                  child: IntrinsicWidth(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (isFirstInGroup)
+                          Text(
+                            isMy ? 'You' : message.sender.username,
+                            style: context.typography.baseline.titleSmall
+                                .copyWith(color: context.colorScheme.secondary),
+                            textAlign: TextAlign.left,
+                          ),
+                        Flexible(
+                          child: Text(
+                            message.content,
+                            textWidthBasis: TextWidthBasis.longestLine,
+                          ),
+                        ),
                         Text(
-                          isMy ? 'You' : message.sender.username,
-                          style: context.typography.baseline.titleSmall
+                          message.sentAt.toPrettyString(),
+                          style: context.typography.baseline.labelSmall
                               .copyWith(color: context.colorScheme.secondary),
-                          textAlign: TextAlign.left,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.right,
                         ),
-                      Flexible(
-                        child: Text(
-                          message.content,
-                          textWidthBasis: TextWidthBasis.longestLine,
-                        ),
-                      ),
-                      Text(
-                        message.sentAt.toPrettyString(),
-                        style: context.typography.baseline.labelSmall.copyWith(
-                          color: context.colorScheme.secondary,
-                        ),
-                        textWidthBasis: TextWidthBasis.parent,
-                        textAlign: TextAlign.right,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
