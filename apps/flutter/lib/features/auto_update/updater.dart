@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:min_api/index.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
+import 'package:shizuku_api/shizuku_api.dart';
 
 class FetchedVersion {
   final String version;
@@ -86,7 +88,10 @@ class UpdaterService {
       final totalBytes = response.contentLength;
       int receivedBytes = 0;
 
-      final file = File('${(await getTemporaryDirectory()).path}/update.apk');
+      final cacheDirs = await getExternalCacheDirectories();
+      if (cacheDirs == null || !cacheDirs.isNotEmpty)
+        throw Exception("No External Cache Directory");
+      final file = File('${cacheDirs.first.path}/min-update.apk');
       final fileSink = file.openWrite();
 
       await response.stream.forEach((chunk) {
@@ -110,17 +115,47 @@ class UpdaterService {
     }
   }
 
+  static Future<String> getAppId() async {
+    final String id = await _channel.invokeMethod('getAppId');
+    return id;
+  }
+
   static Future<bool> installApk(File file) async {
     logger.i('Installing ${file.path}...');
-    final bool isSuccess = await _channel.invokeMethod('installApk', {
-      'path': file.path,
-    });
 
-    if (isSuccess)
-      logger.i('Installation complete!');
-    else
-      logger.e('Installation failed.');
-    return isSuccess;
+    try {
+      final shizuku = ShizukuApi();
+
+      bool isRunning = await shizuku.pingBinder() ?? false;
+      if (!isRunning) throw Exception('Shizuku is not running');
+      bool hasPermission = await shizuku.checkPermission() ?? false;
+      bool granted = false;
+      if (!hasPermission) {
+        granted = await shizuku.requestPermission() ?? false;
+      }
+      if (!hasPermission && !granted)
+        throw Exception('No permission to access Shizuku');
+      final appId = await getAppId();
+      final command =
+          'cp "${file.path}" /data/local/tmp/min-update.apk && '
+          'pm install -i $appId -r -d --user current /data/local/tmp/min-update.apk && '
+          'rm /data/local/tmp/min-update.apk';
+      logger.i('Running through Shizuku: $command');
+      await shizuku.runCommand(command);
+      return true;
+    } catch (e) {
+      logger.i('Falling back to system installer instead of shizuku', error: e);
+
+      final bool isSuccess = await _channel.invokeMethod('installApk', {
+        'path': file.path,
+      });
+
+      if (isSuccess)
+        logger.i('Installation complete!');
+      else
+        logger.e('Installation failed.');
+      return isSuccess;
+    }
   }
 
   static Future<void> checkForUpdates(GlobalKey<NavigatorState> navKey) async {

@@ -37,6 +37,7 @@ dependencies:
   meta: ^1.19.0
   logger: ^2.8.0
   http: ^1.6.0
+  shizuku_api: ^1.2.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

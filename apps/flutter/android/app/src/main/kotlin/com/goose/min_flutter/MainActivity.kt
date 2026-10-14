@@ -39,6 +39,9 @@ class MainActivity : FlutterActivity() {
                 } else {
                     result.error("INVALID_ARGUMENT", "path is null", null)
                 }
+            } else if (call.method == "getAppId") {
+                val appId = context.packageName
+                result.success(appId)
             } else {
                 result.notImplemented()
             }

@@ -24,7 +24,7 @@ class MinApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     final settings = ref.watch(settingsProvider);
 
-    if (!kDebugMode)
+    if (!kDebugMode || true)
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => UpdaterService.checkForUpdates(rootNavigatorKey),
       );
