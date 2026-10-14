@@ -65,24 +65,49 @@ class UpdaterService {
     return arch;
   }
 
-  static Future<File> downloadByTag(String tag) async {
+  static Future<File> downloadByTag(
+    String tag,
+    void Function(double) onProgress,
+  ) async {
     final arch = await getCpuArchitecture();
     final url =
         'https://github.com/gooseDes/min/releases/download/$tag/app-$arch-release.apk';
     logger.i('Downloading $url...');
-    final response = await http.get(Uri.parse(url));
+    final client = http.Client();
+    try {
+      final response = await client.send(http.Request('GET', Uri.parse(url)));
 
-    if (response.statusCode != 200) {
-      throw HttpException(
-        'Request for latest version APK failed with status: ${response.statusCode}',
-      );
+      if (response.statusCode != 200) {
+        throw HttpException(
+          'Request for latest version APK failed with status: ${response.statusCode}',
+        );
+      }
+
+      final totalBytes = response.contentLength;
+      int receivedBytes = 0;
+
+      final file = File('${(await getTemporaryDirectory()).path}/update.apk');
+      final fileSink = file.openWrite();
+
+      await response.stream.forEach((chunk) {
+        fileSink.add(chunk);
+        receivedBytes += chunk.length;
+
+        if (totalBytes != null && totalBytes > 0) {
+          double progress = receivedBytes / totalBytes;
+          double percentage = progress * 100;
+          onProgress(percentage);
+        }
+      });
+
+      await fileSink.close();
+
+      logger.i('Download complete!');
+
+      return file;
+    } finally {
+      client.close();
     }
-
-    final file = File('${(await getTemporaryDirectory()).path}/update.apk');
-    await file.writeAsBytes(response.bodyBytes);
-    logger.i('Download complete!');
-
-    return file;
   }
 
   static Future<bool> installApk(File file) async {
@@ -120,8 +145,52 @@ class UpdaterService {
             M3EButton.text(
               onPressed: () async {
                 Navigator.pop(navContext);
+                if (!navContext.mounted) return;
+
+                final ValueNotifier<double> progressNotifier =
+                    ValueNotifier<double>(0.0);
+
+                void progress(double progressValue) {
+                  progressNotifier.value = progressValue;
+                }
+
+                M3EDialog.show(
+                  navContext,
+                  barrierDismissible: false,
+                  dialog: M3EDialog(
+                    icon: const Icon(Symbols.update_rounded),
+                    title: "Downloading...",
+                    content: ValueListenableBuilder<double>(
+                      valueListenable: progressNotifier,
+                      builder: (context, currentProgress, child) {
+                        return Align(
+                          alignment: Alignment.center,
+                          child: M3EProgressIndicator.linear(
+                            value: currentProgress / 100,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
                 final apk = await UpdaterService.downloadByTag(
                   latestVersion.releaseTag,
+                  progress,
+                );
+                if (!navContext.mounted) return;
+                Navigator.pop(navContext);
+                M3EDialog.show(
+                  navContext,
+                  dialog: const M3EDialog(
+                    icon: Icon(Symbols.update_rounded),
+                    title: "Installing...",
+                    content: Align(
+                      alignment: Alignment.center,
+                      child: M3ELoadingIndicator(
+                        variant: M3ELoadingIndicatorVariant.contained,
+                      ),
+                    ),
+                  ),
                 );
                 await UpdaterService.installApk(apk);
               },
