@@ -1,8 +1,11 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:markdown_widget/markdown_widget.dart';
+import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/datetime_ext.dart';
+import 'package:min_flutter/core/flutter_theme_bridge.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/chats/message_entrance.dart';
@@ -82,9 +85,27 @@ class Message extends ConsumerWidget {
                             textAlign: TextAlign.left,
                           ),
                         Flexible(
-                          child: Text(
-                            message.content,
-                            textWidthBasis: TextWidthBasis.longestLine,
+                          child: FlutterThemeBridge(
+                            child: MarkdownBlock(
+                              data: message.content,
+                              config: MarkdownConfig(
+                                configs: [
+                                  ImgConfig(
+                                    builder: (url, attr) => ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: CachedNetworkImage(
+                                        imageUrl: url,
+                                        placeholder: (context, url) =>
+                                            const Align(
+                                              alignment: Alignment.center,
+                                              child: M3ELoadingIndicator(),
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                         Text(

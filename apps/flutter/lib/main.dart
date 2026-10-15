@@ -8,6 +8,7 @@ import 'package:min_flutter/features/auto_update/updater.dart';
 import 'package:min_flutter/features/settings/settings_provider.dart';
 import 'package:min_flutter/features/theming/linux_fallback.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,7 @@ class MinApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     final settings = ref.watch(settingsProvider);
 
-    if (!kDebugMode || true)
+    if (!kDebugMode)
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => UpdaterService.checkForUpdates(rootNavigatorKey),
       );
@@ -50,6 +51,14 @@ class MinApp extends ConsumerWidget {
           title: 'Min',
           themeMode: ThemeMode.system,
           showPerformanceOverlay: settings.showDebugInfo.value,
+
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            fl.GlobalMaterialLocalizations.delegate,
+            fl.GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('en')],
+
           theme: ThemeData(
             useMaterial3: true,
             fontFamily: fontFamily,

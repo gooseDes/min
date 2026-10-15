@@ -32,7 +32,7 @@ class ProfileThing extends StatelessWidget {
     );
 
     return Card(
-      elevation: 1,
+      elevation: 0,
       color: context.colorScheme.surfaceContainer,
       shadowColor: context.colorScheme.shadow,
       shape: RoundedRectangleBorder(borderRadius: borderRadius),

@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   flutter_riverpod:
   riverpod_annotation:
   go_router: ^18.0.0
@@ -38,6 +40,7 @@ dependencies:
   logger: ^2.8.0
   http: ^1.6.0
   shizuku_api: ^1.2.3
+  markdown_widget: ^2.3.2+8
 dev_dependencies:
   flutter_test:
     sdk: flutter
