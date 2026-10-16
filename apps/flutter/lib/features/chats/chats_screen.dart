@@ -43,14 +43,14 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
 
             return SingleMotionBuilder(
               motion: const MaterialSpringMotion.standardSpatialDefault(),
-              value: isEntering ? 1.0 : 0.0,
+              value: isEntering ? 1.0 : 2.0,
               builder: (context, springValue, child) {
-                final yOffset = 30.0 * (1.0 - springValue);
+                final xOffset = 30.0 * (1.0 - springValue);
 
                 return FadeTransition(
                   opacity: animation,
                   child: Transform.translate(
-                    offset: Offset(0, yOffset),
+                    offset: Offset(xOffset, 0),
                     child: child,
                   ),
                 );
