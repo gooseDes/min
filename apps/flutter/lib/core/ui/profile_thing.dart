@@ -1,4 +1,5 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
+import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/theme_ext.dart';
@@ -41,14 +42,18 @@ class ProfileThing extends StatelessWidget {
       child: ListTile(
         onTap: onTap ?? () {},
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        leading: CircleAvatar(
-          radius: 24,
-          backgroundImage: avatarUrl != null
-              ? CachedNetworkImageProvider(avatarUrl!)
-              : null,
-          child: avatarUrl == null
-              ? const Icon(Symbols.account_circle_rounded, size: 32)
-              : null,
+        leading: SizedBox.square(
+          dimension: 52,
+          child: ClipOval(
+            child: avatarUrl == null
+                ? const Icon(Symbols.account_circle_rounded, size: 32)
+                : CachedNetworkImage(
+                    imageUrl: avatarUrl!,
+                    placeholder: (context, url) => const M3ELoadingIndicator(
+                      variant: M3ELoadingIndicatorVariant.defaultStyle,
+                    ),
+                  ),
+          ),
         ),
         title: Text(
           name ?? "Test User",
