@@ -102,7 +102,12 @@ class ChatScreen extends ConsumerWidget {
                             );
                           },
                         ),
-                        loading: () => const CircularProgressIndicator(),
+                        loading: () => const Align(
+                          alignment: Alignment.center,
+                          child: M3ELoadingIndicator(
+                            variant: M3ELoadingIndicatorVariant.contained,
+                          ),
+                        ),
                         error: (error, stack) => Text(error.toString()),
                       ),
                     ),
