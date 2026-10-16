@@ -60,62 +60,68 @@ class Message extends ConsumerWidget {
                     ),
                   ),
                 ),
-              Card.filled(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: isMy ? const Radius.circular(12) : Radius.zero,
-                    topRight: isMy ? Radius.zero : const Radius.circular(12),
-                    bottomLeft: const Radius.circular(12),
-                    bottomRight: const Radius.circular(12),
+              AnimatedSize(
+                curve: Curves.fastOutSlowIn,
+                duration: const Duration(milliseconds: 300),
+                child: Card.filled(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: isMy ? const Radius.circular(12) : Radius.zero,
+                      topRight: isMy ? Radius.zero : const Radius.circular(12),
+                      bottomLeft: const Radius.circular(12),
+                      bottomRight: const Radius.circular(12),
+                    ),
                   ),
-                ),
-                color: context.colorScheme.surfaceContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: IntrinsicWidth(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (isFirstInGroup)
-                          Text(
-                            isMy ? 'You' : message.sender.username,
-                            style: context.typography.baseline.titleSmall
-                                .copyWith(color: context.colorScheme.secondary),
-                            textAlign: TextAlign.left,
-                          ),
-                        Flexible(
-                          child: FlutterThemeBridge(
-                            child: MarkdownBlock(
-                              data: message.content,
-                              config: MarkdownConfig(
-                                configs: [
-                                  ImgConfig(
-                                    builder: (url, attr) => ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: CachedNetworkImage(
-                                        imageUrl: url,
-                                        placeholder: (context, url) =>
-                                            const Align(
-                                              alignment: Alignment.center,
-                                              child: M3ELoadingIndicator(),
-                                            ),
+                  color: context.colorScheme.surfaceContainer,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: IntrinsicWidth(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (isFirstInGroup)
+                            Text(
+                              isMy ? 'You' : message.sender.username,
+                              style: context.typography.baseline.titleSmall
+                                  .copyWith(
+                                    color: context.colorScheme.secondary,
+                                  ),
+                              textAlign: TextAlign.left,
+                            ),
+                          Flexible(
+                            child: FlutterThemeBridge(
+                              child: MarkdownBlock(
+                                data: message.content,
+                                config: MarkdownConfig(
+                                  configs: [
+                                    ImgConfig(
+                                      builder: (url, attr) => ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: CachedNetworkImage(
+                                          imageUrl: url,
+                                          placeholder: (context, url) =>
+                                              const Align(
+                                                alignment: Alignment.center,
+                                                child: M3ELoadingIndicator(),
+                                              ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Text(
-                          message.sentAt.toPrettyString(),
-                          style: context.typography.baseline.labelSmall
-                              .copyWith(color: context.colorScheme.secondary),
-                          textWidthBasis: TextWidthBasis.parent,
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
+                          Text(
+                            message.sentAt.toPrettyString(),
+                            style: context.typography.baseline.labelSmall
+                                .copyWith(color: context.colorScheme.secondary),
+                            textWidthBasis: TextWidthBasis.parent,
+                            textAlign: TextAlign.right,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
