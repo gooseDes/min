@@ -9,6 +9,7 @@ import 'package:min_flutter/core/flutter_theme_bridge.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/chats/message_entrance.dart';
+import 'package:min_flutter/features/images/fullscreen_image.dart';
 import 'package:min_types/index.dart';
 
 class Message extends ConsumerWidget {
@@ -96,15 +97,25 @@ class Message extends ConsumerWidget {
                                 config: MarkdownConfig(
                                   configs: [
                                     ImgConfig(
-                                      builder: (url, attr) => ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: CachedNetworkImage(
-                                          imageUrl: url,
-                                          placeholder: (context, url) =>
-                                              const Align(
-                                                alignment: Alignment.center,
-                                                child: M3ELoadingIndicator(),
-                                              ),
+                                      builder: (url, attr) => GestureDetector(
+                                        onTap: () =>
+                                            openImageInFullScreen(context, url),
+                                        child: Hero(
+                                          tag: url,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            child: CachedNetworkImage(
+                                              imageUrl: url,
+                                              placeholder: (context, url) =>
+                                                  const Align(
+                                                    alignment: Alignment.center,
+                                                    child:
+                                                        M3ELoadingIndicator(),
+                                                  ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
