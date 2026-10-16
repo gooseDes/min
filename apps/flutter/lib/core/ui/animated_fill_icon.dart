@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:motor/motor.dart';
 
 class AnimatedFillIcon extends StatelessWidget {
   final IconData icon;
@@ -12,12 +13,10 @@ class AnimatedFillIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween<double>(begin: 0, end: isSelected ? 1 : 0),
-      duration: const Duration(milliseconds: 200),
-      builder: (context, fillValue, child) {
-        return Icon(icon, fill: fillValue);
-      },
+    return SingleMotionBuilder(
+      motion: const MaterialSpringMotion.expressiveSpatialDefault(),
+      value: isSelected ? 1 : 0,
+      builder: (context, value, child) => Icon(icon, fill: value),
     );
   }
 }
