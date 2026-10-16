@@ -26,122 +26,130 @@ class ChatScreen extends ConsumerWidget {
     final safeAreaPadding = ref.watch(safeAreaInsetsProvider);
     final settings = ref.watch(settingsProvider);
 
-    return Scaffold(
-      backgroundColor: context.colorScheme.surfaceContainer,
-      appBar: AppBar(
-        backgroundColor: context.colorScheme.surfaceContainer,
-        scrolledUnderElevation: 0.0,
-        title: Row(
-          spacing: 8,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(
-                apiClient.avatarToUrl(chat?.avatar),
-              ),
-            ),
-            Text(
-              chat?.name ?? 'Unknown',
-              style: M3ETheme.of(context).typography.baseline.headlineSmall
-                  .copyWith(
-                    fontVariations: const [
-                      FontVariation("GRAD", 100),
-                      FontVariation("wght", 500),
-                      FontVariation("ROND", 100),
-                    ],
-                  ),
-            ),
-          ],
-        ),
-        leading: M3EIconButton(
-          variant: M3EIconButtonVariant.standard,
-          icon: const Icon(Symbols.arrow_back),
-          onPressed: () {
-            ref.read(selectedChatIdProvider.notifier).closeChat();
-          },
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.only(bottom: safeAreaPadding.bottom),
-        child: Card.filled(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(24)),
-          ),
-          color: context.colorScheme.surface,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned.fill(
-                    child: RepaintBoundary(
-                      child: messagesAsync.when(
-                        data: (messages) => ListView.builder(
-                          reverse: true,
-                          itemCount: messages.length,
-                          padding: const EdgeInsets.only(bottom: 90, top: 64),
-                          scrollCacheExtent: const ScrollCacheExtent.viewport(
-                            1,
-                          ),
-                          itemBuilder: (ctx, ind) {
-                            final index = messages.length - 1 - ind;
-                            final message = messages[index];
-                            final isFirstInGroup =
-                                index <= 0 ||
-                                message.senderId !=
-                                    messages[index - 1].senderId;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
 
-                            return Message(
-                              key: ValueKey(message.id),
-                              message: message,
-                              isFirstInGroup: isFirstInGroup,
-                              entranceIndex: ind,
-                              shouldAnimate: true,
-                            );
-                          },
-                        ),
-                        loading: () => const Align(
-                          alignment: Alignment.center,
-                          child: M3ELoadingIndicator(
-                            variant: M3ELoadingIndicatorVariant.contained,
+        ref.read(selectedChatIdProvider.notifier).closeChat();
+      },
+      child: Scaffold(
+        backgroundColor: context.colorScheme.surfaceContainer,
+        appBar: AppBar(
+          backgroundColor: context.colorScheme.surfaceContainer,
+          scrolledUnderElevation: 0.0,
+          title: Row(
+            spacing: 8,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(
+                  apiClient.avatarToUrl(chat?.avatar),
+                ),
+              ),
+              Text(
+                chat?.name ?? 'Unknown',
+                style: M3ETheme.of(context).typography.baseline.headlineSmall
+                    .copyWith(
+                      fontVariations: const [
+                        FontVariation("GRAD", 100),
+                        FontVariation("wght", 500),
+                        FontVariation("ROND", 100),
+                      ],
+                    ),
+              ),
+            ],
+          ),
+          leading: M3EIconButton(
+            variant: M3EIconButtonVariant.standard,
+            icon: const Icon(Symbols.arrow_back),
+            onPressed: () {
+              ref.read(selectedChatIdProvider.notifier).closeChat();
+            },
+          ),
+        ),
+        body: Padding(
+          padding: EdgeInsets.only(bottom: safeAreaPadding.bottom),
+          child: Card.filled(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(24)),
+            ),
+            color: context.colorScheme.surface,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Positioned.fill(
+                      child: RepaintBoundary(
+                        child: messagesAsync.when(
+                          data: (messages) => ListView.builder(
+                            reverse: true,
+                            itemCount: messages.length,
+                            padding: const EdgeInsets.only(bottom: 90, top: 64),
+                            scrollCacheExtent: const ScrollCacheExtent.viewport(
+                              1,
+                            ),
+                            itemBuilder: (ctx, ind) {
+                              final index = messages.length - 1 - ind;
+                              final message = messages[index];
+                              final isFirstInGroup =
+                                  index <= 0 ||
+                                  message.senderId !=
+                                      messages[index - 1].senderId;
+
+                              return Message(
+                                key: ValueKey(message.id),
+                                message: message,
+                                isFirstInGroup: isFirstInGroup,
+                                entranceIndex: ind,
+                                shouldAnimate: true,
+                              );
+                            },
                           ),
+                          loading: () => const Align(
+                            alignment: Alignment.center,
+                            child: M3ELoadingIndicator(
+                              variant: M3ELoadingIndicatorVariant.contained,
+                            ),
+                          ),
+                          error: (error, stack) => Text(error.toString()),
                         ),
-                        error: (error, stack) => Text(error.toString()),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: 96,
-                    child: settings.enableProgressiveBlur.value
-                        ? Inspire.backdropBlur(
-                            config: InspireBlurConfig.bottomToTop(sigma: 5),
-                          )
-                        : Container(),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 64,
-                    child: settings.enableProgressiveBlur.value
-                        ? Inspire.backdropBlur(
-                            config: InspireBlurConfig.topToBottom(sigma: 5),
-                          )
-                        : Container(),
-                  ),
-                  Positioned(
-                    bottom: 12,
-                    left: 0,
-                    right: 0,
-                    height: 72,
-                    child: MessageField(chat: chat),
-                  ),
-                ],
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 96,
+                      child: settings.enableProgressiveBlur.value
+                          ? Inspire.backdropBlur(
+                              config: InspireBlurConfig.bottomToTop(sigma: 5),
+                            )
+                          : Container(),
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 64,
+                      child: settings.enableProgressiveBlur.value
+                          ? Inspire.backdropBlur(
+                              config: InspireBlurConfig.topToBottom(sigma: 5),
+                            )
+                          : Container(),
+                    ),
+                    Positioned(
+                      bottom: 12,
+                      left: 0,
+                      right: 0,
+                      height: 72,
+                      child: MessageField(chat: chat),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
