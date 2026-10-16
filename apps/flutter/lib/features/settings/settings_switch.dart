@@ -2,6 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/features/settings/settings_provider.dart';
+import 'package:min_flutter/features/storage/storage.dart';
 
 class SettingsSwitch extends ConsumerWidget {
   final String settingKey;
@@ -25,6 +26,8 @@ class SettingsSwitch extends ConsumerWidget {
                   .update(
                     (state) => settings.fields[settingKey]!.updater(value),
                   );
+            final storage = Storage();
+            storage.rawSet(settingKey, value);
           },
         ),
       ],

@@ -5,17 +5,18 @@ import 'package:min_flutter/features/storage/storage.dart';
 class SettingsNotifier extends Notifier<SettingsState> {
   @override
   SettingsState build() {
-    _init();
-    return const SettingsState();
+    const initial = SettingsState();
+    _init(initial);
+    return initial;
   }
 
-  Future<void> _init() async {
+  Future<void> _init(SettingsState initial) async {
     final storage = Storage();
 
-    var tempState = state;
+    var tempState = initial;
 
     for (final field in tempState.fields.keys) {
-      final value = await storage.rawGet(field);
+      final value = await storage.rawGet<bool>(field);
       if (value != null) {
         final updater = tempState.fields[field]?.updater;
         if (updater != null) {

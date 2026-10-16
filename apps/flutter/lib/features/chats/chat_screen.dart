@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -124,7 +126,19 @@ class ChatScreen extends ConsumerWidget {
                       left: 0,
                       right: 0,
                       height: 96,
-                      child: settings.enableProgressiveBlur.value
+                      child: settings.enableBlurBehindInput.value
+                          ? SizedBox.expand(
+                              child: ClipRect(
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 10.0,
+                                    sigmaY: 10.0,
+                                  ),
+                                  child: const SizedBox.expand(),
+                                ),
+                              ),
+                            )
+                          : settings.enableProgressiveBlur.value
                           ? Inspire.backdropBlur(
                               config: InspireBlurConfig.bottomToTop(sigma: 5),
                             )

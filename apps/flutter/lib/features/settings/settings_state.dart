@@ -21,6 +21,10 @@ abstract class SettingsState with _$SettingsState {
       SettingsField(key: "enable_progressive_blur", type: bool, value: true),
     )
     SettingsField enableProgressiveBlur,
+    @Default(
+      SettingsField(key: "enable_blur_behind_input", type: bool, value: false),
+    )
+    SettingsField enableBlurBehindInput,
   }) = _SettingsState;
 
   Map<String, FieldValue> get fields => {
@@ -31,6 +35,10 @@ abstract class SettingsState with _$SettingsState {
     enableProgressiveBlur.key: FieldValue(
       field: enableProgressiveBlur,
       updater: (val) => copyWith.enableProgressiveBlur(value: val),
+    ),
+    enableBlurBehindInput.key: FieldValue(
+      field: enableBlurBehindInput,
+      updater: (val) => copyWith.enableBlurBehindInput(value: val),
     ),
   };
 }

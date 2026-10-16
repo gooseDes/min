@@ -16,7 +16,7 @@ class AnimatedFillIcon extends StatelessWidget {
     return SingleMotionBuilder(
       motion: const MaterialSpringMotion.expressiveSpatialDefault(),
       value: isSelected ? 1 : 0,
-      builder: (context, value, child) => Icon(icon, fill: value),
+      builder: (context, value, child) => Icon(icon, fill: value.clamp(0, 1)),
     );
   }
 }
