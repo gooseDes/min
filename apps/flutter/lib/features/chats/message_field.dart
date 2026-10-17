@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/device_type.dart';
 import 'package:min_flutter/core/theme_ext.dart';
+import 'package:min_flutter/core/ui/common_alerts.dart';
 import 'package:min_flutter/features/storage/database.dart';
+import 'package:http/http.dart' as http;
+import 'package:min_flutter/features/storage/secure_storage.dart';
 
 class MessageField extends HookWidget {
   const MessageField({super.key, required this.chat});
@@ -36,11 +43,81 @@ class MessageField extends HookWidget {
             margin: EdgeInsets.zero,
             color: context.colorScheme.surfaceContainerLow,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  IconButton(
+                    icon: const Icon(Symbols.attach_file_add_rounded),
+                    onPressed: () async {
+                      final picked = await ImagePicker().pickImage(
+                        source: ImageSource.gallery,
+                      );
+                      if (picked == null) return;
+
+                      if (!context.mounted) return;
+                      startLoading(context, 'Uploading...');
+
+                      try {
+                        var request = http.MultipartRequest(
+                          'POST',
+                          Uri.parse('${apiClient.url}/attach/'),
+                        );
+
+                        request.headers['Authorization'] =
+                            'Bearer ${await SecureStorage().getToken()}';
+
+                        final int fileLength = await picked.length();
+                        final multipartFile = http.MultipartFile(
+                          'attachments',
+                          picked.readAsBytes().asStream(),
+                          fileLength,
+                          filename: picked.name,
+                        );
+
+                        request.files.add(multipartFile);
+
+                        final response = await request.send();
+
+                        if (response.statusCode == 200) {
+                          final responseString = await response.stream
+                              .bytesToString();
+                          final data = jsonDecode(responseString);
+                          if (data['success'] && data['urls'].length != 0) {
+                            final attachment =
+                                '![attachment](${apiClient.url}${data['urls'][0]})';
+                            fieldController.text +=
+                                (fieldController.text.trim().isEmpty
+                                ? attachment
+                                : '\n$attachment');
+                            if (!context.mounted) return;
+                            if (context.canPop()) context.pop();
+                          } else {
+                            if (!context.mounted) return;
+                            if (context.canPop()) context.pop();
+                            showError(
+                              context,
+                              'You attachment was not loaded: ${data['message']}',
+                            );
+                          }
+                        } else {
+                          if (!context.mounted) return;
+                          if (context.canPop()) context.pop();
+                          showError(context, 'You attachment was not loaded');
+                        }
+                      } catch (e, t) {
+                        if (!context.mounted) return;
+                        if (context.canPop()) context.pop();
+                        showError(
+                          context,
+                          'While sending picked image to server',
+                          e,
+                          t,
+                        );
+                      }
+                    },
+                  ),
                   Expanded(
                     child: TextField(
                       controller: fieldController,
