@@ -122,13 +122,14 @@ class ChatScreen extends ConsumerWidget {
                       ),
                     ),
                     Positioned(
-                      bottom: 0,
+                      bottom: settings.enableBlurBehindInput.value ? 8 : 0,
                       left: 0,
                       right: 0,
-                      height: 96,
+                      height: settings.enableBlurBehindInput.value ? 80 : 96,
                       child: settings.enableBlurBehindInput.value
                           ? SizedBox.expand(
-                              child: ClipRect(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
                                 child: BackdropFilter(
                                   filter: ImageFilter.blur(
                                     sigmaX: 10.0,
@@ -157,8 +158,8 @@ class ChatScreen extends ConsumerWidget {
                     ),
                     Positioned(
                       bottom: 12,
-                      left: 0,
-                      right: 0,
+                      left: settings.enableBlurBehindInput.value ? 4 : 0,
+                      right: settings.enableBlurBehindInput.value ? 4 : 0,
                       height: 72,
                       child: MessageField(chat: chat),
                     ),
