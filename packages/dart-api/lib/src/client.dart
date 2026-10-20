@@ -10,7 +10,7 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 
 part 'client.freezed.dart';
 
-final logger = Logger(
+final _logger = Logger(
   printer: PrettyPrinter(
     methodCount: 2,
     errorMethodCount: 8,
@@ -72,16 +72,16 @@ class ApiClient {
       _socketCompleter = null;
     }
     socket!.onConnect((_) {
-      logger.i('Socket successfully connected!');
+      _logger.i('Socket successfully connected!');
     });
     socket!.onConnectError((e) {
-      logger.e('Socket connection error: $e');
+      _logger.e('Socket connection error: $e');
     });
     socket!.onDisconnect((_) {
-      logger.i('Socket disconnected');
+      _logger.i('Socket disconnected');
     });
     socket!.onError((e) {
-      logger.e('Socket error: $e');
+      _logger.e('Socket error: $e');
     });
   }
 

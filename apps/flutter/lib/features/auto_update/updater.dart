@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:min_api/index.dart';
+import 'package:min_flutter/core/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:shizuku_api/shizuku_api.dart';
