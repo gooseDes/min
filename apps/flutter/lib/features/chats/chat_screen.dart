@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inspire_blur/inspire_blur.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
+import 'package:min_flutter/core/fetch_and_save.dart';
 import 'package:min_flutter/core/safe_area_insets_provider.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/features/chats/message.dart';
@@ -17,7 +19,7 @@ import 'package:min_flutter/features/settings/settings_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
 import 'package:min_flutter/features/storage/database_provider.dart';
 
-class ChatScreen extends ConsumerWidget {
+class ChatScreen extends HookConsumerWidget {
   final ChatWithAvatar? chat;
 
   const ChatScreen({super.key, this.chat});
@@ -27,6 +29,16 @@ class ChatScreen extends ConsumerWidget {
     final messagesAsync = ref.watch(allMessagesProvider(chat?.id ?? 0));
     final safeAreaPadding = ref.watch(safeAreaInsetsProvider);
     final settings = ref.watch(settingsProvider);
+
+    useEffect(() {
+      final listener = AppLifecycleListener(
+        onResume: () {
+          if (chat?.id != null) requestChatUpdate(ref, chat!.id);
+        },
+      );
+
+      return () => listener.dispose();
+    }, []);
 
     return PopScope(
       canPop: false,
