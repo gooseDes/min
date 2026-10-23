@@ -63,6 +63,7 @@ class AppDatabase extends _$AppDatabase {
     return driftDatabase(
       name: "min_db",
       native: DriftNativeOptions(
+        shareAcrossIsolates: true,
         databaseDirectory: getApplicationSupportDirectory,
         setup: (db) => db.execute('PRAGMA foreign_keys = ON;'),
       ),

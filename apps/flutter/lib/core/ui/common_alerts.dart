@@ -31,22 +31,3 @@ void showError(
   if (exception != null || trace != null)
     logger.e(message, error: exception, stackTrace: trace);
 }
-
-void startLoading(BuildContext context, [String? text]) {
-  if (!context.mounted) return;
-
-  M3EDialog.show(
-    context,
-    barrierDismissible: false,
-    dialog: M3EDialog(
-      icon: const Icon(Symbols.progress_activity_rounded),
-      title: text ?? "Loading...",
-      content: const Align(
-        alignment: Alignment.center,
-        child: M3ELoadingIndicator(
-          variant: M3ELoadingIndicatorVariant.contained,
-        ),
-      ),
-    ),
-  );
-}

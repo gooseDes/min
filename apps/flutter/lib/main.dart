@@ -1,10 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/router.dart';
 import 'package:min_flutter/features/auto_update/updater.dart';
+import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/settings/settings_provider.dart';
 import 'package:min_flutter/features/theming/linux_fallback.dart';
 import 'package:system_theme/system_theme.dart';
@@ -17,18 +20,23 @@ void main() async {
   runApp(const ProviderScope(child: MinApp()));
 }
 
-class MinApp extends ConsumerWidget {
+class MinApp extends HookConsumerWidget {
   const MinApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final settings = ref.watch(settingsProvider);
+    final isLoading = ref.watch(isLoadingProvider);
 
-    if (!kDebugMode)
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => UpdaterService.checkForUpdates(rootNavigatorKey),
-      );
+    useEffect(() {
+      if (!kDebugMode)
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => UpdaterService.checkForUpdates(rootNavigatorKey),
+        );
+
+      return () {};
+    }, []);
 
     const headingsTextTheme = TextTheme(
       displayLarge: TextStyle(fontWeight: FontWeight.w700),
@@ -93,7 +101,30 @@ class MinApp extends ConsumerWidget {
                           brand: M3EVariableFontAxes(wght: 600),
                         ),
                       ),
-              child: child ?? const SizedBox(),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  child ?? const SizedBox(),
+                  Positioned.fill(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 1000),
+                      switchInCurve: Curves.fastLinearToSlowEaseIn,
+                      switchOutCurve: Curves.fastLinearToSlowEaseIn,
+                      transitionBuilder: (child, animation) =>
+                          FadeTransition(opacity: animation, child: child),
+                      child: isLoading.isLoading
+                          ? BackdropFilter(
+                              key: const ValueKey("loading"),
+                              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                              child: const M3ELoadingIndicator(
+                                variant: M3ELoadingIndicatorVariant.contained,
+                              ),
+                            )
+                          : const SizedBox.shrink(key: ValueKey("empty")),
+                    ),
+                  ),
+                ],
+              ),
             );
           },
 

@@ -3,6 +3,7 @@ import 'package:min_api/index.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/fetch_and_save.dart';
 import 'package:min_flutter/features/dialogs/dialogs.dart';
+import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/storage/secure_storage.dart';
 import 'package:min_flutter/features/storage/storage.dart';
 
@@ -47,6 +48,7 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> login(String email, String password) async {
+    ref.read(isLoadingProvider.notifier).startLoading("sign-in");
     final response = await apiClient.login(email, password);
     response.when(
       success: (token, username, id) async {
@@ -68,6 +70,7 @@ class AuthNotifier extends Notifier<AuthState> {
         showError(message);
       },
     );
+    ref.read(isLoadingProvider.notifier).endLoading("sign-in");
   }
 
   void logout() {

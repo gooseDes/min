@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
@@ -12,18 +12,19 @@ import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/device_type.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/common_alerts.dart';
+import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
 import 'package:http/http.dart' as http;
 import 'package:min_flutter/features/storage/secure_storage.dart';
 import 'package:motor/motor.dart';
 
-class MessageField extends HookWidget {
+class MessageField extends HookConsumerWidget {
   const MessageField({super.key, required this.chat});
 
   final ChatWithAvatar? chat;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final fieldController = useTextEditingController();
     final fieldFocusNode = useFocusNode();
     final swipedLastUpdate = useState(0.0);
@@ -94,7 +95,9 @@ class MessageField extends HookWidget {
                           if (picked == null) return;
 
                           if (!context.mounted) return;
-                          startLoading(context, 'Uploading...');
+                          ref
+                              .read(isLoadingProvider.notifier)
+                              .startLoading("uploading");
 
                           try {
                             var request = http.MultipartRequest(
@@ -129,10 +132,8 @@ class MessageField extends HookWidget {
                                     ? attachment
                                     : '\n$attachment');
                                 if (!context.mounted) return;
-                                if (context.canPop()) context.pop();
                               } else {
                                 if (!context.mounted) return;
-                                if (context.canPop()) context.pop();
                                 showError(
                                   context,
                                   'You attachment was not loaded: ${data['message']}',
@@ -140,7 +141,6 @@ class MessageField extends HookWidget {
                               }
                             } else {
                               if (!context.mounted) return;
-                              if (context.canPop()) context.pop();
                               showError(
                                 context,
                                 'You attachment was not loaded',
@@ -148,13 +148,16 @@ class MessageField extends HookWidget {
                             }
                           } catch (e, t) {
                             if (!context.mounted) return;
-                            if (context.canPop()) context.pop();
                             showError(
                               context,
                               'While sending picked image to server',
                               e,
                               t,
                             );
+                          } finally {
+                            ref
+                                .read(isLoadingProvider.notifier)
+                                .endLoading("uploading");
                           }
                         },
                       ),
