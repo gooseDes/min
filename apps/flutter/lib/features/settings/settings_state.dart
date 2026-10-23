@@ -17,14 +17,21 @@ abstract class SettingsState with _$SettingsState {
   const factory SettingsState({
     @Default(SettingsField(key: "show_debug_info", type: bool, value: false))
     SettingsField showDebugInfo,
+
     @Default(
       SettingsField(key: "enable_progressive_blur", type: bool, value: true),
     )
     SettingsField enableProgressiveBlur,
+
     @Default(
       SettingsField(key: "enable_blur_behind_input", type: bool, value: false),
     )
     SettingsField enableBlurBehindInput,
+
+    @Default(
+      SettingsField(key: "enable_color_own_messages", type: bool, value: true),
+    )
+    SettingsField enableColorOwnMessages,
   }) = _SettingsState;
 
   Map<String, FieldValue> get fields => {
@@ -39,6 +46,10 @@ abstract class SettingsState with _$SettingsState {
     enableBlurBehindInput.key: FieldValue(
       field: enableBlurBehindInput,
       updater: (val) => copyWith.enableBlurBehindInput(value: val),
+    ),
+    enableColorOwnMessages.key: FieldValue(
+      field: enableColorOwnMessages,
+      updater: (val) => copyWith.enableColorOwnMessages(value: val),
     ),
   };
 }

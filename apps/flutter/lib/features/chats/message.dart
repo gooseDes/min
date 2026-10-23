@@ -1,15 +1,15 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:markdown_widget/markdown_widget.dart';
-import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/datetime_ext.dart';
 import 'package:min_flutter/core/flutter_theme_bridge.dart';
 import 'package:min_flutter/core/theme_ext.dart';
+import 'package:min_flutter/core/ui/markdown_config.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/chats/message_entrance.dart';
-import 'package:min_flutter/features/images/fullscreen_image.dart';
+import 'package:min_flutter/features/settings/settings_provider.dart';
 import 'package:min_types/index.dart';
 
 class Message extends ConsumerWidget {
@@ -28,9 +28,11 @@ class Message extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
     final userId = ref.watch(authProvider).id;
     final isMy = userId == message.senderId;
     final entranceMsgAmount = (MediaQuery.sizeOf(context).height / 50).ceil();
+    final isColoredInPrimary = settings.enableColorOwnMessages.value && isMy;
 
     return Align(
       alignment: isMy ? Alignment.centerRight : Alignment.centerLeft,
@@ -73,7 +75,9 @@ class Message extends ConsumerWidget {
                       bottomRight: const Radius.circular(12),
                     ),
                   ),
-                  color: context.colorScheme.surfaceContainer,
+                  color: isColoredInPrimary
+                      ? context.colorScheme.primaryContainer
+                      : context.colorScheme.surfaceContainer,
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: IntrinsicWidth(
@@ -86,7 +90,9 @@ class Message extends ConsumerWidget {
                               isMy ? 'You' : message.sender.username,
                               style: context.typography.baseline.titleSmall
                                   .copyWith(
-                                    color: context.colorScheme.secondary,
+                                    color: isColoredInPrimary
+                                        ? context.colorScheme.onPrimaryContainer
+                                        : context.colorScheme.onSurface,
                                   ),
                               textAlign: TextAlign.left,
                             ),
@@ -94,32 +100,11 @@ class Message extends ConsumerWidget {
                             child: FlutterThemeBridge(
                               child: MarkdownBlock(
                                 data: message.content,
-                                config: MarkdownConfig(
-                                  configs: [
-                                    ImgConfig(
-                                      builder: (url, attr) => GestureDetector(
-                                        onTap: () =>
-                                            openImageInFullScreen(context, url),
-                                        child: Hero(
-                                          tag: url,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                            child: CachedNetworkImage(
-                                              imageUrl: url,
-                                              placeholder: (context, url) =>
-                                                  const Align(
-                                                    alignment: Alignment.center,
-                                                    child:
-                                                        M3ELoadingIndicator(),
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                config: generateMarkdownConfig(
+                                  context,
+                                  isColoredInPrimary
+                                      ? context.colorScheme.onPrimaryContainer
+                                      : context.colorScheme.onSurface,
                                 ),
                               ),
                             ),
@@ -127,7 +112,11 @@ class Message extends ConsumerWidget {
                           Text(
                             message.sentAt.toPrettyString(),
                             style: context.typography.baseline.labelSmall
-                                .copyWith(color: context.colorScheme.secondary),
+                                .copyWith(
+                                  color: isColoredInPrimary
+                                      ? context.colorScheme.onPrimaryContainer
+                                      : context.colorScheme.onSurface,
+                                ),
                             textWidthBasis: TextWidthBasis.parent,
                             textAlign: TextAlign.right,
                           ),
