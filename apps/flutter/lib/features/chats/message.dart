@@ -8,6 +8,7 @@ import 'package:min_flutter/core/flutter_theme_bridge.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/markdown_config.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
+import 'package:min_flutter/features/chats/message_actions.dart';
 import 'package:min_flutter/features/chats/message_entrance.dart';
 import 'package:min_flutter/features/settings/settings_provider.dart';
 import 'package:min_types/index.dart';
@@ -17,12 +18,14 @@ class Message extends ConsumerWidget {
     super.key,
     required this.message,
     required this.isFirstInGroup,
+    this.center = false,
     this.shouldAnimate = true,
     this.entranceIndex = 0,
   });
 
   final MessageDataWithSender message;
   final bool isFirstInGroup;
+  final bool center;
   final bool shouldAnimate;
   final int entranceIndex;
 
@@ -34,99 +37,119 @@ class Message extends ConsumerWidget {
     final entranceMsgAmount = (MediaQuery.sizeOf(context).height / 50).ceil();
     final isColoredInPrimary = settings.enableColorOwnMessages.value && isMy;
 
-    return Align(
-      alignment: isMy ? Alignment.centerRight : Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.sizeOf(context).width * 0.8,
-        ),
-        child: MessageEntrance(
-          id: message.id,
-          direction: isMy
-              ? MessageEntranceDirection.right
-              : MessageEntranceDirection.left,
-          animate: shouldAnimate && entranceIndex < entranceMsgAmount,
-          delay: entranceIndex < entranceMsgAmount
-              ? Duration(milliseconds: entranceIndex * 50)
-              : Duration.zero,
-          child: Column(
-            crossAxisAlignment: isMy
-                ? CrossAxisAlignment.end
-                : CrossAxisAlignment.start,
-            children: [
-              if (isFirstInGroup)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider(
-                      apiClient.avatarToUrl(message.sender.avatar),
+    return GestureDetector(
+      onTapUp: (tap) {
+        openMessageActions(context, message);
+      },
+      child: Container(
+        color: Colors.transparent,
+        child: Align(
+          alignment: center
+              ? Alignment.center
+              : (isMy ? Alignment.centerRight : Alignment.centerLeft),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+            ),
+            child: MessageEntrance(
+              id: message.id,
+              direction: isMy
+                  ? MessageEntranceDirection.right
+                  : MessageEntranceDirection.left,
+              animate: shouldAnimate && entranceIndex < entranceMsgAmount,
+              delay: entranceIndex < entranceMsgAmount
+                  ? Duration(milliseconds: entranceIndex * 50)
+                  : Duration.zero,
+              child: Column(
+                crossAxisAlignment: isMy
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
+                children: [
+                  if (isFirstInGroup)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(
+                          apiClient.avatarToUrl(message.sender.avatar),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              AnimatedSize(
-                curve: Curves.fastOutSlowIn,
-                duration: const Duration(milliseconds: 300),
-                child: Card.filled(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: isMy ? const Radius.circular(12) : Radius.zero,
-                      topRight: isMy ? Radius.zero : const Radius.circular(12),
-                      bottomLeft: const Radius.circular(12),
-                      bottomRight: const Radius.circular(12),
-                    ),
-                  ),
-                  color: isColoredInPrimary
-                      ? context.colorScheme.primaryContainer
-                      : context.colorScheme.surfaceContainer,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: IntrinsicWidth(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (isFirstInGroup)
-                            Text(
-                              isMy ? 'You' : message.sender.username,
-                              style: context.typography.baseline.titleSmall
-                                  .copyWith(
-                                    color: isColoredInPrimary
-                                        ? context.colorScheme.onPrimaryContainer
-                                        : context.colorScheme.onSurface,
+                  AnimatedSize(
+                    curve: Curves.fastOutSlowIn,
+                    duration: const Duration(milliseconds: 300),
+                    child: Card.filled(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: isMy
+                              ? const Radius.circular(12)
+                              : Radius.zero,
+                          topRight: isMy
+                              ? Radius.zero
+                              : const Radius.circular(12),
+                          bottomLeft: const Radius.circular(12),
+                          bottomRight: const Radius.circular(12),
+                        ),
+                      ),
+                      color: isColoredInPrimary
+                          ? context.colorScheme.primaryContainer
+                          : context.colorScheme.surfaceContainer,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (isFirstInGroup)
+                                Text(
+                                  isMy ? 'You' : message.sender.username,
+                                  style: context.typography.baseline.titleSmall
+                                      .copyWith(
+                                        color: isColoredInPrimary
+                                            ? context
+                                                  .colorScheme
+                                                  .onPrimaryContainer
+                                            : context.colorScheme.onSurface,
+                                      ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              Flexible(
+                                child: FlutterThemeBridge(
+                                  child: MarkdownBlock(
+                                    data: message.content,
+                                    config: generateMarkdownConfig(
+                                      context,
+                                      isColoredInPrimary
+                                          ? context
+                                                .colorScheme
+                                                .onPrimaryContainer
+                                          : context.colorScheme.onSurface,
+                                    ),
                                   ),
-                              textAlign: TextAlign.left,
-                            ),
-                          Flexible(
-                            child: FlutterThemeBridge(
-                              child: MarkdownBlock(
-                                data: message.content,
-                                config: generateMarkdownConfig(
-                                  context,
-                                  isColoredInPrimary
-                                      ? context.colorScheme.onPrimaryContainer
-                                      : context.colorScheme.onSurface,
                                 ),
                               ),
-                            ),
+                              Text(
+                                message.sentAt.toPrettyString(),
+                                style: context.typography.baseline.labelSmall
+                                    .copyWith(
+                                      color: isColoredInPrimary
+                                          ? context
+                                                .colorScheme
+                                                .onPrimaryContainer
+                                          : context.colorScheme.onSurface,
+                                    ),
+                                textWidthBasis: TextWidthBasis.parent,
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
                           ),
-                          Text(
-                            message.sentAt.toPrettyString(),
-                            style: context.typography.baseline.labelSmall
-                                .copyWith(
-                                  color: isColoredInPrimary
-                                      ? context.colorScheme.onPrimaryContainer
-                                      : context.colorScheme.onSurface,
-                                ),
-                            textWidthBasis: TextWidthBasis.parent,
-                            textAlign: TextAlign.right,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
