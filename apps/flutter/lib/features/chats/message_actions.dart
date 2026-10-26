@@ -46,7 +46,7 @@ class MessageActionsPage extends StatelessWidget {
               children: [
                 const Expanded(flex: 1, child: SizedBox()),
                 IgnorePointer(
-                  child: EnterAnimation(
+                  child: ScaleEnterAnimation(
                     child: Message(
                       message: message,
                       isFirstInGroup: true,
@@ -58,7 +58,7 @@ class MessageActionsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 8,
                   children: [
-                    EnterAnimation(
+                    ScaleEnterAnimation(
                       child: M3EButtonGroup(
                         size: M3EButtonSize.md,
                         actions: [
@@ -92,7 +92,7 @@ class MessageActionsPage extends StatelessWidget {
                         onSelectedIndicesChanged: (ind) {},
                       ),
                     ),
-                    EnterAnimation(
+                    ScaleEnterAnimation(
                       child: M3EButtonGroup(
                         size: M3EButtonSize.md,
                         actions: [

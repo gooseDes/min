@@ -2,10 +2,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:motor/motor.dart';
 
-class EnterAnimation extends HookWidget {
+class ScaleEnterAnimation extends HookWidget {
   final Widget child;
 
-  const EnterAnimation({super.key, required this.child});
+  const ScaleEnterAnimation({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

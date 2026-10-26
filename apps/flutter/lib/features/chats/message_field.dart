@@ -12,6 +12,7 @@ import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/device_type.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/common_alerts.dart';
+import 'package:min_flutter/core/ui/enter_animation.dart';
 import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
 import 'package:http/http.dart' as http;
@@ -63,158 +64,164 @@ class MessageField extends HookConsumerWidget {
         spacing: 12 * swipeResult.value,
         children: [
           Expanded(
-            child: Card.filled(
-              margin: EdgeInsets.zero,
-              color: context.colorScheme.surfaceContainerLow,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SingleMotionBuilder(
-                      value: swipeResult.value,
-                      motion:
-                          const MaterialSpringMotion.expressiveSpatialDefault(),
-                      builder: (context, value, child) {
-                        return Opacity(
-                          opacity: value.clamp(0, 1),
-                          child: Align(
-                            alignment: Alignment.center,
-                            widthFactor: max(value, 0),
-                            child: child,
-                          ),
-                        );
-                      },
-                      child: IconButton(
-                        icon: const Icon(Symbols.attach_file_add_rounded),
-                        onPressed: () async {
-                          final picked = await ImagePicker().pickImage(
-                            source: ImageSource.gallery,
+            child: ScaleEnterAnimation(
+              child: Card.filled(
+                margin: EdgeInsets.zero,
+                color: context.colorScheme.surfaceContainerLow,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SingleMotionBuilder(
+                        value: swipeResult.value,
+                        motion:
+                            const MaterialSpringMotion.expressiveSpatialDefault(),
+                        builder: (context, value, child) {
+                          return Opacity(
+                            opacity: value.clamp(0, 1),
+                            child: Align(
+                              alignment: Alignment.center,
+                              widthFactor: max(value, 0),
+                              child: child,
+                            ),
                           );
-                          if (picked == null) return;
-
-                          if (!context.mounted) return;
-                          ref
-                              .read(isLoadingProvider.notifier)
-                              .startLoading("uploading");
-
-                          try {
-                            var request = http.MultipartRequest(
-                              'POST',
-                              Uri.parse('${apiClient.url}/attach/'),
+                        },
+                        child: IconButton(
+                          icon: const Icon(Symbols.attach_file_add_rounded),
+                          onPressed: () async {
+                            final picked = await ImagePicker().pickImage(
+                              source: ImageSource.gallery,
                             );
+                            if (picked == null) return;
 
-                            request.headers['Authorization'] =
-                                'Bearer ${await SecureStorage().getToken()}';
+                            if (!context.mounted) return;
+                            ref
+                                .read(isLoadingProvider.notifier)
+                                .startLoading("uploading");
 
-                            final int fileLength = await picked.length();
-                            final multipartFile = http.MultipartFile(
-                              'attachments',
-                              picked.readAsBytes().asStream(),
-                              fileLength,
-                              filename: picked.name,
-                            );
+                            try {
+                              var request = http.MultipartRequest(
+                                'POST',
+                                Uri.parse('${apiClient.url}/attach/'),
+                              );
 
-                            request.files.add(multipartFile);
+                              request.headers['Authorization'] =
+                                  'Bearer ${await SecureStorage().getToken()}';
 
-                            final response = await request.send();
+                              final int fileLength = await picked.length();
+                              final multipartFile = http.MultipartFile(
+                                'attachments',
+                                picked.readAsBytes().asStream(),
+                                fileLength,
+                                filename: picked.name,
+                              );
 
-                            if (response.statusCode == 200) {
-                              final responseString = await response.stream
-                                  .bytesToString();
-                              final data = jsonDecode(responseString);
-                              if (data['success'] && data['urls'].length != 0) {
-                                final attachment =
-                                    '![attachment](${apiClient.url}${data['urls'][0]})';
-                                fieldController.text +=
-                                    (fieldController.text.trim().isEmpty
-                                    ? attachment
-                                    : '\n$attachment');
-                                if (!context.mounted) return;
+                              request.files.add(multipartFile);
+
+                              final response = await request.send();
+
+                              if (response.statusCode == 200) {
+                                final responseString = await response.stream
+                                    .bytesToString();
+                                final data = jsonDecode(responseString);
+                                if (data['success'] &&
+                                    data['urls'].length != 0) {
+                                  final attachment =
+                                      '![attachment](${apiClient.url}${data['urls'][0]})';
+                                  fieldController.text +=
+                                      (fieldController.text.trim().isEmpty
+                                      ? attachment
+                                      : '\n$attachment');
+                                  if (!context.mounted) return;
+                                } else {
+                                  if (!context.mounted) return;
+                                  showError(
+                                    context,
+                                    'You attachment was not loaded: ${data['message']}',
+                                  );
+                                }
                               } else {
                                 if (!context.mounted) return;
                                 showError(
                                   context,
-                                  'You attachment was not loaded: ${data['message']}',
+                                  'You attachment was not loaded',
                                 );
                               }
-                            } else {
+                            } catch (e, t) {
                               if (!context.mounted) return;
                               showError(
                                 context,
-                                'You attachment was not loaded',
+                                'While sending picked image to server',
+                                e,
+                                t,
                               );
+                            } finally {
+                              ref
+                                  .read(isLoadingProvider.notifier)
+                                  .endLoading("uploading");
                             }
-                          } catch (e, t) {
-                            if (!context.mounted) return;
-                            showError(
-                              context,
-                              'While sending picked image to server',
-                              e,
-                              t,
-                            );
-                          } finally {
-                            ref
-                                .read(isLoadingProvider.notifier)
-                                .endLoading("uploading");
-                          }
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: fieldController,
-                        focusNode: fieldFocusNode,
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: null,
-                        textInputAction: DeviceType.isMobile
-                            ? TextInputAction.newline
-                            : TextInputAction.send,
-                        onSubmitted: (_) {
-                          if (!HardwareKeyboard.instance.isShiftPressed) {
-                            send();
-                          } else {
-                            fieldController.text = '${fieldController.text}\n';
-                          }
-                          fieldFocusNode.requestFocus();
-                        },
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          hintText: 'Your message goes here...',
+                          },
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: TextField(
+                          controller: fieldController,
+                          focusNode: fieldFocusNode,
+                          keyboardType: TextInputType.multiline,
+                          minLines: 1,
+                          maxLines: null,
+                          textInputAction: DeviceType.isMobile
+                              ? TextInputAction.newline
+                              : TextInputAction.send,
+                          onSubmitted: (_) {
+                            if (!HardwareKeyboard.instance.isShiftPressed) {
+                              send();
+                            } else {
+                              fieldController.text =
+                                  '${fieldController.text}\n';
+                            }
+                            fieldFocusNode.requestFocus();
+                          },
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            hintText: 'Your message goes here...',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-          SingleMotionBuilder(
-            value: swipeResult.value,
-            motion: const MaterialSpringMotion.expressiveSpatialDefault(),
-            builder: (context, value, child) {
-              return Align(
-                alignment: Alignment.center,
-                widthFactor: max(value, 0),
-                child: Transform.scale(
+          ScaleEnterAnimation(
+            child: SingleMotionBuilder(
+              value: swipeResult.value,
+              motion: const MaterialSpringMotion.expressiveSpatialDefault(),
+              builder: (context, value, child) {
+                return Align(
                   alignment: Alignment.center,
-                  scale: max(value, 0),
-                  child: Opacity(opacity: value.clamp(0, 1), child: child),
-                ),
-              );
-            },
-            child: M3EIconButton(
-              icon: const Icon(Symbols.send_rounded, size: 32),
-              variant: M3EIconButtonVariant.filled,
-              size: M3EIconButtonSize.md,
-              shape: M3EIconButtonShapeVariant.round,
-              onPressed: send,
+                  widthFactor: max(value, 0),
+                  child: Transform.scale(
+                    alignment: Alignment.center,
+                    scale: max(value, 0),
+                    child: Opacity(opacity: value.clamp(0, 1), child: child),
+                  ),
+                );
+              },
+              child: M3EIconButton(
+                icon: const Icon(Symbols.send_rounded, size: 32),
+                variant: M3EIconButtonVariant.filled,
+                size: M3EIconButtonSize.md,
+                shape: M3EIconButtonShapeVariant.round,
+                onPressed: send,
+              ),
             ),
           ),
         ],
