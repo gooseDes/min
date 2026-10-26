@@ -51,6 +51,7 @@ class MessageActionsPage extends StatelessWidget {
                       message: message,
                       isFirstInGroup: true,
                       center: true,
+                      enableImageHero: false,
                     ),
                   ),
                 ),

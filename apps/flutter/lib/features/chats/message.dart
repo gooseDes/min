@@ -19,6 +19,7 @@ class Message extends ConsumerWidget {
     required this.message,
     required this.isFirstInGroup,
     this.center = false,
+    this.enableImageHero = true,
     this.shouldAnimate = true,
     this.entranceIndex = 0,
   });
@@ -26,6 +27,7 @@ class Message extends ConsumerWidget {
   final MessageDataWithSender message;
   final bool isFirstInGroup;
   final bool center;
+  final bool enableImageHero;
   final bool shouldAnimate;
   final int entranceIndex;
 
@@ -124,6 +126,7 @@ class Message extends ConsumerWidget {
                                                 .colorScheme
                                                 .onPrimaryContainer
                                           : context.colorScheme.onSurface,
+                                      enableImageHero,
                                     ),
                                   ),
                                 ),
