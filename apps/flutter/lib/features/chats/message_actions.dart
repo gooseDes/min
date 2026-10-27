@@ -6,7 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/theme_ext.dart';
-import 'package:min_flutter/core/ui/enter_animation.dart';
+import 'package:min_flutter/core/ui/progressive_enter_column.dart';
 import 'package:min_flutter/features/chats/message.dart';
 import 'package:min_types/index.dart';
 
@@ -43,91 +43,79 @@ class MessageActionsPage extends StatelessWidget {
             onTap: () {
               if (context.canPop()) context.pop();
             },
-            child: Column(
+            child: ProgressiveEnterColumn(
+              mainAxisAlignment: MainAxisAlignment.center,
               spacing: 8,
               children: [
                 const Expanded(flex: 1, child: SizedBox()),
                 IgnorePointer(
-                  child: ScaleEnterAnimation(
-                    child: Message(
-                      message: message,
-                      isFirstInGroup: true,
-                      center: true,
-                      enableImageHero: false,
-                    ),
+                  child: Message(
+                    message: message,
+                    isFirstInGroup: true,
+                    center: true,
+                    enableImageHero: false,
                   ),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 8,
-                  children: [
-                    ScaleEnterAnimation(
-                      child: M3EButtonGroup(
-                        size: M3EButtonSize.md,
-                        actions: [
-                          const M3EButtonGroupAction(
-                            enabled: false,
-                            icon: Icon(Symbols.edit_rounded),
-                            label: Text("Edit"),
-                            decoration: M3EButtonDecoration(
-                              /*backgroundColor: WidgetStateProperty.all<Color>(
-                                context.colorScheme.primary,
-                              ),
-                              foregroundColor: WidgetStateProperty.all<Color>(
-                                context.colorScheme.onPrimary,
-                              ),*/
-                            ),
-                          ),
-                          const M3EButtonGroupAction(
-                            enabled: false,
-                            icon: Icon(Symbols.reply_rounded),
-                            label: Text("Reply"),
-                            decoration: M3EButtonDecoration(
-                              /*backgroundColor: WidgetStateProperty.all<Color>(
-                                context.colorScheme.primary,
-                              ),
-                              foregroundColor: WidgetStateProperty.all<Color>(
-                                context.colorScheme.onPrimary,
-                              ),*/
-                            ),
-                          ),
-                        ],
-                        onSelectedIndicesChanged: (ind) {},
+                M3EButtonGroup(
+                  size: M3EButtonSize.md,
+                  actions: [
+                    const M3EButtonGroupAction(
+                      enabled: false,
+                      icon: Icon(Symbols.edit_rounded),
+                      label: Text("Edit"),
+                      decoration: M3EButtonDecoration(
+                        /*backgroundColor: WidgetStateProperty.all<Color>(
+                          context.colorScheme.primary,
+                        ),
+                        foregroundColor: WidgetStateProperty.all<Color>(
+                          context.colorScheme.onPrimary,
+                        ),*/
                       ),
                     ),
-                    ScaleEnterAnimation(
-                      child: M3EButtonGroup(
-                        size: M3EButtonSize.md,
-                        actions: [
-                          M3EButtonGroupAction(
-                            icon: const Icon(Symbols.delete_rounded),
-                            label: const Text("Delete"),
-                            decoration: M3EButtonDecoration(
-                              backgroundColor: WidgetStateProperty.all<Color>(
-                                context.colorScheme.errorContainer,
-                              ),
-                              foregroundColor: WidgetStateProperty.all<Color>(
-                                context.colorScheme.onErrorContainer,
-                              ),
-                            ),
-                          ),
-                          const M3EButtonGroupAction(
-                            enabled: false,
-                            icon: Icon(Symbols.info_rounded),
-                          ),
-                        ],
-                        onSelectedIndexChanged: (ind) async {
-                          switch (ind) {
-                            case 0: // Delete
-                              await apiClient.deleteMessage(message.id);
-                              break;
-                          }
-                          if (context.mounted && context.canPop())
-                            context.pop();
-                        },
+                    const M3EButtonGroupAction(
+                      enabled: false,
+                      icon: Icon(Symbols.reply_rounded),
+                      label: Text("Reply"),
+                      decoration: M3EButtonDecoration(
+                        /*backgroundColor: WidgetStateProperty.all<Color>(
+                          context.colorScheme.primary,
+                        ),
+                        foregroundColor: WidgetStateProperty.all<Color>(
+                          context.colorScheme.onPrimary,
+                        ),*/
                       ),
                     ),
                   ],
+                  onSelectedIndicesChanged: (ind) {},
+                ),
+                M3EButtonGroup(
+                  size: M3EButtonSize.md,
+                  actions: [
+                    M3EButtonGroupAction(
+                      icon: const Icon(Symbols.delete_rounded),
+                      label: const Text("Delete"),
+                      decoration: M3EButtonDecoration(
+                        backgroundColor: WidgetStateProperty.all<Color>(
+                          context.colorScheme.errorContainer,
+                        ),
+                        foregroundColor: WidgetStateProperty.all<Color>(
+                          context.colorScheme.onErrorContainer,
+                        ),
+                      ),
+                    ),
+                    const M3EButtonGroupAction(
+                      enabled: false,
+                      icon: Icon(Symbols.info_rounded),
+                    ),
+                  ],
+                  onSelectedIndexChanged: (ind) async {
+                    switch (ind) {
+                      case 0: // Delete
+                        await apiClient.deleteMessage(message.id);
+                        break;
+                    }
+                    if (context.mounted && context.canPop()) context.pop();
+                  },
                 ),
               ],
             ),

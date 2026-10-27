@@ -12,7 +12,7 @@ import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/device_type.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/common_alerts.dart';
-import 'package:min_flutter/core/ui/enter_animation.dart';
+import 'package:min_flutter/core/ui/scale_enter_animation.dart';
 import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
 import 'package:http/http.dart' as http;

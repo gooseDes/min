@@ -1,11 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:motor/motor.dart';
 
 class ScaleEnterAnimation extends HookWidget {
   final Widget child;
+  final Duration delay;
 
-  const ScaleEnterAnimation({super.key, required this.child});
+  const ScaleEnterAnimation({
+    super.key,
+    required this.child,
+    this.delay = Duration.zero,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +20,11 @@ class ScaleEnterAnimation extends HookWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted) {
-          scale.value = 1.0;
-        }
+        Timer(delay, () {
+          if (context.mounted) {
+            scale.value = 1.0;
+          }
+        });
       });
 
       return () {};
