@@ -25,6 +25,7 @@ class AuthState {
 
 class AuthNotifier extends Notifier<AuthState> {
   ApiSubscription? _messagesSubscription;
+  ApiSubscription? _messageDeletionSubscription;
 
   @override
   AuthState build() {
@@ -44,6 +45,11 @@ class AuthNotifier extends Notifier<AuthState> {
       _messagesSubscription = await apiClient.subscribeToNewMessages((message) {
         requestAddingMessage(ref, message);
       });
+      _messageDeletionSubscription = await apiClient.subscribeToMessageDeletion(
+        (messageId) {
+          requestMessageDeletion(ref, messageId);
+        },
+      );
     }
   }
 
@@ -64,6 +70,10 @@ class AuthNotifier extends Notifier<AuthState> {
         ) {
           requestAddingMessage(ref, message);
         });
+        _messageDeletionSubscription = await apiClient
+            .subscribeToMessageDeletion((messageId) {
+              requestMessageDeletion(ref, messageId);
+            });
       },
       failure: (message) {
         state = AuthState(isAuthenticated: false);
@@ -77,6 +87,8 @@ class AuthNotifier extends Notifier<AuthState> {
     state = AuthState(isAuthenticated: false);
     _messagesSubscription?.unsubscribe();
     _messagesSubscription = null;
+    _messageDeletionSubscription?.unsubscribe();
+    _messageDeletionSubscription = null;
   }
 }
 

@@ -24,3 +24,8 @@ Future<void> requestAddingMessage(
   final db = ref.read(databaseProvider);
   await db.addMessageWithSender(message);
 }
+
+Future<void> requestMessageDeletion(Ref ref, int messageId) async {
+  final db = ref.read(databaseProvider);
+  await db.deleteMessage(messageId);
+}

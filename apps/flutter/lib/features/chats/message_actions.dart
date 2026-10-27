@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:min_flutter/core/client.dart';
+import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/enter_animation.dart';
 import 'package:min_flutter/features/chats/message.dart';
 import 'package:min_types/index.dart';
@@ -97,17 +99,16 @@ class MessageActionsPage extends StatelessWidget {
                       child: M3EButtonGroup(
                         size: M3EButtonSize.md,
                         actions: [
-                          const M3EButtonGroupAction(
-                            enabled: false,
-                            icon: Icon(Symbols.delete_rounded),
-                            label: Text("Delete"),
+                          M3EButtonGroupAction(
+                            icon: const Icon(Symbols.delete_rounded),
+                            label: const Text("Delete"),
                             decoration: M3EButtonDecoration(
-                              /*backgroundColor: WidgetStateProperty.all<Color>(
-                                context.colorScheme.tertiary,
+                              backgroundColor: WidgetStateProperty.all<Color>(
+                                context.colorScheme.errorContainer,
                               ),
                               foregroundColor: WidgetStateProperty.all<Color>(
-                                context.colorScheme.onTertiary,
-                              ),*/
+                                context.colorScheme.onErrorContainer,
+                              ),
                             ),
                           ),
                           const M3EButtonGroupAction(
@@ -115,7 +116,15 @@ class MessageActionsPage extends StatelessWidget {
                             icon: Icon(Symbols.info_rounded),
                           ),
                         ],
-                        onSelectedIndicesChanged: (ind) {},
+                        onSelectedIndexChanged: (ind) async {
+                          switch (ind) {
+                            case 0: // Delete
+                              await apiClient.deleteMessage(message.id);
+                              break;
+                          }
+                          if (context.mounted && context.canPop())
+                            context.pop();
+                        },
                       ),
                     ),
                   ],

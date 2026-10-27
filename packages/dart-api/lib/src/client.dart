@@ -165,12 +165,27 @@ class ApiClient {
     });
   }
 
+  Future<void> deleteMessage(int messageId) {
+    return baseSocketRequest('deleteMessage', (data) => {}, {
+      'messageId': messageId,
+    });
+  }
+
   Future<ApiSubscription> subscribeToNewMessages(
     Function(MessageDataWithSender) onNewMessage,
   ) async {
     final socket = await getSocket();
     return ApiSubscription(socket, 'newMessage', (data) {
       onNewMessage(MessageDataWithSender.fromJson(data));
+    })..subscribe();
+  }
+
+  Future<ApiSubscription> subscribeToMessageDeletion(
+    Function(int) onMessageDeletion,
+  ) async {
+    final socket = await getSocket();
+    return ApiSubscription(socket, 'messageDeleted', (data) {
+      onMessageDeletion(data['message']);
     })..subscribe();
   }
 

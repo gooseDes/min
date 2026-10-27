@@ -141,6 +141,12 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
+  Future<void> deleteMessage(int messageId) async {
+    await (delete(
+      messagesTable,
+    )..where((tbl) => tbl.id.equals(messageId))).go();
+  }
+
   Stream<List<ChatWithAvatar>> watchChats(int currentUserId) {
     final query = select(chatsTable).join([
       leftOuterJoin(
