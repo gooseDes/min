@@ -12,171 +12,163 @@ import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/fetch_and_save.dart';
 import 'package:min_flutter/core/safe_area_insets_provider.dart';
 import 'package:min_flutter/core/theme_ext.dart';
+import 'package:min_flutter/features/chats/chat_navigation.dart';
 import 'package:min_flutter/features/chats/message.dart';
 import 'package:min_flutter/features/chats/message_field.dart';
-import 'package:min_flutter/features/chats/selected_chat_provider.dart';
 import 'package:min_flutter/features/settings/settings_provider.dart';
-import 'package:min_flutter/features/storage/database.dart';
 import 'package:min_flutter/features/storage/database_provider.dart';
 
 class ChatScreen extends HookConsumerWidget {
-  final ChatWithAvatar? chat;
+  final int chatId;
 
-  const ChatScreen({super.key, this.chat});
+  const ChatScreen({super.key, required this.chatId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messagesAsync = ref.watch(allMessagesProvider(chat?.id ?? 0));
+    final messagesAsync = ref.watch(allMessagesProvider(chatId));
+    final chat = ref.watch(singleChatProvider(chatId));
     final safeAreaPadding = ref.watch(safeAreaInsetsProvider);
     final settings = ref.watch(settingsProvider);
 
     useEffect(() {
       final listener = AppLifecycleListener(
         onResume: () {
-          if (chat?.id != null) requestChatUpdate(ref, chat!.id);
+          requestChatUpdate(ref, chatId);
         },
       );
 
       return () => listener.dispose();
     }, []);
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-
-        ref.read(selectedChatIdProvider.notifier).closeChat();
-      },
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: context.colorScheme.surfaceContainer,
+      appBar: AppBar(
         backgroundColor: context.colorScheme.surfaceContainer,
-        appBar: AppBar(
-          backgroundColor: context.colorScheme.surfaceContainer,
-          scrolledUnderElevation: 0.0,
-          title: Row(
-            spacing: 8,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(
-                  apiClient.avatarToUrl(chat?.avatar),
-                ),
+        scrolledUnderElevation: 0.0,
+        title: Row(
+          spacing: 8,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(
+                apiClient.avatarToUrl(chat?.avatar),
               ),
-              Text(
-                chat?.name ?? 'Unknown',
-                style: M3ETheme.of(context).typography.baseline.headlineSmall
-                    .copyWith(
-                      fontVariations: const [
-                        FontVariation("GRAD", 100),
-                        FontVariation("wght", 500),
-                        FontVariation("ROND", 100),
-                      ],
-                    ),
-              ),
-            ],
-          ),
-          leading: M3EIconButton(
-            variant: M3EIconButtonVariant.standard,
-            icon: const Icon(Symbols.arrow_back),
-            onPressed: () {
-              ref.read(selectedChatIdProvider.notifier).closeChat();
-            },
-          ),
-        ),
-        body: Padding(
-          padding: EdgeInsets.only(bottom: safeAreaPadding.bottom),
-          child: Card.filled(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(24)),
             ),
-            color: context.colorScheme.surface,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned.fill(
-                      child: RepaintBoundary(
-                        child: messagesAsync.when(
-                          data: (messages) => ListView.builder(
-                            reverse: true,
-                            itemCount: messages.length,
-                            padding: const EdgeInsets.only(bottom: 90, top: 64),
-                            scrollCacheExtent: const ScrollCacheExtent.viewport(
-                              1,
-                            ),
-                            itemBuilder: (ctx, ind) {
-                              final index = messages.length - 1 - ind;
-                              final message = messages[index];
-                              final isFirstInGroup =
-                                  index <= 0 ||
-                                  message.senderId !=
-                                      messages[index - 1].senderId;
+            Text(
+              chat?.name ?? 'Unknown',
+              style: M3ETheme.of(context).typography.baseline.headlineSmall
+                  .copyWith(
+                    fontVariations: const [
+                      FontVariation("GRAD", 100),
+                      FontVariation("wght", 500),
+                      FontVariation("ROND", 100),
+                    ],
+                  ),
+            ),
+          ],
+        ),
+        leading: M3EIconButton(
+          variant: M3EIconButtonVariant.standard,
+          icon: const Icon(Symbols.arrow_back),
+          onPressed: () {
+            ref.read(chatNavigationProvider.notifier).closeChat();
+          },
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.only(bottom: safeAreaPadding.bottom),
+        child: Card.filled(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(24)),
+          ),
+          color: context.colorScheme.surface,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned.fill(
+                    child: RepaintBoundary(
+                      child: messagesAsync.when(
+                        data: (messages) => ListView.builder(
+                          reverse: true,
+                          itemCount: messages.length,
+                          padding: const EdgeInsets.only(bottom: 90, top: 64),
+                          scrollCacheExtent: const ScrollCacheExtent.viewport(
+                            1,
+                          ),
+                          itemBuilder: (ctx, ind) {
+                            final index = messages.length - 1 - ind;
+                            final message = messages[index];
+                            final isFirstInGroup =
+                                index <= 0 ||
+                                message.senderId !=
+                                    messages[index - 1].senderId;
 
-                              return Message(
-                                key: ValueKey(message.id),
-                                message: message,
-                                isFirstInGroup: isFirstInGroup,
-                                entranceIndex: ind,
-                                shouldAnimate: true,
-                              );
-                            },
-                          ),
-                          loading: () => const Align(
-                            alignment: Alignment.center,
-                            child: M3ELoadingIndicator(
-                              variant: M3ELoadingIndicatorVariant.contained,
-                            ),
-                          ),
-                          error: (error, stack) => Text(error.toString()),
+                            return Message(
+                              key: ValueKey(message.id),
+                              message: message,
+                              isFirstInGroup: isFirstInGroup,
+                              entranceIndex: ind,
+                              shouldAnimate: true,
+                            );
+                          },
                         ),
+                        loading: () => const Align(
+                          alignment: Alignment.center,
+                          child: M3ELoadingIndicator(
+                            variant: M3ELoadingIndicatorVariant.contained,
+                          ),
+                        ),
+                        error: (error, stack) => Text(error.toString()),
                       ),
                     ),
-                    Positioned(
-                      bottom: settings.enableBlurBehindInput.value ? 8 : 0,
-                      left: 0,
-                      right: 0,
-                      height: settings.enableBlurBehindInput.value ? 80 : 96,
-                      child: settings.enableBlurBehindInput.value
-                          ? SizedBox.expand(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                    sigmaX: 10.0,
-                                    sigmaY: 10.0,
-                                  ),
-                                  child: const SizedBox.expand(),
+                  ),
+                  Positioned(
+                    bottom: settings.enableBlurBehindInput.value ? 8 : 0,
+                    left: 0,
+                    right: 0,
+                    height: settings.enableBlurBehindInput.value ? 80 : 96,
+                    child: settings.enableBlurBehindInput.value
+                        ? SizedBox.expand(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaX: 10.0,
+                                  sigmaY: 10.0,
                                 ),
+                                child: const SizedBox.expand(),
                               ),
-                            )
-                          : settings.enableProgressiveBlur.value
-                          ? Inspire.backdropBlur(
-                              config: InspireBlurConfig.bottomToTop(sigma: 5),
-                            )
-                          : Container(),
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: 64,
-                      child: settings.enableProgressiveBlur.value
-                          ? Inspire.backdropBlur(
-                              config: InspireBlurConfig.topToBottom(sigma: 5),
-                            )
-                          : Container(),
-                    ),
-                    Positioned(
-                      bottom: 12,
-                      left: settings.enableBlurBehindInput.value ? 4 : 0,
-                      right: settings.enableBlurBehindInput.value ? 4 : 0,
-                      height: 72,
-                      child: MessageField(chat: chat),
-                    ),
-                  ],
-                ),
+                            ),
+                          )
+                        : settings.enableProgressiveBlur.value
+                        ? Inspire.backdropBlur(
+                            config: InspireBlurConfig.bottomToTop(sigma: 5),
+                          )
+                        : Container(),
+                  ),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 64,
+                    child: settings.enableProgressiveBlur.value
+                        ? Inspire.backdropBlur(
+                            config: InspireBlurConfig.topToBottom(sigma: 5),
+                          )
+                        : Container(),
+                  ),
+                  Positioned(
+                    bottom: 12,
+                    left: settings.enableBlurBehindInput.value ? 4 : 0,
+                    right: settings.enableBlurBehindInput.value ? 4 : 0,
+                    height: 72,
+                    child: MessageField(chat: chat),
+                  ),
+                ],
               ),
             ),
           ),

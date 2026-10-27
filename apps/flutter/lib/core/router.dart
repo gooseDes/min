@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/scaffold_with_tabs.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/auth/login_screen.dart';
+import 'package:min_flutter/features/chats/chat_screen.dart';
 import 'package:min_flutter/features/chats/chats_screen.dart';
 import 'package:min_flutter/features/profile/profile_screen.dart';
 import 'package:min_flutter/features/settings/settings_screen.dart';
@@ -79,6 +80,24 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/home',
                 builder: (context, state) => const ChatsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'chat/:chatId',
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) {
+                      final chatId = int.tryParse(
+                        state.pathParameters['chatId'] ?? '',
+                      );
+                      if (chatId == null)
+                        return const NoTransitionPage(child: SizedBox());
+                      return buildPageBuilder(
+                        context,
+                        state,
+                        ChatScreen(chatId: chatId),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
