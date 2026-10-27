@@ -147,6 +147,12 @@ class AppDatabase extends _$AppDatabase {
     )..where((tbl) => tbl.id.equals(messageId))).go();
   }
 
+  Future<List<int>> getMessageIdsInChat(int chatId) {
+    return (select(messagesTable)..where((t) => t.chatId.equals(chatId)))
+        .map((message) => message.id)
+        .get();
+  }
+
   Stream<List<ChatWithAvatar>> watchChats(int currentUserId) {
     final query = select(chatsTable).join([
       leftOuterJoin(

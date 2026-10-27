@@ -14,7 +14,20 @@ Future<void> requestChatListUpdate(WidgetRef ref) async {
 Future<void> requestChatUpdate(WidgetRef ref, int chatId) async {
   final db = ref.read(databaseProvider);
   final msgs = await apiClient.fetchChatMessages(chatId);
-  await db.addMessagesWithSenders(msgs);
+
+  // Leave messages adding/updating
+  final addingFuture = db.addMessagesWithSenders(msgs);
+
+  // Delete messages that are no longer on server
+  final newMsgIds = msgs.map((msg) => msg.id);
+  final dbMsgIds = await db.getMessageIdsInChat(chatId);
+  final toDelete = dbMsgIds.where((id) => !newMsgIds.contains(id));
+  for (final id in toDelete) {
+    await db.deleteMessage(id);
+  }
+
+  // Come back to initial task
+  await addingFuture;
 }
 
 Future<void> requestAddingMessage(
