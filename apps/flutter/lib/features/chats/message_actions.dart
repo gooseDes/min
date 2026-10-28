@@ -47,7 +47,7 @@ class MessageActionsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 8,
               children: [
-                const Expanded(flex: 1, child: SizedBox()),
+                const Expanded(flex: 2, child: SizedBox()),
                 IgnorePointer(
                   child: Message(
                     message: message,
@@ -117,6 +117,7 @@ class MessageActionsPage extends StatelessWidget {
                     if (context.mounted && context.canPop()) context.pop();
                   },
                 ),
+                const Expanded(flex: 1, child: SizedBox()),
               ],
             ),
           ),
