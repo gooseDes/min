@@ -7,11 +7,13 @@ import 'package:motor/motor.dart';
 class ScaleEnterAnimation extends HookWidget {
   final Widget child;
   final Duration delay;
+  final bool show;
 
   const ScaleEnterAnimation({
     super.key,
     required this.child,
     this.delay = Duration.zero,
+    this.show = true,
   });
 
   @override
@@ -22,21 +24,24 @@ class ScaleEnterAnimation extends HookWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Timer(delay, () {
           if (context.mounted) {
-            scale.value = 1.0;
+            scale.value = show ? 1.0 : 0.0;
           }
         });
       });
 
       return () {};
-    }, []);
+    }, [show]);
 
     return SingleMotionBuilder(
       motion: const MaterialSpringMotion.expressiveSpatialDefault(),
       value: scale.value,
-      builder: (context, value, child) => Transform.scale(
-        alignment: Alignment.center,
-        scale: value,
-        child: child,
+      builder: (context, value, child) => Opacity(
+        opacity: value.clamp(0, 1),
+        child: Transform.scale(
+          alignment: Alignment.center,
+          scale: value,
+          child: child,
+        ),
       ),
       child: child,
     );
