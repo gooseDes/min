@@ -33,7 +33,18 @@ class FullscreenImagePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final transformationController = useTransformationController();
     final zoomScale = useState(1.0);
+
+    useEffect(() {
+      void listener() {
+        zoomScale.value = transformationController.value.getMaxScaleOnAxis();
+      }
+
+      transformationController.addListener(listener);
+
+      return () => transformationController.removeListener(listener);
+    }, [transformationController]);
 
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -47,27 +58,24 @@ class FullscreenImagePage extends HookWidget {
                 child: Hero(
                   tag: url,
                   child: InteractiveViewer(
+                    transformationController: transformationController,
                     maxScale: 10,
-                    onInteractionUpdate: (update) {
-                      zoomScale.value = update.scale;
-                    },
                     child: CachedNetworkImage(imageUrl: url),
                   ),
                 ),
               ),
             ),
             Positioned(
-              bottom: 100,
-              left: 0,
-              right: 0,
+              bottom: 16,
+              left: 16,
+              right: 16,
               child: Align(
-                alignment: Alignment.center,
+                alignment: Alignment.bottomRight,
                 child: ScaleEnterAnimation(
-                  show: zoomScale.value < 1.1,
-                  child: M3EButton(
-                    icon: const Icon(Symbols.image_rounded),
-                    label: const Text("Save"),
-                    size: M3EButtonSize.md,
+                  show: transformationController.value.getMaxScaleOnAxis() <= 1,
+                  child: M3EIconButton(
+                    icon: const Icon(Symbols.download_rounded),
+                    size: M3EIconButtonSize.md,
                     onPressed: () async {
                       try {
                         if (!await Gal.hasAccess(toAlbum: true))
