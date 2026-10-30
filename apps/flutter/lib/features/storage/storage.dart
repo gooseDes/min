@@ -50,4 +50,8 @@ class Storage {
 
     throw ArgumentError('Unsupported type: $T');
   }
+
+  Future<void> clear() async {
+    await prefs.clear();
+  }
 }

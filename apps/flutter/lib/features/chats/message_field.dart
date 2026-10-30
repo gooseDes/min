@@ -11,8 +11,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/device_type.dart';
 import 'package:min_flutter/core/theme_ext.dart';
-import 'package:min_flutter/core/ui/common_alerts.dart';
 import 'package:min_flutter/core/ui/scale_enter_animation.dart';
+import 'package:min_flutter/features/dialogs/dialogs.dart';
 import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
 import 'package:http/http.dart' as http;
@@ -96,7 +96,6 @@ class MessageField extends HookConsumerWidget {
                             );
                             if (picked == null) return;
 
-                            if (!context.mounted) return;
                             ref
                                 .read(isLoadingProvider.notifier)
                                 .startLoading("uploading");
@@ -134,25 +133,16 @@ class MessageField extends HookConsumerWidget {
                                       (fieldController.text.trim().isEmpty
                                       ? attachment
                                       : '\n$attachment');
-                                  if (!context.mounted) return;
                                 } else {
-                                  if (!context.mounted) return;
                                   showError(
-                                    context,
                                     'You attachment was not loaded: ${data['message']}',
                                   );
                                 }
                               } else {
-                                if (!context.mounted) return;
-                                showError(
-                                  context,
-                                  'You attachment was not loaded',
-                                );
+                                showError('You attachment was not loaded');
                               }
                             } catch (e, t) {
-                              if (!context.mounted) return;
                               showError(
-                                context,
                                 'While sending picked image to server',
                                 e,
                                 t,

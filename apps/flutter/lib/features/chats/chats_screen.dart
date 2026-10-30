@@ -18,7 +18,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   @override
   void initState() {
     super.initState();
-    requestChatListUpdate(ref);
+    Future.microtask(() => requestChatListUpdate(ref));
   }
 
   @override
@@ -33,7 +33,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 8,
-            children: [Icon(Symbols.chat_rounded), Text("Chats")],
+            children: [Icon(Symbols.chat_rounded), Text('Chats')],
           ),
         ),
       ),

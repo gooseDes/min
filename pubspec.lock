@@ -824,10 +824,10 @@ packages:
     dependency: transitive
     description:
       name: material_3_expressive
-      sha256: "34dc1f23ab47d6cd3f1b3627b8e8533652564fddb229e6c908d9790076781c5e"
+      sha256: "960a296792497cea3bb0dddb817dbb67b507f27eec481c631a733cb168901448"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "1.2.0"
   material_color_utilities:
     dependency: transitive
     description:
@@ -856,10 +856,10 @@ packages:
     dependency: transitive
     description:
       name: material_ui
-      sha256: "98ab9eda579ecae623e4b376c603035c5def78ce706f735f30bd632af5814695"
+      sha256: feb289df1e5f9ed9522f9fe3d909432a7f7bc76943f16abad09f80a16cd25196
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.0"
+    version: "1.9.0"
   melos:
     dependency: "direct dev"
     description:

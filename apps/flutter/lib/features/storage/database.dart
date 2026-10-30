@@ -61,7 +61,7 @@ class AppDatabase extends _$AppDatabase {
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
-      name: "min_db",
+      name: 'min_db',
       native: DriftNativeOptions(
         shareAcrossIsolates: true,
         databaseDirectory: getApplicationSupportDirectory,
@@ -100,6 +100,14 @@ class AppDatabase extends _$AppDatabase {
 
       return id;
     });
+  }
+
+  Future<void> addChatsWithParticipants(
+    List<ChatDataWithParticipants> chats,
+  ) async {
+    for (final chat in chats) {
+      await addChatWithParticipants(chat);
+    }
   }
 
   Future<int> addMessageWithSender(
@@ -141,10 +149,18 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
+  Future<void> deleteChat(int chatId) async {
+    await (delete(chatsTable)..where((tbl) => tbl.id.equals(chatId))).go();
+  }
+
   Future<void> deleteMessage(int messageId) async {
     await (delete(
       messagesTable,
     )..where((tbl) => tbl.id.equals(messageId))).go();
+  }
+
+  Future<List<int>> getChatIds() {
+    return (select(chatsTable)).map((chat) => chat.id).get();
   }
 
   Future<List<int>> getMessageIdsInChat(int chatId) {

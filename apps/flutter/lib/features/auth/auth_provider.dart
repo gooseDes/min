@@ -41,20 +41,24 @@ class AuthNotifier extends Notifier<AuthState> {
     final username = await storage.get(StorageKey.userUsername);
     if (userId != null && username != null && token != null) {
       state = AuthState(isAuthenticated: true, username: username, id: userId);
-      apiClient.initSocket(token);
-      _messagesSubscription = await apiClient.subscribeToNewMessages((message) {
-        requestAddingMessage(ref, message);
-      });
-      _messageDeletionSubscription = await apiClient.subscribeToMessageDeletion(
-        (messageId) {
-          requestMessageDeletion(ref, messageId);
-        },
-      );
+      await getReady(token);
     }
   }
 
-  Future<void> login(String email, String password) async {
-    ref.read(isLoadingProvider.notifier).startLoading("sign-in");
+  Future<void> getReady(String token) async {
+    apiClient.initSocket(token);
+    _messagesSubscription = await apiClient.subscribeToNewMessages((message) {
+      requestAddingMessage(ref, message);
+    });
+    _messageDeletionSubscription = await apiClient.subscribeToMessageDeletion((
+      messageId,
+    ) {
+      requestMessageDeletion(ref, messageId);
+    });
+  }
+
+  Future<void> login({required String email, required String password}) async {
+    ref.read(isLoadingProvider.notifier).startLoading('auth');
     final response = await apiClient.login(email, password);
     response.when(
       success: (token, username, id) async {
@@ -64,31 +68,50 @@ class AuthNotifier extends Notifier<AuthState> {
         final storage = Storage();
         await storage.set(StorageKey.userId, id);
         await storage.set(StorageKey.userUsername, username);
-        apiClient.initSocket(token);
-        _messagesSubscription = await apiClient.subscribeToNewMessages((
-          message,
-        ) {
-          requestAddingMessage(ref, message);
-        });
-        _messageDeletionSubscription = await apiClient
-            .subscribeToMessageDeletion((messageId) {
-              requestMessageDeletion(ref, messageId);
-            });
+        await getReady(token);
       },
       failure: (message) {
         state = AuthState(isAuthenticated: false);
         showError(message);
       },
     );
-    ref.read(isLoadingProvider.notifier).endLoading("sign-in");
+    ref.read(isLoadingProvider.notifier).endLoading('auth');
   }
 
-  void logout() {
+  Future<void> register({
+    required String email,
+    required String username,
+    required String password,
+  }) async {
+    ref.read(isLoadingProvider.notifier).startLoading('auth');
+    final response = await apiClient.register(email, username, password);
+    response.when(
+      success: (token, username, id) async {
+        state = AuthState(isAuthenticated: true, username: username, id: id);
+        final secStorage = SecureStorage();
+        await secStorage.saveToken(token);
+        final storage = Storage();
+        await storage.set(StorageKey.userId, id);
+        await storage.set(StorageKey.userUsername, username);
+        await getReady(token);
+      },
+      failure: (message) {
+        state = AuthState(isAuthenticated: false);
+        showError(message);
+      },
+    );
+    ref.read(isLoadingProvider.notifier).endLoading('auth');
+  }
+
+  void logout() async {
     state = AuthState(isAuthenticated: false);
     _messagesSubscription?.unsubscribe();
     _messagesSubscription = null;
     _messageDeletionSubscription?.unsubscribe();
     _messageDeletionSubscription = null;
+    apiClient.closeSocket();
+    await SecureStorage().clearAll();
+    await Storage().clear();
   }
 }
 

@@ -39,19 +39,46 @@ class ApiClient {
 
   ApiClient({required this.url});
 
-  Future<AuthResult> login(String email, String password) async {
+  Future<AuthResult> register(
+    String email,
+    String username,
+    String password,
+  ) async {
     final response = await http.post(
-      Uri.parse('$url/login'),
+      Uri.parse('$url/register'),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode({"email": email, "password": password}),
+      body: jsonEncode({
+        'email': email,
+        'username': username,
+        'password': password,
+      }),
     );
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     if (data.containsKey('token')) {
       return AuthResult.success(
+        id: data['id'],
+        token: data['token'],
+        username: username,
+      );
+    } else {
+      return AuthResult.failure(message: data['msg'] ?? 'Unknown error');
+    }
+  }
+
+  Future<AuthResult> login(String email, String password) async {
+    final response = await http.post(
+      Uri.parse('$url/login'),
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      body: jsonEncode({'email': email, 'password': password}),
+    );
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    if (data.containsKey('token')) {
+      return AuthResult.success(
+        id: data['id'],
         token: data['token'],
         username: data['username'],
-        id: data['id'],
       );
     } else {
       return AuthResult.failure(message: data['msg'] ?? 'Unknown error');
@@ -63,6 +90,7 @@ class ApiClient {
       url,
       io.OptionBuilder()
           .setTransports(['websocket'])
+          .enableForceNew()
           .enableAutoConnect()
           .setAuth({'token': token})
           .build(),
@@ -83,6 +111,11 @@ class ApiClient {
     socket!.onError((e) {
       _logger.e('Socket error: $e');
     });
+  }
+
+  void closeSocket() {
+    socket?.dispose();
+    socket = null;
   }
 
   /// Returns the socket. If it's not initialized, waits for it to connect and then returns.
