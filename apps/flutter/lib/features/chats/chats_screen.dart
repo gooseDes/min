@@ -47,7 +47,9 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
             itemBuilder: (context, index) {
               final chatId = chatIds[index];
               return ChatsListItem(
-                type: index == 0
+                type: chatIds.length == 1
+                    ? ProfileThingType.only
+                    : index == 0
                     ? ProfileThingType.top
                     : index == chatIds.length - 1
                     ? ProfileThingType.bottom

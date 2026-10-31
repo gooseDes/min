@@ -4,7 +4,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 
-enum ProfileThingType { top, normal, bottom }
+enum ProfileThingType { top, normal, bottom, only }
 
 class ProfileThing extends StatelessWidget {
   final ProfileThingType? type;
@@ -24,8 +24,9 @@ class ProfileThing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTop = type == ProfileThingType.top;
-    final isBottom = type == ProfileThingType.bottom;
+    final isTop = type == ProfileThingType.only || type == ProfileThingType.top;
+    final isBottom =
+        type == ProfileThingType.only || type == ProfileThingType.bottom;
 
     final borderRadius = BorderRadius.vertical(
       top: Radius.circular(isTop ? 24 : 8),
@@ -56,13 +57,13 @@ class ProfileThing extends StatelessWidget {
           ),
         ),
         title: Text(
-          name ?? "Test User",
+          name ?? 'Test User',
           style: context.typography.baseline.titleMedium,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
-          undername ?? "@test_user",
+          undername ?? '@test_user',
           style: context.textTheme.bodyMedium?.copyWith(
             color: context.colorScheme.secondary,
           ),

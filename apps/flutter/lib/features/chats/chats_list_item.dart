@@ -20,7 +20,7 @@ class ChatsListItem extends ConsumerWidget {
     return ProfileThing(
       type: type,
       name: chat.name,
-      undername: "WIP",
+      undername: 'WIP',
       avatarUrl: apiClient.avatarToUrl(chat.avatar),
       onTap: () {
         ref.read(chatNavigationProvider.notifier).openChat(chatId);
