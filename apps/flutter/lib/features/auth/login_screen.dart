@@ -5,8 +5,9 @@ import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/theme_ext.dart';
+import 'package:min_flutter/core/ui/opacity_enter_animation.dart';
+import 'package:min_flutter/core/ui/scale_enter_animation.dart';
 import 'package:min_flutter/features/dialogs/dialogs.dart';
-import 'package:motor/motor.dart';
 
 import 'auth_provider.dart';
 
@@ -49,162 +50,84 @@ class LoginScreen extends HookConsumerWidget {
                         selectedTabIndex.value = index;
                       },
                     ),
-                    SingleMotionBuilder(
-                      value: selectedTabIndex.value == 0 ? 144 : 288,
-                      motion:
-                          const MaterialSpringMotion.expressiveSpatialDefault(),
-                      builder: (context, height, child) => SizedBox(
-                        height: height,
-                        child: M3ETabsView(
-                          selectedIndex: selectedTabIndex.value,
-                          onTabSelected: (index) {
-                            selectedTabIndex.value = index;
-                          },
-                          children: [
-                            OverflowBox(
-                              maxHeight: double.infinity,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: AutofillGroup(
-                                  child: Column(
-                                    spacing: 16,
-                                    children: [
-                                      TextField(
-                                        key: const ValueKey('email_field'),
-                                        controller: emailController,
-                                        decoration: const InputDecoration(
-                                          prefixIcon: Icon(
-                                            Symbols.email_rounded,
-                                            fill: 1,
-                                          ),
-                                          filled: true,
-                                          border: OutlineInputBorder(),
-                                          labelText: 'Email',
-                                        ),
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        autofillHints: const [
-                                          AutofillHints.email,
-                                        ],
-                                        textInputAction: TextInputAction.next,
-                                      ),
-                                      TextField(
-                                        key: const ValueKey('password_field'),
-                                        controller: passwordController,
-                                        decoration: const InputDecoration(
-                                          prefixIcon: Icon(
-                                            Symbols.lock_rounded,
-                                            fill: 1,
-                                          ),
-                                          filled: true,
-                                          border: OutlineInputBorder(),
-                                          labelText: 'Password',
-                                        ),
-                                        obscureText: true,
-                                        keyboardType:
-                                            TextInputType.visiblePassword,
-                                        autofillHints: const [
-                                          AutofillHints.password,
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                    AutofillGroup(
+                      child: Column(
+                        children: [
+                          OpacityEnterAnimation(
+                            changeBox: true,
+                            show: selectedTabIndex.value == 1,
+                            child: TextField(
+                              key: const ValueKey('username_field'),
+                              controller: usernameController,
+                              decoration: const InputDecoration(
+                                prefixIcon: Icon(
+                                  Symbols.person_filled_rounded,
+                                  fill: 1,
                                 ),
+                                filled: true,
+                                border: OutlineInputBorder(),
+                                labelText: 'Username',
                               ),
+                              keyboardType: TextInputType.name,
+                              autofillHints: const [AutofillHints.newUsername],
+                              textInputAction: TextInputAction.next,
                             ),
-                            OverflowBox(
-                              maxHeight: double.infinity,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: AutofillGroup(
-                                  child: Column(
-                                    spacing: 16,
-                                    children: [
-                                      TextField(
-                                        key: const ValueKey('username_field'),
-                                        controller: usernameController,
-                                        decoration: const InputDecoration(
-                                          prefixIcon: Icon(
-                                            Symbols.person_filled_rounded,
-                                            fill: 1,
-                                          ),
-                                          filled: true,
-                                          border: OutlineInputBorder(),
-                                          labelText: 'Username',
-                                        ),
-                                        keyboardType: TextInputType.name,
-                                        autofillHints: const [
-                                          AutofillHints.newUsername,
-                                        ],
-                                        textInputAction: TextInputAction.next,
-                                      ),
-                                      TextField(
-                                        key: const ValueKey('email_field'),
-                                        controller: emailController,
-                                        decoration: const InputDecoration(
-                                          prefixIcon: Icon(
-                                            Symbols.email_rounded,
-                                            fill: 1,
-                                          ),
-                                          filled: true,
-                                          border: OutlineInputBorder(),
-                                          labelText: 'Email',
-                                        ),
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        autofillHints: const [
-                                          AutofillHints.email,
-                                        ],
-                                        textInputAction: TextInputAction.next,
-                                      ),
-                                      TextField(
-                                        key: const ValueKey('password_field'),
-                                        controller: passwordController,
-                                        decoration: const InputDecoration(
-                                          prefixIcon: Icon(
-                                            Symbols.lock_rounded,
-                                            fill: 1,
-                                          ),
-                                          filled: true,
-                                          border: OutlineInputBorder(),
-                                          labelText: 'Password',
-                                        ),
-                                        obscureText: true,
-                                        keyboardType:
-                                            TextInputType.visiblePassword,
-                                        autofillHints: const [
-                                          AutofillHints.newPassword,
-                                        ],
-                                        textInputAction: TextInputAction.next,
-                                      ),
-                                      TextField(
-                                        key: const ValueKey(
-                                          'confirm_password_field',
-                                        ),
-                                        controller: confirmPasswordController,
-                                        decoration: const InputDecoration(
-                                          prefixIcon: Icon(
-                                            Symbols.key_rounded,
-                                            fill: 1,
-                                          ),
-                                          filled: true,
-                                          border: OutlineInputBorder(),
-                                          labelText: 'Confirm password',
-                                        ),
-                                        obscureText: true,
-                                        keyboardType:
-                                            TextInputType.visiblePassword,
-                                        autofillHints: const [
-                                          AutofillHints.newPassword,
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                          ),
+                          ScaleEnterAnimation(
+                            changeBox: true,
+                            show: selectedTabIndex.value == 1,
+                            child: const SizedBox(height: 16),
+                          ),
+                          TextField(
+                            key: const ValueKey('email_field'),
+                            controller: emailController,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Symbols.email_rounded, fill: 1),
+                              filled: true,
+                              border: OutlineInputBorder(),
+                              labelText: 'Email',
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                            autofillHints: const [AutofillHints.email],
+                            textInputAction: TextInputAction.next,
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            key: const ValueKey('password_field'),
+                            controller: passwordController,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Symbols.lock_rounded, fill: 1),
+                              filled: true,
+                              border: OutlineInputBorder(),
+                              labelText: 'Password',
+                            ),
+                            obscureText: true,
+                            keyboardType: TextInputType.visiblePassword,
+                            autofillHints: const [AutofillHints.password],
+                          ),
+                          ScaleEnterAnimation(
+                            changeBox: true,
+                            show: selectedTabIndex.value == 1,
+                            child: const SizedBox(height: 16),
+                          ),
+                          OpacityEnterAnimation(
+                            changeBox: true,
+                            show: selectedTabIndex.value == 1,
+                            child: TextField(
+                              key: const ValueKey('confirm_password_field'),
+                              controller: confirmPasswordController,
+                              decoration: const InputDecoration(
+                                prefixIcon: Icon(Symbols.key_rounded, fill: 1),
+                                filled: true,
+                                border: OutlineInputBorder(),
+                                labelText: 'Confirm password',
                               ),
+                              obscureText: true,
+                              keyboardType: TextInputType.visiblePassword,
+                              autofillHints: const [AutofillHints.newPassword],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     const Divider(),
@@ -215,7 +138,6 @@ class LoginScreen extends HookConsumerWidget {
                         size: M3EIconButtonSize.md,
                         onPressed: () {
                           TextInput.finishAutofillContext();
-                          print(selectedTabIndex.value);
 
                           if (selectedTabIndex.value == 0)
                             ref

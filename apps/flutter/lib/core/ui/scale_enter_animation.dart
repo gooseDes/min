@@ -1,41 +1,24 @@
-import 'dart:async';
-
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:motor/motor.dart';
+import 'package:min_flutter/core/ui/enter_animation.dart';
 
-class ScaleEnterAnimation extends HookWidget {
+class ScaleEnterAnimation extends StatelessWidget {
   final Widget child;
   final Duration delay;
   final bool show;
+  final bool changeBox;
 
   const ScaleEnterAnimation({
     super.key,
     required this.child,
     this.delay = Duration.zero,
     this.show = true,
+    this.changeBox = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final scale = useState(0.0);
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Timer(delay, () {
-          if (context.mounted) {
-            scale.value = show ? 1.0 : 0.0;
-          }
-        });
-      });
-
-      return () {};
-    }, [show]);
-
-    return SingleMotionBuilder(
-      motion: const MaterialSpringMotion.expressiveSpatialDefault(),
-      value: scale.value,
-      builder: (context, value, child) => Opacity(
+    return EnterAnimation(
+      animationBuilder: (value, child) => Opacity(
         opacity: value.clamp(0, 1),
         child: Transform.scale(
           alignment: Alignment.center,
@@ -43,6 +26,9 @@ class ScaleEnterAnimation extends HookWidget {
           child: child,
         ),
       ),
+      delay: delay,
+      show: show,
+      changeBox: changeBox,
       child: child,
     );
   }
