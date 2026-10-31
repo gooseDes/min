@@ -151,21 +151,33 @@ class ApiClient {
   }
 
   Future<List<ChatDataWithParticipants>> fetchChats() async {
-    return baseSocketRequest(
-      'fetchChats',
-      (data) => data['chats'].map<ChatDataWithParticipants>((c) {
-        try {
-          return ChatDataWithParticipants.fromJson(c);
-        } catch (e) {
-          return ChatDataWithParticipants(
-            id: 0,
-            name: 'Error',
-            participants: [],
-            type: ChatType.private,
-          );
-        }
-      }).toList(),
-    );
+    return baseSocketRequest('fetchChats', (data) {
+      final List<ChatDataWithParticipants> chats = [];
+      chats.insert(
+        0,
+        ChatDataWithParticipants(
+          id: 1,
+          name: 'Default Chat',
+          participants: [],
+          type: ChatType.group,
+        ),
+      );
+      chats.addAll(
+        data['chats'].map<ChatDataWithParticipants>((c) {
+          try {
+            return ChatDataWithParticipants.fromJson(c);
+          } catch (e) {
+            return ChatDataWithParticipants(
+              id: 0,
+              name: 'Error',
+              participants: [],
+              type: ChatType.private,
+            );
+          }
+        }),
+      );
+      return chats;
+    });
   }
 
   Future<List<MessageDataWithSender>> fetchChatMessages(int chatId) async {
