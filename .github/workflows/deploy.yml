@@ -402,6 +402,12 @@ jobs:
           storeFile=keystore.p12
           EOF
 
+      - name: Decode Google Services JSON
+        env:
+          GOOGLE_SERVICES_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          echo "$GOOGLE_SERVICES_BASE64" | base64 --decode > ./apps/flutter/android/app/google-services.json
+
       - name: Get version
         id: version
         shell: bash
