@@ -53,3 +53,4 @@ app.*.map.json
 **/android/*.p12
 **/android/app/build/
 **/android/build/
+**/android/app/google-services.json

@@ -216,6 +216,10 @@ class ApiClient {
     });
   }
 
+  Future<void> linkFcmToken(String token) {
+    return baseSocketRequest('linkFcmToken', (data) => {}, {'token': token});
+  }
+
   Future<ApiSubscription> subscribeToNewMessages(
     Function(MessageDataWithSender) onNewMessage,
   ) async {
