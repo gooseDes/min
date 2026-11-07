@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -119,7 +121,7 @@ class Message extends HookConsumerWidget {
               : (isMy ? Alignment.centerRight : Alignment.centerLeft),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+              maxWidth: min(MediaQuery.sizeOf(context).width * 0.8, 480),
             ),
             child: MessageEntrance(
               id: message.id,

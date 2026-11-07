@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -134,8 +135,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemTheme.fallbackColor = await LinuxAccentColorFallback.getAccentColor();
   await SystemTheme.accentColor.load();
-  await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  if (Platform.isAndroid) {
+    await Firebase.initializeApp();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
   runApp(const ProviderScope(child: MinApp()));
 }
 
@@ -189,7 +192,9 @@ class MinApp extends HookConsumerWidget {
     }
 
     ref.listen(authProvider, (prev, next) {
-      if (!(prev?.isAuthenticated ?? false) && next.isAuthenticated) {
+      if (Platform.isAndroid &&
+          !(prev?.isAuthenticated ?? false) &&
+          next.isAuthenticated) {
         initializeActualFcmMessages();
       }
     });

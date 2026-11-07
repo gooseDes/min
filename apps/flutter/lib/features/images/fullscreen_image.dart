@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:min_flutter/core/router.dart';
 import 'package:min_flutter/core/ui/scale_enter_animation.dart';
 import 'package:min_flutter/features/dialogs/dialogs.dart';
 
@@ -66,7 +67,7 @@ class FullscreenImagePage extends HookWidget {
               ),
             ),
             Positioned(
-              bottom: 16,
+              bottom: context.isExpanded ? 96 : 16,
               left: 16,
               right: 16,
               child: Align(
@@ -88,19 +89,19 @@ class FullscreenImagePage extends HookWidget {
                           if (context.mounted)
                             M3ESnackbar.show(
                               context,
-                              message: "No such file in cache, somehow",
+                              message: 'No such file in cache, somehow',
                             );
                           return;
                         }
 
-                        Gal.putImage(fileInfo!.file.path, album: "Min");
+                        Gal.putImage(fileInfo!.file.path, album: 'Min');
                         if (context.mounted)
                           M3ESnackbar.show(
                             context,
-                            message: "Image saved successfully!",
+                            message: 'Image saved successfully!',
                           );
                       } catch (error, stack) {
-                        showError("Error while saving image", error, stack);
+                        showError('Error while saving image', error, stack);
                       } finally {
                         if (context.mounted && context.canPop()) context.pop();
                       }

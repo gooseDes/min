@@ -2,12 +2,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/scaffold_with_tabs.dart';
+import 'package:min_flutter/core/ui/adaptive_shell.dart';
+import 'package:min_flutter/core/ui/home_root.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/auth/login_screen.dart';
 import 'package:min_flutter/features/chats/chat_screen.dart';
-import 'package:min_flutter/features/chats/chats_screen.dart';
 import 'package:min_flutter/features/profile/profile_screen.dart';
 import 'package:min_flutter/features/settings/settings_screen.dart';
+
+extension AdaptiveContext on BuildContext {
+  bool get isExpanded => MediaQuery.sizeOf(this).width >= 840;
+}
 
 CustomTransitionPage buildPageBuilder(
   BuildContext context,
@@ -77,25 +82,29 @@ final routerProvider = Provider<GoRouter>((ref) {
         branches: [
           StatefulShellBranch(
             routes: [
-              GoRoute(
-                path: '/home',
-                builder: (context, state) => const ChatsScreen(),
+              ShellRoute(
+                builder: (context, state, child) => AdaptiveShell(child: child),
                 routes: [
                   GoRoute(
-                    path: 'chat/:chatId',
-                    parentNavigatorKey: rootNavigatorKey,
-                    pageBuilder: (context, state) {
-                      final chatId = int.tryParse(
-                        state.pathParameters['chatId'] ?? '',
-                      );
-                      if (chatId == null)
-                        return const NoTransitionPage(child: SizedBox());
-                      return buildPageBuilder(
-                        context,
-                        state,
-                        ChatScreen(chatId: chatId),
-                      );
-                    },
+                    path: '/home',
+                    builder: (context, state) => const HomeRoot(),
+                    routes: [
+                      GoRoute(
+                        path: 'chat/:chatId',
+                        pageBuilder: (context, state) {
+                          final chatId = int.tryParse(
+                            state.pathParameters['chatId'] ?? '',
+                          );
+                          if (chatId == null)
+                            return const NoTransitionPage(child: SizedBox());
+                          return buildPageBuilder(
+                            context,
+                            state,
+                            ChatScreen(key: ValueKey(chatId), chatId: chatId),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -59,9 +59,9 @@ class ChatScreen extends HookConsumerWidget {
               style: M3ETheme.of(context).typography.baseline.headlineSmall
                   .copyWith(
                     fontVariations: const [
-                      FontVariation("GRAD", 100),
-                      FontVariation("wght", 500),
-                      FontVariation("ROND", 100),
+                      FontVariation('GRAD', 100),
+                      FontVariation('wght', 500),
+                      FontVariation('ROND', 100),
                     ],
                   ),
             ),

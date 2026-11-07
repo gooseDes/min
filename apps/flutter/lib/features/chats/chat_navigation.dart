@@ -22,7 +22,7 @@ class ChatNavigation extends Notifier<int?> {
   }
 
   void openChat(int chatId) =>
-      ref.read(routerProvider).push('/home/chat/$chatId');
+      ref.read(routerProvider).go('/home/chat/$chatId');
 
   void closeChat() {
     final router = ref.read(routerProvider);
