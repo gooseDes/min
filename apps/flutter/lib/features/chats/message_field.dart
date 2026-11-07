@@ -12,6 +12,8 @@ import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/device_type.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/scale_enter_animation.dart';
+import 'package:min_flutter/features/chats/replying_provider.dart';
+import 'package:min_flutter/features/chats/utils.dart';
 import 'package:min_flutter/features/dialogs/dialogs.dart';
 import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
@@ -26,18 +28,34 @@ class MessageField extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final replyingTo = ref.watch(replyProvider);
     final fieldController = useTextEditingController();
     final fieldFocusNode = useFocusNode();
     final swipedLastUpdate = useState(0.0);
     final swipeResult = useState(1.0);
     const requiredSwipeDistance = 100.0;
+    final lastReplyToSender = useState('');
+    final lastReplyToContent = useState('');
+
+    useEffect(() {
+      if (replyingTo?.senderUsername != null)
+        lastReplyToSender.value = replyingTo!.senderUsername;
+      if (replyingTo?.content != null)
+        lastReplyToContent.value = replyingTo!.content;
+
+      return null;
+    }, [replyingTo]);
 
     Future<void> send() async {
       final text = fieldController.text.trim();
       if (chat?.id != null && text.isNotEmpty) {
         fieldController.clear();
         fieldFocusNode.requestFocus();
-        await apiClient.sendMessage(chat!.id, text);
+        await apiClient.sendMessage(
+          chat!.id,
+          replyingTo == null ? text : '/reply ${replyingTo.id}\n$text',
+        );
+        ref.read(replyProvider.notifier).clear();
       }
     }
 
@@ -70,119 +88,159 @@ class MessageField extends HookConsumerWidget {
                 color: context.colorScheme.surfaceContainerLow,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SingleMotionBuilder(
-                        value: swipeResult.value,
                         motion:
                             const MaterialSpringMotion.expressiveSpatialDefault(),
-                        builder: (context, value, child) {
-                          return Opacity(
+                        value: (replyingTo != null && swipeResult.value == 1)
+                            ? 1
+                            : 0,
+                        builder: (context, value, child) => Align(
+                          heightFactor: value.clamp(0, double.infinity),
+                          child: Opacity(
                             opacity: value.clamp(0, 1),
-                            child: Align(
-                              alignment: Alignment.center,
-                              widthFactor: max(value, 0),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: IconButton(
-                          icon: const Icon(Symbols.attach_file_add_rounded),
-                          onPressed: () async {
-                            final picked = await ImagePicker().pickImage(
-                              source: ImageSource.gallery,
-                            );
-                            if (picked == null) return;
-
-                            ref
-                                .read(isLoadingProvider.notifier)
-                                .startLoading("uploading");
-
-                            try {
-                              var request = http.MultipartRequest(
-                                'POST',
-                                Uri.parse('${apiClient.url}/attach/'),
-                              );
-
-                              request.headers['Authorization'] =
-                                  'Bearer ${await SecureStorage().getToken()}';
-
-                              final int fileLength = await picked.length();
-                              final multipartFile = http.MultipartFile(
-                                'attachments',
-                                picked.readAsBytes().asStream(),
-                                fileLength,
-                                filename: picked.name,
-                              );
-
-                              request.files.add(multipartFile);
-
-                              final response = await request.send();
-
-                              if (response.statusCode == 200) {
-                                final responseString = await response.stream
-                                    .bytesToString();
-                                final data = jsonDecode(responseString);
-                                if (data['success'] &&
-                                    data['urls'].length != 0) {
-                                  final attachment =
-                                      '![attachment](${apiClient.url}${data['urls'][0]})';
-                                  fieldController.text +=
-                                      (fieldController.text.trim().isEmpty
-                                      ? attachment
-                                      : '\n$attachment');
-                                } else {
-                                  showError(
-                                    'You attachment was not loaded: ${data['message']}',
-                                  );
-                                }
-                              } else {
-                                showError('You attachment was not loaded');
-                              }
-                            } catch (e, t) {
-                              showError(
-                                'While sending picked image to server',
-                                e,
-                                t,
-                              );
-                            } finally {
-                              ref
-                                  .read(isLoadingProvider.notifier)
-                                  .endLoading("uploading");
-                            }
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller: fieldController,
-                          focusNode: fieldFocusNode,
-                          keyboardType: TextInputType.multiline,
-                          minLines: 1,
-                          maxLines: null,
-                          textInputAction: DeviceType.isMobile
-                              ? TextInputAction.newline
-                              : TextInputAction.send,
-                          onSubmitted: (_) {
-                            if (!HardwareKeyboard.instance.isShiftPressed) {
-                              send();
-                            } else {
-                              fieldController.text =
-                                  '${fieldController.text}\n';
-                            }
-                            fieldFocusNode.requestFocus();
-                          },
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            hintText: 'Your message goes here...',
+                            child: child,
                           ),
                         ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: GestureDetector(
+                            onTap: () {
+                              ref.read(replyProvider.notifier).clear();
+                            },
+                            child: Row(
+                              spacing: 4,
+                              children: [
+                                const Icon(Symbols.reply_rounded, size: 16),
+                                Expanded(
+                                  child: Text(
+                                    '${lastReplyToSender.value}: ${stripCommands(lastReplyToContent.value)}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SingleMotionBuilder(
+                            value: swipeResult.value,
+                            motion:
+                                const MaterialSpringMotion.expressiveSpatialDefault(),
+                            builder: (context, value, child) {
+                              return Opacity(
+                                opacity: value.clamp(0, 1),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  widthFactor: max(value, 0),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: IconButton(
+                              icon: const Icon(Symbols.attach_file_add_rounded),
+                              onPressed: () async {
+                                final picked = await ImagePicker().pickImage(
+                                  source: ImageSource.gallery,
+                                );
+                                if (picked == null) return;
+
+                                ref
+                                    .read(isLoadingProvider.notifier)
+                                    .startLoading('uploading');
+
+                                try {
+                                  var request = http.MultipartRequest(
+                                    'POST',
+                                    Uri.parse('${apiClient.url}/attach/'),
+                                  );
+
+                                  request.headers['Authorization'] =
+                                      'Bearer ${await SecureStorage().getToken()}';
+
+                                  final int fileLength = await picked.length();
+                                  final multipartFile = http.MultipartFile(
+                                    'attachments',
+                                    picked.readAsBytes().asStream(),
+                                    fileLength,
+                                    filename: picked.name,
+                                  );
+
+                                  request.files.add(multipartFile);
+
+                                  final response = await request.send();
+
+                                  if (response.statusCode == 200) {
+                                    final responseString = await response.stream
+                                        .bytesToString();
+                                    final data = jsonDecode(responseString);
+                                    if (data['success'] &&
+                                        data['urls'].length != 0) {
+                                      final attachment =
+                                          '![attachment](${apiClient.url}${data['urls'][0]})';
+                                      fieldController.text +=
+                                          (fieldController.text.trim().isEmpty
+                                          ? attachment
+                                          : '\n$attachment');
+                                    } else {
+                                      showError(
+                                        'You attachment was not loaded: ${data['message']}',
+                                      );
+                                    }
+                                  } else {
+                                    showError('You attachment was not loaded');
+                                  }
+                                } catch (e, t) {
+                                  showError(
+                                    'While sending picked image to server',
+                                    e,
+                                    t,
+                                  );
+                                } finally {
+                                  ref
+                                      .read(isLoadingProvider.notifier)
+                                      .endLoading('uploading');
+                                }
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: TextField(
+                              controller: fieldController,
+                              focusNode: fieldFocusNode,
+                              keyboardType: TextInputType.multiline,
+                              minLines: 1,
+                              maxLines: null,
+                              textInputAction: DeviceType.isMobile
+                                  ? TextInputAction.newline
+                                  : TextInputAction.send,
+                              onSubmitted: (_) {
+                                if (!HardwareKeyboard.instance.isShiftPressed) {
+                                  send();
+                                } else {
+                                  fieldController.text =
+                                      '${fieldController.text}\n';
+                                }
+                                fieldFocusNode.requestFocus();
+                              },
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                hintText: 'Your message here...',
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
