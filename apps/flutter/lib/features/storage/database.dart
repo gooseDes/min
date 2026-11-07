@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:min_flutter/features/storage/db_conversions.dart';
 import 'package:min_types/index.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -167,6 +168,18 @@ class AppDatabase extends _$AppDatabase {
     return (select(messagesTable)..where((t) => t.chatId.equals(chatId)))
         .map((message) => message.id)
         .get();
+  }
+
+  Future<MessageData> getMessage(int messageId) async {
+    return (await (select(
+      messagesTable,
+    )..where((tbl) => tbl.id.equals(messageId))).getSingle()).toApi();
+  }
+
+  Future<UserData> getUser(int userId) async {
+    return (await (select(
+      usersTable,
+    )..where((tbl) => tbl.id.equals(userId))).getSingle()).toApi();
   }
 
   Stream<List<ChatWithAvatar>> watchChats(int currentUserId) {

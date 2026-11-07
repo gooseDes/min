@@ -10,16 +10,6 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 
 part 'client.freezed.dart';
 
-final _logger = Logger(
-  printer: PrettyPrinter(
-    methodCount: 2,
-    errorMethodCount: 8,
-    lineLength: 128,
-    colors: true,
-    printEmojis: true,
-  ),
-);
-
 @freezed
 sealed class AuthResult with _$AuthResult {
   const factory AuthResult.success({
@@ -33,11 +23,12 @@ sealed class AuthResult with _$AuthResult {
 
 class ApiClient {
   final String url;
+  final Logger? logger;
   io.Socket? socket;
   Completer<io.Socket>? _socketCompleter;
   int _lastRequestId = 0;
 
-  ApiClient({required this.url});
+  ApiClient({required this.url, this.logger});
 
   Future<AuthResult> register(
     String email,
@@ -100,16 +91,16 @@ class ApiClient {
       _socketCompleter = null;
     }
     socket!.onConnect((_) {
-      _logger.i('Socket successfully connected!');
+      logger?.i('Socket successfully connected!');
     });
     socket!.onConnectError((e) {
-      _logger.e('Socket connection error: $e');
+      logger?.e('Socket connection error: $e');
     });
     socket!.onDisconnect((_) {
-      _logger.i('Socket disconnected');
+      logger?.i('Socket disconnected');
     });
     socket!.onError((e) {
-      _logger.e('Socket error: $e');
+      logger?.e('Socket error: $e');
     });
   }
 
@@ -218,6 +209,22 @@ class ApiClient {
 
   Future<void> linkFcmToken(String token) {
     return baseSocketRequest('linkFcmToken', (data) => {}, {'token': token});
+  }
+
+  Future<MessageData> fetchMessage(int messageId) {
+    return baseSocketRequest(
+      'fetchMessage',
+      (data) => MessageData.fromJson(data['message']),
+      {'messageId': messageId},
+    );
+  }
+
+  Future<UserData> fetchUser(int userId) {
+    return baseSocketRequest(
+      'fetchUser',
+      (data) => UserData.fromJson(data['user']),
+      {'userId': userId},
+    );
   }
 
   Future<ApiSubscription> subscribeToNewMessages(
