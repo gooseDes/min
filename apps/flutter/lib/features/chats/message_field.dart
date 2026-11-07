@@ -34,6 +34,7 @@ class MessageField extends HookConsumerWidget {
     final swipedLastUpdate = useState(0.0);
     final swipeResult = useState(1.0);
     const requiredSwipeDistance = 100.0;
+    final currentText = useState('');
     final lastReplyToSender = useState('');
     final lastReplyToContent = useState('');
 
@@ -45,6 +46,15 @@ class MessageField extends HookConsumerWidget {
 
       return null;
     }, [replyingTo]);
+
+    useEffect(() {
+      void upd() {
+        currentText.value = fieldController.text;
+      }
+
+      fieldController.addListener(upd);
+      return () => fieldController.removeListener(upd);
+    }, []);
 
     Future<void> send() async {
       final text = fieldController.text.trim();
@@ -250,7 +260,9 @@ class MessageField extends HookConsumerWidget {
           ),
           ScaleEnterAnimation(
             child: SingleMotionBuilder(
-              value: swipeResult.value,
+              value: currentText.value.trim().isNotEmpty
+                  ? swipeResult.value
+                  : 0,
               motion: const MaterialSpringMotion.expressiveSpatialDefault(),
               builder: (context, value, child) {
                 return Align(
