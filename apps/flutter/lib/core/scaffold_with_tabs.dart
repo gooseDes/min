@@ -6,6 +6,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/safe_area_insets_provider.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/animated_fill_icon.dart';
+import 'package:min_flutter/features/chats/chat_navigation.dart';
+import 'package:motor/motor.dart';
 
 class ScaffoldWithTabs extends ConsumerWidget {
   const ScaffoldWithTabs({required this.child, super.key});
@@ -13,6 +15,8 @@ class ScaffoldWithTabs extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final chat = ref.watch(chatNavigationProvider);
+    print(chat);
     final navigationShell = child as StatefulNavigationShell;
 
     final padding = MediaQuery.paddingOf(context);
@@ -24,34 +28,40 @@ class ScaffoldWithTabs extends ConsumerWidget {
     return Scaffold(
       body: navigationShell,
       extendBody: true,
-      bottomNavigationBar: M3ENavigationBar(
-        backgroundColor: context.colorScheme.surfaceContainer,
-        wideDestinationWidth: 145,
-        selectedIndex: navigationShell.currentIndex,
-        onDestinationSelected: (int index) => navigationShell.goBranch(index),
-        destinations: [
-          M3ENavigationBarDestination(
-            icon: AnimatedFillIcon(
-              icon: Symbols.home_rounded,
-              isSelected: navigationShell.currentIndex == 0,
+      bottomNavigationBar: SingleMotionBuilder(
+        motion: const MaterialSpringMotion.expressiveSpatialDefault(),
+        value: chat != null && chat != -1 ? 1 : 0,
+        builder: (context, value, child) =>
+            Transform.translate(offset: Offset(0, value * 100), child: child),
+        child: M3ENavigationBar(
+          backgroundColor: context.colorScheme.surfaceContainer,
+          wideDestinationWidth: 145,
+          selectedIndex: navigationShell.currentIndex,
+          onDestinationSelected: (int index) => navigationShell.goBranch(index),
+          destinations: [
+            M3ENavigationBarDestination(
+              icon: AnimatedFillIcon(
+                icon: Symbols.home_rounded,
+                isSelected: navigationShell.currentIndex == 0,
+              ),
+              label: 'Home',
             ),
-            label: "Home",
-          ),
-          M3ENavigationBarDestination(
-            icon: AnimatedFillIcon(
-              icon: Symbols.person_rounded,
-              isSelected: navigationShell.currentIndex == 1,
+            M3ENavigationBarDestination(
+              icon: AnimatedFillIcon(
+                icon: Symbols.person_rounded,
+                isSelected: navigationShell.currentIndex == 1,
+              ),
+              label: 'Profile',
             ),
-            label: "Profile",
-          ),
-          M3ENavigationBarDestination(
-            icon: AnimatedFillIcon(
-              icon: Symbols.settings_rounded,
-              isSelected: navigationShell.currentIndex == 2,
+            M3ENavigationBarDestination(
+              icon: AnimatedFillIcon(
+                icon: Symbols.settings_rounded,
+                isSelected: navigationShell.currentIndex == 2,
+              ),
+              label: 'Settings',
             ),
-            label: "Settings",
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
