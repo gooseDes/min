@@ -21,7 +21,7 @@ class HomeRoot extends StatelessWidget {
                   .shake(rotation: 0.2, delay: const Duration(seconds: 1)),
               Text('Welcome!', style: context.textTheme.displayLarge),
               Text(
-                'Click any of the chats to start chatting!',
+                'Click any of the chats to start chatting',
                 style: context.textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),

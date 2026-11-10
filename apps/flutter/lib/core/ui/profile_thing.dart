@@ -43,8 +43,7 @@ class ProfileThing extends StatelessWidget {
       child: ListTile(
         onTap: onTap ?? () {},
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        leading: SizedBox.square(
-          dimension: 52,
+        leading: SizedBox(
           child: ClipOval(
             child: avatarUrl == null
                 ? const Icon(Symbols.account_circle_rounded, size: 32)
