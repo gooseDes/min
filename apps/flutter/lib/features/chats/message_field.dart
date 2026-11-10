@@ -89,7 +89,9 @@ class MessageField extends HookConsumerWidget {
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 12 * swipeResult.value,
+        spacing: currentText.value.trim().isNotEmpty
+            ? swipeResult.value * 12
+            : 0,
         children: [
           Expanded(
             child: ScaleEnterAnimation(
