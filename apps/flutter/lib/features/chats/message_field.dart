@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/device_type.dart';
+import 'package:min_flutter/core/router.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/scale_enter_animation.dart';
 import 'package:min_flutter/features/chats/replying_provider.dart';
@@ -95,6 +96,7 @@ class MessageField extends HookConsumerWidget {
         children: [
           Expanded(
             child: ScaleEnterAnimation(
+              enabled: !context.isExpanded,
               child: Card.filled(
                 margin: EdgeInsets.zero,
                 color: context.colorScheme.surfaceContainerLow,

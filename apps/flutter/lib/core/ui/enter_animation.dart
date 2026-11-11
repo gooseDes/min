@@ -9,6 +9,7 @@ class EnterAnimation extends HookWidget {
   final Duration delay;
   final bool show;
   final bool changeBox;
+  final bool enabled;
   final Widget Function(double, Widget?) animationBuilder;
 
   const EnterAnimation({
@@ -17,6 +18,7 @@ class EnterAnimation extends HookWidget {
     this.delay = Duration.zero,
     this.show = true,
     this.changeBox = false,
+    this.enabled = true,
     required this.animationBuilder,
   });
 
@@ -36,16 +38,18 @@ class EnterAnimation extends HookWidget {
       return () {};
     }, [show]);
 
-    return SingleMotionBuilder(
-      motion: const MaterialSpringMotion.expressiveSpatialDefault(),
-      value: scale.value,
-      builder: (context, value, child) => changeBox
-          ? Align(
-              heightFactor: value.clamp(0, 2),
-              child: animationBuilder(value, child),
-            )
-          : animationBuilder(value, child),
-      child: child,
-    );
+    return enabled
+        ? SingleMotionBuilder(
+            motion: const MaterialSpringMotion.expressiveSpatialDefault(),
+            value: scale.value,
+            builder: (context, value, child) => changeBox
+                ? Align(
+                    heightFactor: value.clamp(0, 2),
+                    child: animationBuilder(value, child),
+                  )
+                : animationBuilder(value, child),
+            child: child,
+          )
+        : child;
   }
 }

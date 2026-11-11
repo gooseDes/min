@@ -6,6 +6,7 @@ class ScaleEnterAnimation extends StatelessWidget {
   final Duration delay;
   final bool show;
   final bool changeBox;
+  final bool enabled;
 
   const ScaleEnterAnimation({
     super.key,
@@ -13,6 +14,7 @@ class ScaleEnterAnimation extends StatelessWidget {
     this.delay = Duration.zero,
     this.show = true,
     this.changeBox = false,
+    this.enabled = true,
   });
 
   @override
@@ -29,6 +31,7 @@ class ScaleEnterAnimation extends StatelessWidget {
       delay: delay,
       show: show,
       changeBox: changeBox,
+      enabled: enabled,
       child: child,
     );
   }
