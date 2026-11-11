@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:cached_network_image_ce/cached_network_image.dart';
@@ -74,9 +75,9 @@ class FullscreenImagePage extends HookWidget {
                 alignment: Alignment.bottomRight,
                 child: ScaleEnterAnimation(
                   show: transformationController.value.getMaxScaleOnAxis() <= 1,
-                  child: M3EIconButton(
+                  child: M3EFab(
                     icon: const Icon(Symbols.download_rounded),
-                    size: M3EIconButtonSize.md,
+                    size: M3EFabSize.small,
                     onPressed: () async {
                       try {
                         if (!await Gal.hasAccess(toAlbum: true))
@@ -94,16 +95,22 @@ class FullscreenImagePage extends HookWidget {
                           return;
                         }
 
-                        Gal.putImage(fileInfo!.file.path, album: 'Min');
-                        if (context.mounted)
+                        await Gal.putImage(fileInfo!.file.path, album: 'Min');
+
+                        if (context.mounted) {
                           M3ESnackbar.show(
                             context,
-                            message: 'Image saved successfully!',
+                            message:
+                                'Image saved ${Platform.isWindows
+                                    ? 'to \$HOME\\Pictures\\Min '
+                                    : Platform.isLinux
+                                    ? 'to ~/Pictures/Min '
+                                    : ''}successfully!',
                           );
+                          if (context.canPop()) context.pop();
+                        }
                       } catch (error, stack) {
                         showError('Error while saving image', error, stack);
-                      } finally {
-                        if (context.mounted && context.canPop()) context.pop();
                       }
                     },
                   ),

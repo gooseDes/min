@@ -13,13 +13,13 @@ void showError(String message, [Object? exception, StackTrace? trace]) {
     context,
     dialog: M3EDialog(
       icon: const Icon(Symbols.error_rounded),
-      title: "Error",
+      title: 'Error',
       content: Text(
         exception != null ? '$message: ${exception.toString()}' : message,
       ),
       actions: [
         M3EButton(
-          label: const Text("OK"),
+          label: const Text('OK'),
           onPressed: () {
             if (context.canPop()) context.pop();
           },
