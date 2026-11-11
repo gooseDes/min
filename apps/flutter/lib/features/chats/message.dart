@@ -83,7 +83,7 @@ class Message extends HookConsumerWidget {
                   onError: (e, s) {
                     replyingToText.value = e.toString();
                     replyingToSender.value = 'Error';
-                    logger.e(
+                    logger.w(
                       'Could not fetch sender\'s name:',
                       error: e,
                       stackTrace: s,
@@ -94,7 +94,7 @@ class Message extends HookConsumerWidget {
               onError: (e, s) {
                 replyingToText.value = e.toString();
                 replyingToSender.value = 'Error';
-                logger.e(
+                logger.w(
                   'Could not fetch message\'s content:',
                   error: e,
                   stackTrace: s,

@@ -94,7 +94,7 @@ class ApiClient {
       logger?.i('Socket successfully connected!');
     });
     socket!.onConnectError((e) {
-      logger?.e('Socket connection error: $e');
+      logger?.w('Socket connection error: $e');
     });
     socket!.onDisconnect((_) {
       logger?.i('Socket disconnected');
