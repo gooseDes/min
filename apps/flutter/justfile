@@ -4,8 +4,11 @@ set positional-arguments
     @just --list
 
 # Clear the build cache
-clear:
+clean:
     flutter clean
+
+pub *args:
+    flutter pub "$@"
 
 # Install dependencies
 install:
