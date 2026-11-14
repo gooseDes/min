@@ -23,7 +23,7 @@ dependencies:
   flutter_secure_storage: ^11.0.0
   system_theme: ^3.3.0
   shared_preferences: ^2.5.5
-  drift: 2.34.0
+  drift: 2.35.3
   drift_flutter: 0.3.0
   collection: ^1.19.1
   path_provider: ^2.1.6
@@ -51,12 +51,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  drift_dev: 2.34.0
+  drift_dev: 2.35.3
   riverpod_generator:
   dart_config:
     path: ../../packages/dart-config
   build_runner: ^2.15.1
-  freezed: ^3.2.6-dev.1
+  freezed: ^4.0.1
 flutter:
   uses-material-design: true
 
