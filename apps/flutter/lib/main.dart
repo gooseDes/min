@@ -245,6 +245,11 @@ class MinApp extends HookConsumerWidget {
               seedColor: systemAccent.accent,
               brightness: Brightness.light,
             ),
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+              },
+            ),
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
@@ -253,6 +258,11 @@ class MinApp extends HookConsumerWidget {
             colorScheme: ColorScheme.fromSeed(
               seedColor: systemAccent.accent,
               brightness: Brightness.dark,
+            ),
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+              },
             ),
           ),
 

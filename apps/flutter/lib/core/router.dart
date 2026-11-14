@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/scaffold_with_tabs.dart';
 import 'package:min_flutter/core/ui/adaptive_shell.dart';
+import 'package:min_flutter/core/ui/back_gesture_scrubber.dart';
 import 'package:min_flutter/core/ui/home_root.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/auth/login_screen.dart';
@@ -24,9 +25,9 @@ CustomTransitionPage buildPageBuilder(
     child: child,
     transitionDuration: const Duration(milliseconds: 400),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(0.4, 0.0);
+      const begin = Offset(-1, 0);
       const end = Offset.zero;
-      const curve = Curves.easeOutCubic;
+      const curve = Curves.fastOutSlowIn;
 
       final tween = Tween(
         begin: begin,
@@ -34,9 +35,14 @@ CustomTransitionPage buildPageBuilder(
       ).chain(CurveTween(curve: curve));
       final offsetAnimation = animation.drive(tween);
 
-      return SlideTransition(
-        position: offsetAnimation,
-        child: FadeTransition(opacity: animation, child: child),
+      return BackGestureScrubber(
+        child: SlideTransition(
+          position: offsetAnimation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.8, end: 1.0).animate(animation),
+            child: FadeTransition(opacity: animation, child: child),
+          ),
+        ),
       );
     },
   );
