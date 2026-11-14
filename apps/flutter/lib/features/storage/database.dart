@@ -170,16 +170,16 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
-  Future<MessageData> getMessage(int messageId) async {
+  Future<MessageData?> getMessageOrNull(int messageId) async {
     return (await (select(
       messagesTable,
-    )..where((tbl) => tbl.id.equals(messageId))).getSingle()).toApi();
+    )..where((tbl) => tbl.id.equals(messageId))).getSingleOrNull())?.toApi();
   }
 
-  Future<UserData> getUser(int userId) async {
+  Future<UserData?> getUserOrNull(int userId) async {
     return (await (select(
       usersTable,
-    )..where((tbl) => tbl.id.equals(userId))).getSingle()).toApi();
+    )..where((tbl) => tbl.id.equals(userId))).getSingleOrNull())?.toApi();
   }
 
   Stream<List<ChatWithAvatar>> watchChats(int currentUserId) {
