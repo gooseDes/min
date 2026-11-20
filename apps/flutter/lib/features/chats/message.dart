@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/client.dart';
 import 'package:min_flutter/core/datetime_ext.dart';
-import 'package:min_flutter/core/flutter_theme_bridge.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/markdown_config.dart';
 import 'package:min_flutter/features/auth/auth_provider.dart';
@@ -69,7 +68,7 @@ class Message extends HookConsumerWidget {
                   : MessageEntranceDirection.left,
               animate: shouldAnimate && entranceIndex < entranceMsgAmount,
               delay: entranceIndex < entranceMsgAmount
-                  ? Duration(milliseconds: entranceIndex * 50)
+                  ? Duration(milliseconds: entranceIndex * 50 + 300)
                   : Duration.zero,
               child: Column(
                 crossAxisAlignment: isMy
@@ -149,18 +148,14 @@ class Message extends HookConsumerWidget {
                                   ],
                                 ),
                               Flexible(
-                                child: FlutterThemeBridge(
-                                  child: MarkdownBlock(
-                                    data: stripCommands(message.content),
-                                    config: generateMarkdownConfig(
-                                      context,
-                                      isColoredInPrimary
-                                          ? context
-                                                .colorScheme
-                                                .onPrimaryContainer
-                                          : context.colorScheme.onSurface,
-                                      enableImageHero,
-                                    ),
+                                child: MarkdownBlock(
+                                  data: stripCommands(message.content),
+                                  config: generateMarkdownConfig(
+                                    context,
+                                    isColoredInPrimary
+                                        ? context.colorScheme.onPrimaryContainer
+                                        : context.colorScheme.onSurface,
+                                    enableImageHero,
                                   ),
                                 ),
                               ),

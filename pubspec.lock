@@ -668,6 +668,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  haze:
+    dependency: transitive
+    description:
+      name: haze
+      sha256: "73cf374a8c6a78763b3f86ecfe7c430e5b34dbbf25ff8c592480002d267b7a69"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   highlight:
     dependency: transitive
     description:
@@ -788,14 +796,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.2"
-  inspire_blur:
-    dependency: transitive
-    description:
-      name: inspire_blur
-      sha256: b585981ba722ef7e1d4bba6b761dd516a3318189d422186c6a1f756e131a09e5
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.1"
   intl:
     dependency: transitive
     description:

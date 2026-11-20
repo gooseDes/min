@@ -15,21 +15,19 @@ abstract class SettingsState with _$SettingsState {
   const SettingsState._();
 
   const factory SettingsState({
-    @Default(SettingsField(key: "show_debug_info", type: bool, value: false))
+    @Default(SettingsField(key: 'show_debug_info', type: bool, value: false))
     SettingsField showDebugInfo,
 
-    @Default(
-      SettingsField(key: "enable_progressive_blur", type: bool, value: true),
-    )
+    @Default(SettingsField(key: 'enable_haze_blur', type: bool, value: false))
     SettingsField enableProgressiveBlur,
 
     @Default(
-      SettingsField(key: "enable_blur_behind_input", type: bool, value: false),
+      SettingsField(key: 'enable_blur_behind_input', type: bool, value: false),
     )
     SettingsField enableBlurBehindInput,
 
     @Default(
-      SettingsField(key: "enable_color_own_messages", type: bool, value: true),
+      SettingsField(key: 'enable_color_own_messages', type: bool, value: true),
     )
     SettingsField enableColorOwnMessages,
   }) = _SettingsState;

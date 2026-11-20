@@ -1,10 +1,9 @@
 import 'dart:ui';
 
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inspire_blur/inspire_blur.dart';
+import 'package:haze/haze.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
@@ -29,6 +28,12 @@ class ChatScreen extends HookConsumerWidget {
     final chat = ref.watch(singleChatProvider(chatId));
     final safeAreaPadding = ref.watch(safeAreaInsetsProvider);
     final settings = ref.watch(settingsProvider);
+    final entranceUntil = useRef<DateTime?>(null);
+
+    useEffect(() {
+      entranceUntil.value = null;
+      return null;
+    }, [chatId]);
 
     useEffect(() {
       final listener = AppLifecycleListener(
@@ -82,40 +87,53 @@ class ChatScreen extends HookConsumerWidget {
             borderRadius: BorderRadius.all(Radius.circular(24)),
           ),
           color: context.colorScheme.surface,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned.fill(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 0,
+                    ),
                     child: RepaintBoundary(
                       child: messagesAsync.when(
-                        data: (messages) => ListView.builder(
-                          reverse: true,
-                          itemCount: messages.length,
-                          padding: const EdgeInsets.only(bottom: 90, top: 64),
-                          scrollCacheExtent: const ScrollCacheExtent.viewport(
-                            1,
-                          ),
-                          itemBuilder: (ctx, ind) {
-                            final index = messages.length - 1 - ind;
-                            final message = messages[index];
-                            final isFirstInGroup =
-                                index <= 0 ||
-                                message.senderId !=
-                                    messages[index - 1].senderId;
+                        data: (messages) {
+                          entranceUntil.value ??= DateTime.now().add(
+                            const Duration(milliseconds: 1500),
+                          );
 
-                            return Message(
-                              key: ValueKey(message.id),
-                              message: message,
-                              isFirstInGroup: isFirstInGroup,
-                              entranceIndex: ind,
-                              shouldAnimate: true,
-                            );
-                          },
-                        ),
+                          return ListView.builder(
+                            reverse: true,
+                            itemCount: messages.length,
+                            padding: const EdgeInsets.only(bottom: 90, top: 64),
+                            scrollCacheExtent: const ScrollCacheExtent.viewport(
+                              1,
+                            ),
+                            itemBuilder: (ctx, ind) {
+                              final index = messages.length - 1 - ind;
+                              final message = messages[index];
+                              final isFirstInGroup =
+                                  index <= 0 ||
+                                  message.senderId !=
+                                      messages[index - 1].senderId;
+
+                              final inAnimationWindow = DateTime.now().isBefore(
+                                entranceUntil.value!,
+                              );
+
+                              return Message(
+                                key: ValueKey(message.id),
+                                message: message,
+                                isFirstInGroup: isFirstInGroup,
+                                entranceIndex: ind,
+                                shouldAnimate: inAnimationWindow || ind == 0,
+                              );
+                            },
+                          );
+                        },
                         loading: () => const Align(
                           alignment: Alignment.center,
                           child: M3ELoadingIndicator(
@@ -126,50 +144,46 @@ class ChatScreen extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  Positioned(
-                    bottom: settings.enableBlurBehindInput.value ? 8 : 0,
-                    left: 0,
-                    right: 0,
-                    height: settings.enableBlurBehindInput.value ? 80 : 96,
-                    child: settings.enableBlurBehindInput.value
-                        ? SizedBox.expand(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 10.0,
-                                  sigmaY: 10.0,
-                                ),
-                                child: const SizedBox.expand(),
+                ),
+                Positioned(
+                  bottom: settings.enableBlurBehindInput.value ? 8 : 0,
+                  left: 0,
+                  right: 0,
+                  height: settings.enableBlurBehindInput.value ? 80 : 96,
+                  child: settings.enableBlurBehindInput.value
+                      ? SizedBox.expand(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 10.0,
+                                sigmaY: 10.0,
                               ),
+                              child: const SizedBox.expand(),
                             ),
-                          )
-                        : settings.enableProgressiveBlur.value
-                        ? Inspire.backdropBlur(
-                            config: InspireBlurConfig.bottomToTop(sigma: 5),
-                          )
-                        : Container(),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 64,
-                    child: settings.enableProgressiveBlur.value
-                        ? Inspire.backdropBlur(
-                            config: InspireBlurConfig.topToBottom(sigma: 5),
-                          )
-                        : Container(),
-                  ),
-                  Positioned(
-                    bottom: 12,
-                    left: settings.enableBlurBehindInput.value ? 4 : 0,
-                    right: settings.enableBlurBehindInput.value ? 4 : 0,
-                    height: 72,
-                    child: MessageField(chat: chat),
-                  ),
-                ],
-              ),
+                          ),
+                        )
+                      : settings.enableProgressiveBlur.value
+                      ? const Haze(edge: HazeEdge.bottom, sigma: 5)
+                      : Container(),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 32,
+                  child: settings.enableProgressiveBlur.value
+                      ? const Haze(edge: HazeEdge.top, sigma: 5)
+                      : Container(),
+                ),
+                Positioned(
+                  bottom: 12,
+                  left: settings.enableBlurBehindInput.value ? 16 : 12,
+                  right: settings.enableBlurBehindInput.value ? 16 : 12,
+                  height: 72,
+                  child: MessageField(chat: chat),
+                ),
+              ],
             ),
           ),
         ),

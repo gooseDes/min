@@ -76,7 +76,7 @@ class ApiClient {
     }
   }
 
-  void initSocket(String token) {
+  void initSocket(String token, {void Function(String message)? onError}) {
     socket = io.io(
       url,
       io.OptionBuilder()
@@ -95,6 +95,7 @@ class ApiClient {
     });
     socket!.onConnectError((e) {
       logger?.w('Socket connection error: $e');
+      onError?.call(e is Map ? e['message'] : e.toString());
     });
     socket!.onDisconnect((_) {
       logger?.i('Socket disconnected');

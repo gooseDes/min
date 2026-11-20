@@ -1,4 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:motor/motor.dart';
 
@@ -8,7 +9,7 @@ final _animatedMessageIdsProvider = Provider.autoDispose<Set<int>>(
 
 enum MessageEntranceDirection { left, right }
 
-class MessageEntrance extends ConsumerStatefulWidget {
+class MessageEntrance extends StatefulHookConsumerWidget {
   const MessageEntrance({
     super.key,
     required this.child,
@@ -53,19 +54,29 @@ class _MessageEntranceState extends ConsumerState<MessageEntrance> {
 
   @override
   Widget build(BuildContext context) {
+    final finalShown = useState(false);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        finalShown.value = _shown;
+      });
+
+      return null;
+    }, [_shown]);
+
     final offset = Offset(
       widget.direction == MessageEntranceDirection.left ? -50 : 50,
       0,
     );
     return MotionBuilder(
       motion: const MaterialSpringMotion.expressiveSpatialDefault(),
-      value: _shown ? Offset.zero : offset,
+      value: finalShown.value ? Offset.zero : offset,
       builder: (context, offset, child) =>
           Transform.translate(offset: offset, child: child),
       converter: const OffsetMotionConverter(),
       child: SingleMotionBuilder(
         motion: const MaterialSpringMotion.expressiveSpatialDefault(),
-        value: _shown ? 1.0 : 0.0,
+        value: finalShown.value ? 1.0 : 0.0,
         builder: (context, scale, child) => Transform.scale(
           scale: scale,
           alignment: widget.direction == MessageEntranceDirection.left
@@ -75,7 +86,7 @@ class _MessageEntranceState extends ConsumerState<MessageEntrance> {
         ),
         child: SingleMotionBuilder(
           motion: const MaterialSpringMotion.expressiveEffectsDefault(),
-          value: _shown ? 1.0 : 0.0,
+          value: finalShown.value ? 1.0 : 0.0,
           builder: (context, opacity, child) =>
               Opacity(opacity: opacity.clamp(0, 1), child: child),
           child: widget.child,

@@ -46,7 +46,12 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> getReady(String token) async {
-    apiClient.initSocket(token);
+    apiClient.initSocket(
+      token,
+      onError: (message) {
+        if (message.toLowerCase().contains('token')) logout();
+      },
+    );
     _messagesSubscription = await apiClient.subscribeToNewMessages((message) {
       requestAddingMessage(ref, message);
     });

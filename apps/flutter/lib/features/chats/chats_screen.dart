@@ -3,6 +3,7 @@ import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:min_flutter/core/fetch_and_save.dart';
+import 'package:min_flutter/core/flutter_theme_bridge.dart';
 import 'package:min_flutter/core/ui/profile_thing.dart';
 import 'package:min_flutter/features/chats/chats_list_item.dart';
 import 'package:min_flutter/features/storage/database_provider.dart';
@@ -41,25 +42,27 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: chatIds.length,
-            itemBuilder: (context, index) {
-              final chatId = chatIds[index];
-              return ChatsListItem(
-                type: chatIds.length == 1
-                    ? ProfileThingType.only
-                    : index == 0
-                    ? ProfileThingType.top
-                    : index == chatIds.length - 1
-                    ? ProfileThingType.bottom
-                    : ProfileThingType.normal,
-                chatId: chatId,
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 0);
-            },
+          child: FlutterThemeBridge(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: chatIds.length,
+              itemBuilder: (context, index) {
+                final chatId = chatIds[index];
+                return ChatsListItem(
+                  type: chatIds.length == 1
+                      ? ProfileThingType.only
+                      : index == 0
+                      ? ProfileThingType.top
+                      : index == chatIds.length - 1
+                      ? ProfileThingType.bottom
+                      : ProfileThingType.normal,
+                  chatId: chatId,
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 0);
+              },
+            ),
           ),
         ),
       ),

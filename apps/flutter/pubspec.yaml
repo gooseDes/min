@@ -32,7 +32,6 @@ dependencies:
   material_3_expressive: ^1.2.0
   material_ui: ^1.2.0
   motor: ^1.1.0
-  inspire_blur: ^0.4.1
   flutter_hooks: ^0.21.3+1
   hooks_riverpod: ^3.3.2
   freezed_annotation: ^3.1.0
@@ -47,6 +46,7 @@ dependencies:
   firebase_messaging: ^17.0.1
   flutter_local_notifications: ^22.3.3
   gal_linux: ^0.1.2
+  haze: ^0.5.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
