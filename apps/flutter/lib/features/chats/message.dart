@@ -13,8 +13,8 @@ import 'package:min_flutter/features/auth/auth_provider.dart';
 import 'package:min_flutter/features/chats/message_actions.dart';
 import 'package:min_flutter/features/chats/message_entrance.dart';
 import 'package:min_flutter/features/chats/reply_preview_provider.dart';
-import 'package:min_flutter/features/chats/utils.dart';
 import 'package:min_flutter/features/settings/settings_provider.dart';
+import 'package:min_flutter/rust/api/utils.dart';
 import 'package:min_types/index.dart';
 
 class Message extends HookConsumerWidget {

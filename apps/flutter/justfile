@@ -16,6 +16,11 @@ install:
 
 generate:
     flutter pub run build_runner build
+    just generate-rust
+
+generate-rust:
+    node generateRust.mts
+    flutter_rust_bridge_codegen generate
 
 # Run the app
 run *args:

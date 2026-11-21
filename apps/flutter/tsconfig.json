@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es2021",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "rootDir": "${configDir}",
+  },
+  "include": ["${configDir}"],
+}

@@ -16,7 +16,7 @@ class SettingsSwitch extends ConsumerWidget {
     return Row(
       spacing: 8,
       children: [
-        Text("$settingKey:"),
+        Text('$settingKey:'),
         M3ESwitch(
           value: settings.fields[settingKey]?.field.value,
           onChanged: (value) {

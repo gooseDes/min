@@ -6,3 +6,6 @@ to-json:
 
 to-dart: to-json
     node src/toDart.mts
+
+to-rust: to-json
+    node src/toRust.mts

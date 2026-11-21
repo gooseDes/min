@@ -21,6 +21,9 @@ mod api "packages/api"
 # dart-api package scripts
 mod dart-api "packages/dart-api"
 
+# Rust core
+mod core "packages/core"
+
 # Interactive runner
 @default:
     @just --choose

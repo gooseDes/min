@@ -146,19 +146,16 @@ class ChatScreen extends HookConsumerWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: settings.enableBlurBehindInput.value ? 8 : 0,
+                  bottom: 0,
                   left: 0,
                   right: 0,
-                  height: settings.enableBlurBehindInput.value ? 80 : 96,
+                  height: 96,
                   child: settings.enableBlurBehindInput.value
                       ? SizedBox.expand(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(16),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                sigmaX: 10.0,
-                                sigmaY: 10.0,
-                              ),
+                              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                               child: const SizedBox.expand(),
                             ),
                           ),

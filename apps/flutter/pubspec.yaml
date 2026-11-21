@@ -47,6 +47,9 @@ dependencies:
   flutter_local_notifications: ^22.3.3
   gal_linux: ^0.1.2
   haze: ^0.5.0
+  rust_lib_min_flutter:
+    path: rust_builder
+  flutter_rust_bridge: 2.13.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -367,6 +367,11 @@ jobs:
       - name: Install Dart
         uses: dart-lang/setup-dart@v1
 
+      - name: Install Cargo tools
+        uses: taiki-e/install-action@v2
+        with:
+          tool: flutter_rust_bridge_codegen@2.13.0,cargo-expand
+
       - name: Install Melos
         run: |
           dart pub global activate melos

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_symbols_icons/material_symbols_icons.dart';
@@ -36,7 +35,7 @@ class UpdaterService {
     try {
       final response = await http.get(
         Uri.parse(
-          "https://github.com/gooseDes/min/releases/latest/download/flutter-latest.json",
+          'https://github.com/gooseDes/min/releases/latest/download/flutter-latest.json',
         ),
       );
 
@@ -90,7 +89,7 @@ class UpdaterService {
 
       final cacheDirs = await getExternalCacheDirectories();
       if (cacheDirs == null || !cacheDirs.isNotEmpty)
-        throw Exception("No External Cache Directory");
+        throw Exception('No External Cache Directory');
       final file = File('${cacheDirs.first.path}/min-update.apk');
       final fileSink = file.openWrite();
 
@@ -167,7 +166,7 @@ class UpdaterService {
       M3EDialog.show(
         navContext,
         dialog: M3EDialog(
-          title: "New Version is Available",
+          title: 'New Version is Available',
           icon: const Icon(Symbols.update_rounded),
           content: Text(
             'You can update the app: $currentVersion -> ${latestVersion.version}. It\'s highly recommended to do as soon as possible!',
@@ -194,7 +193,7 @@ class UpdaterService {
                   barrierDismissible: false,
                   dialog: M3EDialog(
                     icon: const Icon(Symbols.update_rounded),
-                    title: "Downloading...",
+                    title: 'Downloading...',
                     content: ValueListenableBuilder<double>(
                       valueListenable: progressNotifier,
                       builder: (context, currentProgress, child) {
@@ -218,7 +217,7 @@ class UpdaterService {
                   navContext,
                   dialog: const M3EDialog(
                     icon: Icon(Symbols.update_rounded),
-                    title: "Installing...",
+                    title: 'Installing...',
                     content: Align(
                       alignment: Alignment.center,
                       child: M3ELoadingIndicator(

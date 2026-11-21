@@ -11,7 +11,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title: const Text('Profile'),
         actions: [
           IconButton(
             icon: const Icon(Symbols.logout_rounded),

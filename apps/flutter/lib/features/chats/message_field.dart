@@ -14,12 +14,12 @@ import 'package:min_flutter/core/router.dart';
 import 'package:min_flutter/core/theme_ext.dart';
 import 'package:min_flutter/core/ui/scale_enter_animation.dart';
 import 'package:min_flutter/features/chats/replying_provider.dart';
-import 'package:min_flutter/features/chats/utils.dart';
 import 'package:min_flutter/features/dialogs/dialogs.dart';
 import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/storage/database.dart';
 import 'package:http/http.dart' as http;
 import 'package:min_flutter/features/storage/secure_storage.dart';
+import 'package:min_flutter/rust/api/utils.dart';
 import 'package:motor/motor.dart';
 
 class MessageField extends HookConsumerWidget {

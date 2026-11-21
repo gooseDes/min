@@ -17,6 +17,7 @@ import 'package:min_flutter/features/auto_update/updater.dart';
 import 'package:min_flutter/features/dialogs/loading_provider.dart';
 import 'package:min_flutter/features/settings/settings_provider.dart';
 import 'package:min_flutter/features/theming/linux_fallback.dart';
+import 'package:min_flutter/rust/frb_generated.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:http/http.dart' as http;
@@ -132,6 +133,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
+  RustLib.init();
   WidgetsFlutterBinding.ensureInitialized();
   SystemTheme.fallbackColor = await LinuxAccentColorFallback.getAccentColor();
   await SystemTheme.accentColor.load();
@@ -232,6 +234,7 @@ class MinApp extends HookConsumerWidget {
 
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
+            // ignore: deprecated_member_use
             fl.GlobalMaterialLocalizations.delegate,
             fl.GlobalWidgetsLocalizations.delegate,
           ],

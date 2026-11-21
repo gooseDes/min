@@ -7,4 +7,5 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    - rust_builder/cargokit/**
 include: package:dart_config/analysis_options.yaml

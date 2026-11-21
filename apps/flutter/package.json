@@ -1,4 +1,7 @@
 {
   "name": "min-flutter",
-  "version": "0.0.35"
+  "version": "0.0.35",
+  "devDependencies": {
+    "@types/node": "^26.6.6"
+  }
 }

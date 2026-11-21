@@ -1,0 +1,2 @@
+cargo *args:
+    cargo {{ args }}
